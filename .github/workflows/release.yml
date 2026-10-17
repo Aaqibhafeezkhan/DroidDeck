@@ -149,7 +149,7 @@ jobs:
 
   release:
     name: semantic-release
-    needs: [backend, app]
+    needs: [version, backend, app]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
@@ -177,3 +177,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+      - name: Passo a passo de instalação no topo da release
+        if: needs.version.outputs.version != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v${{ needs.version.outputs.version }}
+        run: |
+          gh release view "$TAG" --json body --jq .body > notes.md
+          cat .github/release-header.md notes.md > body.md
+          gh release edit "$TAG" --notes-file body.md

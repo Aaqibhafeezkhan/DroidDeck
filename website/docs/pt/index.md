@@ -5,6 +5,11 @@ grade de botões no celular que disparam atalhos, abrem apps, controlam áudio e
 Discord e o OBS, tocam sons e acendem suas lâmpadas inteligentes. No PC roda um pequeno app na
 bandeja do sistema; o celular conversa com ele pela rede local.
 
+!!! info "Procurando o app que roda Steam no Android?"
+    É outro projeto, que tem o mesmo nome:
+    [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck). Este DroidDeck é um painel de
+    botões que controla um PC com Windows.
+
 [Baixar a versão mais recente :material-download:](https://github.com/ggfto/DroidDeck/releases/latest){ .md-button .md-button--primary }
 [Começar](getting-started/installation.md){ .md-button }
 
@@ -50,6 +55,6 @@ flowchart LR
 - Celular e PC na mesma rede local.
 
 !!! note "Idioma"
-    O app segue o idioma do celular (português ou inglês); dá para trocar em **Configuração →
+    O app segue o idioma do celular (português, inglês ou espanhol); dá para trocar em **Configuração →
     Aparência → Idioma**. Esta documentação está disponível em português e em inglês — use o seletor de
     idioma no topo.

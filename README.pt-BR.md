@@ -20,11 +20,30 @@
 
 </div>
 
+> [!NOTE]
+> **Procurando o app que roda jogos da Steam no Android?** É outro projeto, que por acaso tem o mesmo
+> nome: [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck). Este aqui transforma o celular
+> em um **painel de botões que controla um PC com Windows**.
+
 ---
 
 Monte uma grade de botões no celular que disparam atalhos, abrem apps, controlam áudio e mídia,
 comandam o Discord e o OBS, tocam sons e acendem suas lâmpadas inteligentes. No PC roda um pequeno
 app na bandeja do sistema; o celular conversa com ele pela rede local.
+
+<p align="center">
+  <img src="website/docs/assets/demo.gif" alt="DroidDeck no celular: os botões acendem ao toque, um timer conta e os medidores de CPU, GPU e rede atualizam ao vivo" width="100%">
+</p>
+
+## 💡 Por que o DroidDeck
+
+- **Gratuito e de código aberto** — sem assinatura, sem limite de botões ou páginas.
+- **Sem cadastro e sem nuvem** — o DroidDeck não pede conta; o celular fala direto com o seu PC pela rede local.
+- **Integrações prontas** — Discord, OBS, Spotify, Twitch, YouTube, Home Assistant e Tuya funcionam de
+  fábrica, com o estado ao vivo nos botões. Nada de caçar plugins.
+- **Edite na tela grande** — configurador com arrastar e soltar no navegador do PC; as mudanças chegam
+  ao celular na hora.
+- **Atualiza sozinho** — o app do Windows instala as versões novas em segundo plano.
 
 ## ✨ Recursos
 
@@ -60,6 +79,9 @@ app na bandeja do sistema; o celular conversa com ele pela rede local.
 </p>
 
 ## 🚀 Começando
+
+**Você precisa das duas partes:** o app do Windows (que executa as ações) e o app Android (os
+botões). Só o app do celular não faz nada.
 
 **Requisitos:** Windows 10 1809+ (64 bits) · Android 7.0+ · celular e PC na mesma rede local.
 
@@ -134,8 +156,9 @@ Detalhes completos — arquitetura, testes, releases com semantic-release — em
 
 ## 🤝 Contribuindo
 
-Issues e pull requests são bem-vindos. Os commits seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/)
-(`feat:`, `fix:`, …), porque as releases e o changelog são gerados a partir deles.
+Issues e pull requests são bem-vindos; veja o [CONTRIBUTING.md](CONTRIBUTING.md) (em inglês). Traduzir o
+app para outro idioma é uma ótima primeira contribuição, e dúvidas e ideias vão para as
+[Discussions](https://github.com/ggfto/DroidDeck/discussions).
 
 Se o DroidDeck te ajuda, deixe uma ⭐ — isso ajuda o projeto a chegar em mais gente.
 

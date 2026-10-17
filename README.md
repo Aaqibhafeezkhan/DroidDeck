@@ -20,11 +20,30 @@
 
 </div>
 
+> [!NOTE]
+> **Looking for the app that runs Steam games on Android?** That is a different project that happens to
+> share the name: [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck). This one turns your
+> phone into a **button deck that controls a Windows PC**.
+
 ---
 
 Set up a grid of buttons on your phone that fire shortcuts, open apps, control audio and media, drive
 Discord and OBS, play sounds and switch your smart lights. The PC side is a small tray app; the phone
 talks to it over your local network.
+
+<p align="center">
+  <img src="website/docs/assets/demo.gif" alt="DroidDeck on a phone: buttons light up as they are tapped, a timer counts down and live CPU, GPU and network gauges update" width="100%">
+</p>
+
+## 💡 Why DroidDeck
+
+- **Free and open source** — no subscription, no limit on the number of buttons or pages.
+- **No sign-up, no cloud** — DroidDeck itself needs no account; the phone talks straight to your PC on the local network.
+- **Integrations built in** — Discord, OBS, Spotify, Twitch, YouTube, Home Assistant and Tuya work out
+  of the box, with live state on the buttons. No plugins to hunt down.
+- **Edit on the big screen** — a drag-and-drop configurator in the PC's browser; changes reach the
+  phone instantly.
+- **Updates itself** — the Windows app installs new versions in the background.
 
 ## ✨ Features
 
@@ -61,6 +80,9 @@ talks to it over your local network.
 
 ## 🚀 Getting started
 
+**You need both parts:** the Windows app (it does the work) and the Android app (the buttons). The
+phone app alone does nothing.
+
 **Requirements:** Windows 10 1809+ (64-bit) · Android 7.0+ · phone and PC on the same local network.
 
 1. **Windows** — download and run `DroidDeck-Setup.exe` from the [latest release](https://github.com/ggfto/DroidDeck/releases/latest).
@@ -71,7 +93,7 @@ talks to it over your local network.
 4. **Configure** — open `http://localhost:4787/` on the PC to edit your buttons. Changes show up on the phone instantly.
 
 > [!NOTE]
-> The app follows the phone's language (English or Portuguese). The
+> The app follows the phone's language (English, Portuguese or Spanish). The
 > [documentation](https://me.gf2.in/DroidDeck/docs/) is available in both.
 
 Having trouble (SmartScreen, firewall, phone not finding the PC)? See
@@ -138,8 +160,9 @@ Full details — architecture, tests, releases with semantic-release — in
 
 ## 🤝 Contributing
 
-Issues and pull requests are welcome. Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
-(`feat:`, `fix:`, …), since releases and the changelog are generated from them.
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Translating the app into
+your language is a great first contribution, and questions and ideas go to
+[Discussions](https://github.com/ggfto/DroidDeck/discussions).
 
 If DroidDeck is useful to you, consider leaving a ⭐ — it helps the project reach more people.
 

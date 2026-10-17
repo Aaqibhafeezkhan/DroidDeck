@@ -10,13 +10,13 @@
         "successComment": false,
         "failComment": false,
         "assets": [
-          { "path": "dist/velopack/DroidDeck-Setup.exe", "label": "DroidDeck para Windows (instalador, atualiza sozinho)" },
-          { "path": "dist/DroidDeck-win-x64.zip", "label": "DroidDeck para Windows (.zip, sem instalar)" },
+          { "path": "dist/velopack/DroidDeck-Setup.exe", "label": "1. Windows app: installer (updates itself)" },
+          { "path": "dist/DroidDeck-win-x64.zip", "label": "1. Windows app: portable .zip (no installer)" },
           { "path": "dist/velopack/*.nupkg" },
           { "path": "dist/velopack/releases.win.json" },
           { "path": "dist/velopack/assets.win.json" },
           { "path": "dist/velopack/RELEASES" },
-          { "path": "dist/DroidDeck.apk", "label": "App Android (.apk)" }
+          { "path": "dist/DroidDeck.apk", "label": "2. Android app (.apk)" }
         ]
       }
     ],

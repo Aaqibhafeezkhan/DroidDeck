@@ -9,7 +9,22 @@
 <meta property="og:description" content="Turn an Android phone into a Stream Deck for your Windows PC. Free and open source.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://me.gf2.in/DroidDeck/">
+<meta property="og:image" content="https://me.gf2.in/DroidDeck/og.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://me.gf2.in/DroidDeck/og.png">
 <meta name="theme-color" content="#0d0d0f">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"DroidDeck",
+ "description":"Turn an Android phone into a Stream Deck for your Windows PC: shortcuts, audio mixer, media, live monitors, Discord, OBS, Spotify, Home Assistant and smart home. Free and open source.",
+ "applicationCategory":"UtilitiesApplication","operatingSystem":"Windows 10, Windows 11, Android 7+",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+ "license":"https://www.apache.org/licenses/LICENSE-2.0",
+ "downloadUrl":"https://github.com/ggfto/DroidDeck/releases/latest",
+ "codeRepository":"https://github.com/ggfto/DroidDeck",
+ "image":"https://me.gf2.in/DroidDeck/og.png","url":"https://me.gf2.in/DroidDeck/"}
+</script>
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="alternate" hreflang="en" href="https://me.gf2.in/DroidDeck/?lang=en">
 <link rel="alternate" hreflang="pt-BR" href="https://me.gf2.in/DroidDeck/?lang=pt">
@@ -78,6 +93,8 @@ header.scrolled{border-color:var(--line)}
 .gauge span{width:30px;height:30px;border-radius:50%;background:#27272a;display:grid;place-items:center;font-size:10px;font-weight:600}
 .phone-nav{display:flex;justify-content:space-around;font-size:11px;color:var(--muted);padding-top:12px;border-top:1px solid #1f1f23;margin-top:10px}
 .phone-nav b{color:var(--amber);font-weight:600}
+.namesake{border-bottom:1px solid #27272a;background:#141416;font-size:14px;color:var(--muted);padding:10px 0;text-align:center}
+.namesake a{color:var(--amber)}
 .hint{text-align:center;font-size:12px;color:#71717a;margin-top:14px}
 
 /* sections */
@@ -179,6 +196,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:#71717a;font-size:1
 </header>
 
 <main>
+  <div class="namesake"><div class="wrap" data-i18n-html="namesake">Looking for the app that runs Steam games on Android? That is <a href="https://github.com/Droid-Deck/DroidDeck">a different project with the same name</a>. This one controls your Windows PC.</div></div>
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
@@ -231,7 +249,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:#71717a;font-size:1
         <div class="feature reveal"><div class="ficon"><svg><use href="#i-chat"/></svg></div><h3>Discord</h3><p data-i18n="f5.d">Mute, deafen, join channels, push-to-talk, per-user volume and the native soundboard.</p></div>
         <div class="feature reveal"><div class="ficon"><svg><use href="#i-scene"/></svg></div><h3>OBS Studio</h3><p data-i18n="f6.d">Scenes, recording, streaming, virtual camera and replay buffer, in sync with OBS.</p></div>
         <div class="feature reveal"><div class="ficon"><svg><use href="#i-sound"/></svg></div><h3 data-i18n="f7.t">Soundboard</h3><p data-i18n="f7.d">Search the MyInstants library and play sounds straight into your mic for calls and streams.</p></div>
-        <div class="feature reveal"><div class="ficon"><svg><use href="#i-bulb"/></svg></div><h3 data-i18n="f8.t">Smart home</h3><p data-i18n="f8.d">Tuya / Smart Life lights and plugs, with dimmers, colours and real state. No developer account needed.</p></div>
+        <div class="feature reveal"><div class="ficon"><svg><use href="#i-bulb"/></svg></div><h3 data-i18n="f8.t">Smart home</h3><p data-i18n="f8.d">Home Assistant, and Tuya / Smart Life lights and plugs, with dimmers, colours and real state.</p></div>
         <div class="feature reveal"><div class="ficon"><svg><use href="#i-layers"/></svg></div><h3 data-i18n="f9.t">Profiles &amp; folders</h3><p data-i18n="f9.d">Swipe between pages, nest folders, and edit everything with drag and drop in the browser.</p></div>
       </div>
     </div>
@@ -244,7 +262,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:#71717a;font-size:1
         <h2 data-i18n="how.title">Up and running in three minutes.</h2>
       </div>
       <div class="steps">
-        <div class="step reveal"><h3 data-i18n="s1.t">Run it on the PC</h3><p data-i18n-html="s1.d">Unzip and open <code>DroidDeck.exe</code>. It sits quietly in the system tray. No installer, no .NET to install.</p></div>
+        <div class="step reveal"><h3 data-i18n="s1.t">Run it on the PC</h3><p data-i18n-html="s1.d">Run <code>DroidDeck-Setup.exe</code>. It sits quietly in the system tray and updates itself. No .NET to install.</p></div>
         <div class="step reveal"><h3 data-i18n="s2.t">Pair the phone</h3><p data-i18n="s2.d">Install the app, then scan the QR code from the tray menu. It reconnects by itself from then on.</p></div>
         <div class="step reveal"><h3 data-i18n="s3.t">Build your deck</h3><p data-i18n-html="s3.d">Open <code>localhost:4787</code> in the PC browser, drag buttons around and pick actions. Changes reach the phone instantly.</p></div>
       </div>
@@ -264,6 +282,10 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:#71717a;font-size:1
           <span class="logo-chip"><i style="--c:#1DB954"></i>Spotify &amp; media</span>
           <span class="logo-chip"><i style="--c:#ef4444"></i>MyInstants</span>
           <span class="logo-chip"><i style="--c:#3b82f6"></i>Windows audio</span>
+          <span class="logo-chip"><i style="--c:#18BCF2"></i>Home Assistant</span>
+          <span class="logo-chip"><i style="--c:#9146FF"></i>Twitch</span>
+          <span class="logo-chip"><i style="--c:#FF0000"></i>YouTube</span>
+          <span class="logo-chip"><i style="--c:#66c0f4"></i>Steam</span>
         </div>
       </div>
       <div class="reveal">
@@ -284,10 +306,10 @@ curl -X POST http://pc:4787/api/StreamDeck/execute \
   <section id="download" class="final">
     <div class="wrap reveal">
       <h2 data-i18n="dl.title">Give that old phone a new job.</h2>
-      <p data-i18n="dl.lead">Free and open source. Download both parts from the latest release.</p>
+      <p data-i18n="dl.lead">Free and open source. You need both parts: the Windows app runs the actions, the phone app is the buttons.</p>
       <div class="dl">
-        <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-win-x64.zip"><svg><use href="#i-win"/></svg><span><b data-i18n="dl.win">Windows app</b><small>DroidDeck-win-x64.zip</small></span></a>
-        <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk"><svg><use href="#i-android"/></svg><span><b data-i18n="dl.android">Android app</b><small>DroidDeck.apk</small></span></a>
+        <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe"><svg><use href="#i-win"/></svg><span><b data-i18n="dl.win">1. Windows app</b><small>DroidDeck-Setup.exe</small></span></a>
+        <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk"><svg><use href="#i-android"/></svg><span><b data-i18n="dl.android">2. Android app</b><small>DroidDeck.apk</small></span></a>
       </div>
       <div class="cta">
         <a class="btn btn-ghost" href="docs/getting-started/installation/" data-docs><svg><use href="#i-book"/></svg><span data-i18n="dl.guide">Installation guide</span></a>
@@ -326,10 +348,10 @@ const PT = {
   "f5.d":"Mutar, ensurdecer, entrar em canais, push-to-talk, volume por usuário e a soundboard nativa.",
   "f6.d":"Cenas, gravação, transmissão, câmera virtual e replay buffer, sincronizados com o OBS.",
   "f7.t":"Soundboard","f7.d":"Busque na biblioteca do MyInstants e toque sons direto no seu microfone, em calls e lives.",
-  "f8.t":"Casa inteligente","f8.d":"Lâmpadas e tomadas Tuya / Smart Life, com dimmer, cores e estado real. Sem conta de desenvolvedor.",
+  "f8.t":"Casa inteligente","f8.d":"Home Assistant, e lâmpadas e tomadas Tuya / Smart Life, com dimmer, cores e estado real.",
   "f9.t":"Perfis e pastas","f9.d":"Deslize entre páginas, crie pastas e edite tudo arrastando e soltando no navegador.",
   "how.eyebrow":"Como funciona","how.title":"Funcionando em três minutos.",
-  "s1.t":"Rode no PC","s1.d":"Descompacte e abra o <code>DroidDeck.exe</code>. Ele fica quietinho na bandeja do sistema. Sem instalador, sem precisar instalar .NET.",
+  "s1.t":"Rode no PC","s1.d":"Rode o <code>DroidDeck-Setup.exe</code>. Ele fica quietinho na bandeja do sistema e se atualiza sozinho. Sem precisar instalar .NET.",
   "s2.t":"Pareie o celular","s2.d":"Instale o app e escaneie o QR code do menu da bandeja. Daí em diante ele reconecta sozinho.",
   "s3.t":"Monte seu deck","s3.d":"Abra <code>localhost:4787</code> no navegador do PC, arraste os botões e escolha as ações. As mudanças chegam ao celular na hora.",
   "int.eyebrow":"Integrações","int.title":"Combina com o seu setup.",
@@ -338,8 +360,9 @@ const PT = {
   "c2":"<b>Pareado, não aberto.</b> Toda requisição exige a chave do seu QR code; o editor no navegador só funciona no próprio PC.",
   "c3":"<b>Leve no PC.</b> As estatísticas só são coletadas enquanto há um celular conectado.",
   "c4":"<b>Hackeável.</b> Uma API REST + SignalR documentada deixa você automatizar ou criar seu próprio cliente.",
-  "dl.title":"Dê um novo emprego àquele celular antigo.","dl.lead":"Grátis e open source. Baixe as duas partes na última versão.",
-  "dl.win":"App para Windows","dl.android":"App para Android","dl.guide":"Guia de instalação","dl.gh":"Estrela no GitHub",
+  "dl.title":"Dê um novo emprego àquele celular antigo.","dl.lead":"Grátis e open source. Você precisa das duas partes: o app do Windows executa as ações, o do celular são os botões.",
+  "dl.win":"1. App para Windows","dl.android":"2. App para Android","dl.guide":"Guia de instalação","dl.gh":"Estrela no GitHub",
+  "namesake":"Procurando o app que roda jogos da Steam no Android? É <a href=\"https://github.com/Droid-Deck/DroidDeck\">outro projeto, com o mesmo nome</a>. Este aqui controla o seu PC com Windows.",
   "foot.made":"Feito no Brasil","foot.releases":"Versões","foot.issues":"Reportar um problema"
 };
 const EN = {};

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Looking for the app that runs Steam games on Android?
+    url: https://github.com/Droid-Deck/DroidDeck
+    about: That is a different project with the same name. Report its issues there.
+  - name: Question or idea to discuss
+    url: https://github.com/ggfto/DroidDeck/discussions
+    about: Ask how to do something, share your deck or float an idea before it becomes a request.
+  - name: Documentation and troubleshooting
+    url: https://me.gf2.in/DroidDeck/docs/troubleshooting/
+    about: SmartScreen, firewall, the phone not finding the PC and other common problems.

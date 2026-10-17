@@ -5,6 +5,11 @@ on your phone that fire shortcuts, open apps, control audio and media, drive Dis
 sounds, and switch your smart lights. The PC side is a small tray app; the phone talks to it over your
 local network.
 
+!!! info "Looking for the Steam-on-Android app?"
+    That is a different project that shares the name:
+    [Droid-Deck/DroidDeck](https://github.com/Droid-Deck/DroidDeck). This DroidDeck is a button deck
+    that controls a Windows PC.
+
 [Download the latest release :material-download:](https://github.com/ggfto/DroidDeck/releases/latest){ .md-button .md-button--primary }
 [Get started](getting-started/installation.md){ .md-button }
 
@@ -50,6 +55,6 @@ flowchart LR
 - Phone and PC on the same local network.
 
 !!! note "Language"
-    The app follows the phone's language (English or Portuguese); you can change it under
+    The app follows the phone's language (English, Portuguese or Spanish); you can change it under
     **Settings → Appearance → Language**. This documentation is available in English and Portuguese —
     use the language selector at the top.

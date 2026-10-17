@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in DroidDeck (the Windows app or the phone app) does not work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! This is DroidDeck, the **phone-as-Stream-Deck for Windows**. If you are
+        looking for the app that runs Steam games on Android, that is
+        [another project](https://github.com/Droid-Deck/DroidDeck).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Add a button with the action ...
+        2. Tap it on the phone
+        3. ...
+  - type: input
+    id: version
+    attributes:
+      label: DroidDeck version
+      description: Right-click the tray icon; the menu shows it.
+      placeholder: "1.9.1"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+  - type: input
+    id: phone
+    attributes:
+      label: Phone and Android version
+      placeholder: Redmi Note 9S, Android 12
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: |
+        Relevant lines from `%LocalAppData%\DroidDeck.log` (or `DroidDeck_01.log`). Remove anything
+        private before pasting.
+      render: text
