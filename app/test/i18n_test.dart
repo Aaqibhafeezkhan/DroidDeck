@@ -1,4 +1,5 @@
 import 'package:droiddeck/core/i18n/en/en.dart';
+import 'package:droiddeck/core/i18n/es/es.dart';
 import 'package:droiddeck/core/i18n/i18n.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,6 +11,24 @@ void main() {
     expect(tr('Salvar'), 'Salvar');
     AppLanguage.choice.value = 'en';
     expect(tr('Salvar'), 'Save');
+    AppLanguage.choice.value = 'es';
+    expect(tr('Salvar'), 'Guardar');
+  });
+
+  test('cabeçalho Accept-Language segue o idioma', () {
+    AppLanguage.choice.value = 'pt';
+    expect(AppLanguage.header, 'pt-BR');
+    AppLanguage.choice.value = 'en';
+    expect(AppLanguage.header, 'en');
+    AppLanguage.choice.value = 'es';
+    expect(AppLanguage.header, 'es');
+  });
+
+  test('toda chave traduzida para inglês também tem espanhol', () {
+    final missing = enStrings.keys.where((k) => !esStrings.containsKey(k)).toList();
+    expect(missing, isEmpty, reason: 'sem espanhol: $missing');
+    final extra = esStrings.keys.where((k) => !enStrings.containsKey(k)).toList();
+    expect(extra, isEmpty, reason: 'chave espanhola que não existe em inglês: $extra');
   });
 
   test('placeholders e texto sem tradução', () {
@@ -19,7 +38,7 @@ void main() {
 
   test('toda tradução mantém os mesmos placeholders da chave', () {
     final re = RegExp(r'\{(\w+)\}');
-    for (final e in enStrings.entries) {
+    for (final e in [...enStrings.entries, ...esStrings.entries]) {
       final a = re.allMatches(e.key).map((m) => m[1]).toSet();
       final b = re.allMatches(e.value).map((m) => m[1]).toSet();
       expect(b, a, reason: 'placeholders diferentes em "${e.key}"');

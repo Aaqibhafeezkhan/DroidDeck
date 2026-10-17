@@ -41,7 +41,10 @@ class AppearanceSettingsPage extends StatelessWidget {
                   ButtonSegment(value: 'auto', label: Text(tr('Automático'))),
                   const ButtonSegment(value: 'pt', label: Text('Português')),
                   const ButtonSegment(value: 'en', label: Text('English')),
+                  const ButtonSegment(value: 'es', label: Text('Español')),
                 ],
+                // Quatro opções: sem o ícone de marcado para caber em celular estreito.
+                showSelectedIcon: false,
                 selected: {AppLanguage.choice.value},
                 onSelectionChanged: (v) => AppLanguage.set(v.first),
               );

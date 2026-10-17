@@ -21,12 +21,12 @@ namespace DroidDeck.Controllers
         public ActionResult<List<ActionSchema>> Schema()
         {
             var schemas = _executor.DescribeAll();
-            return Ok(L.English ? schemas.Select(Translated).ToList() : schemas);
+            return Ok(L.Translating ? schemas.Select(Translated).ToList() : schemas);
         }
 
         /// <summary>
-        /// Copia do schema com os textos em ingles. Copia (pelo JSON, para nao esquecer campo
-        /// novo) porque os provedores podem devolver objetos guardados.
+        /// Copia do schema com os textos traduzidos (ingles ou espanhol). Copia (pelo JSON, para
+        /// nao esquecer campo novo) porque os provedores podem devolver objetos guardados.
         /// </summary>
         private static ActionSchema Translated(ActionSchema source)
         {

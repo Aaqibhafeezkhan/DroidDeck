@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DroidDeck.Actions;
 using DroidDeck.Auth;
@@ -38,6 +40,42 @@ namespace DroidDeck.Tests
             Assert.Equal(" Button: \"Live\".", InEnglish(() => L.T(" Botão: \"{label}\".", ("label", "Live"))));
             Assert.Equal(" Botão: \"Live\".", L.T(" Botão: \"{label}\".", ("label", "Live")));
         }
+
+        [Fact]
+        public void ComEspanhol_DevolveATraducao()
+        {
+            L.Language = "es";
+            try { Assert.Equal("Atajo de teclado", L.T("Atalho de teclado")); }
+            finally { L.Language = "pt"; }
+        }
+
+        private static Dictionary<string, string> Dictionary(string name) =>
+            (Dictionary<string, string>)typeof(L)
+                .GetField(name, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
+
+        [Fact]
+        public void Espanhol_TemTodaChaveDoIngles_ComOsMesmosPlaceholders()
+        {
+            var en = Dictionary("En");
+            var es = Dictionary("Es");
+            Assert.Empty(en.Keys.Except(es.Keys));
+            Assert.Empty(es.Keys.Except(en.Keys));
+            var placeholder = new Regex(@"\{(\w+)\}");
+            foreach (var (pt, text) in es)
+            {
+                var expected = placeholder.Matches(pt).Select(m => m.Value).OrderBy(x => x);
+                Assert.Equal(expected, placeholder.Matches(text).Select(m => m.Value).OrderBy(x => x));
+            }
+        }
+
+        [Theory]
+        [InlineData("es", "es")]
+        [InlineData("es-MX,en;q=0.8", "es")]
+        [InlineData("en-US,es;q=0.8", "en")]
+        [InlineData("pt-BR,es;q=0.9", "pt")]
+        [InlineData(null, "pt")]
+        public void AcceptLanguage_EscolheOIdioma(string? header, string language) =>
+            Assert.Equal(language, L.LanguageOf(header));
 
         [Theory]
         [InlineData("en", true)]

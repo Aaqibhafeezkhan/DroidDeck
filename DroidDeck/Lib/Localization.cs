@@ -9,25 +9,39 @@ namespace DroidDeck.Lib
 {
     /// <summary>
     /// Traducao dos textos que o servidor manda para o app. O texto-fonte continua em portugues
-    /// no codigo; L.T("...") devolve a versao em ingles quando a requisicao pediu ingles
-    /// (Accept-Language: en...) e existe traducao em Localization.en.cs. Sem traducao, fica o
-    /// portugues -- nunca quebra.
+    /// no codigo; L.T("...") devolve a versao em ingles (Localization.en.cs) ou em espanhol
+    /// (Localization.es.cs) conforme o Accept-Language da requisicao. Espanhol sem traducao cai
+    /// no ingles; sem traducao nenhuma fica o portugues -- nunca quebra.
     ///
     /// O idioma e por requisicao (AsyncLocal), marcado pelo middleware UseLanguage. Fora de uma
     /// requisicao (servicos em segundo plano, SignalR) vale portugues.
     /// </summary>
     public static partial class L
     {
-        private static readonly AsyncLocal<bool> _english = new();
+        private static readonly AsyncLocal<string?> _language = new();
+
+        /// <summary>Idioma da requisicao: "pt", "en" ou "es".</summary>
+        public static string Language
+        {
+            get => _language.Value ?? "pt";
+            set => _language.Value = value;
+        }
 
         public static bool English
         {
-            get => _english.Value;
-            set => _english.Value = value;
+            get => Language == "en";
+            set => Language = value ? "en" : "pt";
         }
 
-        public static string T(string pt) =>
-            English && En.TryGetValue(pt, out var en) ? en : pt;
+        /// <summary>A requisicao pediu outro idioma que nao o portugues (o schema e traduzido).</summary>
+        public static bool Translating => Language != "pt";
+
+        public static string T(string pt) => Language switch
+        {
+            "en" => En.TryGetValue(pt, out var en) ? en : pt,
+            "es" => Es.TryGetValue(pt, out var es) ? es : En.TryGetValue(pt, out var en) ? en : pt,
+            _ => pt,
+        };
 
         /// <summary>Traduz e depois troca os {chave} pelos valores.</summary>
         public static string T(string pt, params (string key, object? value)[] args)
@@ -41,19 +55,27 @@ namespace DroidDeck.Lib
         /// <summary>Versao que aceita null (campos opcionais do schema).</summary>
         public static string? TOrNull(string? pt) => pt == null ? null : T(pt);
 
-        /// <summary>Primeira preferencia do Accept-Language comeca com "en"?</summary>
-        public static bool IsEnglish(string? acceptLanguage)
+        /// <summary>
+        /// Idioma pela primeira preferencia do Accept-Language: "en..." vira ingles, "es..."
+        /// espanhol, o resto portugues.
+        /// </summary>
+        public static string LanguageOf(string? acceptLanguage)
         {
-            if (string.IsNullOrWhiteSpace(acceptLanguage)) return false;
+            if (string.IsNullOrWhiteSpace(acceptLanguage)) return "pt";
             var first = acceptLanguage.Split(',')[0].Split(';')[0].Trim();
-            return first.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+            if (first.StartsWith("en", StringComparison.OrdinalIgnoreCase)) return "en";
+            if (first.StartsWith("es", StringComparison.OrdinalIgnoreCase)) return "es";
+            return "pt";
         }
+
+        /// <summary>Primeira preferencia do Accept-Language comeca com "en"?</summary>
+        public static bool IsEnglish(string? acceptLanguage) => LanguageOf(acceptLanguage) == "en";
 
         /// <summary>Marca o idioma da requisicao para L.T.</summary>
         public static IApplicationBuilder UseLanguage(this IApplicationBuilder app) =>
             app.Use(async (HttpContext ctx, Func<Task> next) =>
             {
-                English = IsEnglish(ctx.Request.Headers.AcceptLanguage.ToString());
+                Language = LanguageOf(ctx.Request.Headers.AcceptLanguage.ToString());
                 await next();
             });
     }

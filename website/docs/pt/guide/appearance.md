@@ -34,7 +34,7 @@ do canto, em vez do preenchimento. Cores neutras, como o cinza padrão do editor
 
 ## Idioma
 
-**Idioma** escolhe o idioma do app: **Automático** (o do aparelho), **Português** ou **English**. Os
+**Idioma** escolhe o idioma do app: **Automático** (o do aparelho), **Português**, **English** ou **Español**. Os
 tipos de ação e as mensagens que vêm do PC seguem o mesmo idioma.
 
 ## Seguir o app em foco

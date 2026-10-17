@@ -118,7 +118,7 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
           if (_label != null) _small(_label!),
           _big(time),
           if (date)
-            // Dia/mês em português, mês/dia em inglês.
+            // Dia/mês em português e espanhol, mês/dia em inglês.
             _small('${tr(_weekdays[now.weekday - 1])}, ' +
                 (AppLanguage.current.value == 'en'
                     ? '${two(now.month)}/${two(now.day)}'

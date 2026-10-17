@@ -38,7 +38,7 @@ white.
 
 ## Language
 
-**Language** picks the app's language: **Automatic** (the phone's), **Português** or **English**. Action
+**Language** picks the app's language: **Automatic** (the phone's), **Português**, **English** or **Español**. Action
 types and messages from the PC follow the same language.
 
 ## Follow the focused app
