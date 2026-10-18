@@ -87,6 +87,20 @@ namespace DroidDeck.Models
         public string? Type { get; set; }
         public Dictionary<string, string>? Parameters { get; set; }
         public int DelayMs { get; set; }
+
+        /// <summary>Condicao para o passo rodar (null = sempre). Ver Services/Conditions.cs.</summary>
+        public StepCondition? If { get; set; }
+    }
+
+    /// <summary>
+    /// "So se...": Check e o que olhar, Value o parametro (id do botao, processo, horario) e
+    /// Negate inverte ("so se NAO...").
+    /// </summary>
+    public class StepCondition
+    {
+        public string? Check { get; set; }
+        public string? Value { get; set; }
+        public bool Negate { get; set; }
     }
 
     /// <summary>

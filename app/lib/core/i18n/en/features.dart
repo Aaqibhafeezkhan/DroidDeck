@@ -40,4 +40,42 @@ final Map<String, String> enFeatures = {
       'Drag your finger on the button. Make the button wider or taller in "Size" for more precision.',
   'GIF grande demais (máximo de 2 MB).':
       'GIF too large (2 MB max).',
+  'Sempre':
+      'Always',
+  'A live do OBS estiver no ar':
+      'The OBS stream is live',
+  'O OBS estiver gravando':
+      'OBS is recording',
+  'O microfone do Discord estiver mudo':
+      'The Discord mic is muted',
+  'O áudio do Discord estiver desativado':
+      'Discord audio is deafened',
+  'Um botão de dois estados estiver ligado':
+      'A two-state button is on',
+  'Um app estiver aberto':
+      'An app is open',
+  'Um app estiver em foco':
+      'An app is focused',
+  'For entre dois horários':
+      'It is between two times',
+  'For um destes dias da semana':
+      'It is one of these weekdays',
+  'Id do botão':
+      'Button id',
+  'Processo (sem .exe)':
+      'Process (without .exe)',
+  'Horário (ex.: 08:00-18:00)':
+      'Time (e.g. 08:00-18:00)',
+  'Dias (0 = domingo; ex.: 1-5)':
+      'Days (0 = Sunday; e.g. 1-5)',
+  'Só se':
+      'Only if',
+  'Não':
+      'Not',
+  'Inverte: o passo roda quando a condição NÃO vale.':
+      'Inverts: the step runs when the condition is NOT met.',
+  'Nenhum botão de dois estados ainda.':
+      'No two-state buttons yet.',
+  'Botão':
+      'Button',
 };

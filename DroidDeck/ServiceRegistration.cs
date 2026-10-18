@@ -23,6 +23,7 @@ namespace DroidDeck
             services.AddSingleton<SteamLibrary>();
             services.AddSingleton<BackupService>();
             services.AddSingleton<ButtonToggleService>();
+            services.AddSingleton<Conditions>();
             services.AddSingleton<Lib.Input.MacroRecorder>();
             services.AddHostedSingleton<TimerService>();
             services.AddHostedSingleton<InfoService>();

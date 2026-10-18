@@ -40,4 +40,42 @@ final Map<String, String> esFeatures = {
       'Desliza el dedo sobre el botón. Haz el botón más ancho o más alto en "Tamaño" para tener más precisión.',
   'GIF grande demais (máximo de 2 MB).':
       'GIF demasiado grande (máximo 2 MB).',
+  'Sempre':
+      'Siempre',
+  'A live do OBS estiver no ar':
+      'La transmisión de OBS esté en vivo',
+  'O OBS estiver gravando':
+      'OBS esté grabando',
+  'O microfone do Discord estiver mudo':
+      'El micrófono de Discord esté silenciado',
+  'O áudio do Discord estiver desativado':
+      'El audio de Discord esté desactivado',
+  'Um botão de dois estados estiver ligado':
+      'Un botón de dos estados esté encendido',
+  'Um app estiver aberto':
+      'Una aplicación esté abierta',
+  'Um app estiver em foco':
+      'Una aplicación esté en primer plano',
+  'For entre dois horários':
+      'Sea entre dos horas',
+  'For um destes dias da semana':
+      'Sea uno de estos días de la semana',
+  'Id do botão':
+      'Id del botón',
+  'Processo (sem .exe)':
+      'Proceso (sin .exe)',
+  'Horário (ex.: 08:00-18:00)':
+      'Horario (ej.: 08:00-18:00)',
+  'Dias (0 = domingo; ex.: 1-5)':
+      'Días (0 = domingo; ej.: 1-5)',
+  'Só se':
+      'Solo si',
+  'Não':
+      'No',
+  'Inverte: o passo roda quando a condição NÃO vale.':
+      'Invierte: el paso se ejecuta cuando la condición NO se cumple.',
+  'Nenhum botão de dois estados ainda.':
+      'Todavía no hay botones de dos estados.',
+  'Botão':
+      'Botón',
 };

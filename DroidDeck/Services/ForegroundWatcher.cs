@@ -107,6 +107,9 @@ namespace DroidDeck.Services
             }
         }
 
+        /// <summary>Processo (sem .exe) da janela em foco agora, ou null.</summary>
+        public static string? ForegroundProcess() => ProcessName(ForegroundPid());
+
         private static uint ForegroundPid()
         {
             var hwnd = GetForegroundWindow();
