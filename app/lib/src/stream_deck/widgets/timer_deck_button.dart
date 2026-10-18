@@ -81,12 +81,16 @@ class _TimerDeckButtonState extends State<TimerDeckButton> {
   @override
   Widget build(BuildContext context) {
     return Watch((context) {
-      final all = Injector.get<SignalRService>()
-          .stateOf(TimerDeckButton.stateEvent);
-      final receivedAt = (all['_receivedAt'] as num?)?.toInt() ??
+      final all = Injector.get<SignalRService>().stateOf(
+        TimerDeckButton.stateEvent,
+      );
+      final receivedAt =
+          (all['_receivedAt'] as num?)?.toInt() ??
           DateTime.now().millisecondsSinceEpoch;
       final raw = all[_timerId];
-      final t = raw is Map ? Map<String, dynamic>.from(raw) : <String, dynamic>{};
+      final t = raw is Map
+          ? Map<String, dynamic>.from(raw)
+          : <String, dynamic>{};
 
       final running = t['running'] == true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -108,7 +112,8 @@ class _TimerDeckButtonState extends State<TimerDeckButton> {
     if (running) {
       elapsed += DateTime.now().millisecondsSinceEpoch - receivedAt;
     }
-    final duration = (t['durationMs'] as num?)?.toInt() ??
+    final duration =
+        (t['durationMs'] as num?)?.toInt() ??
         ((double.tryParse(_params['durationMin'] ?? '') ?? 5) * 60000).round();
 
     String big;
@@ -161,46 +166,63 @@ class _TimerDeckButtonState extends State<TimerDeckButton> {
       activeColor: widget.activeColor,
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
-      child: LayoutBuilder(builder: (context, c) {
-        final fg = DeckTile.foregroundOf(context);
-        return Padding(
-          padding: const EdgeInsets.all(4),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(op == 'reset' ? Icons.restart_alt : icon, size: 16),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  big,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    fontFeatures: [FontFeature.tabularFigures()],
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final fg = DeckTile.foregroundOf(context);
+          // FittedBox: num botão pequeno o conjunto encolhe em vez de cortar o rótulo.
+          return Padding(
+            padding: const EdgeInsets.all(4),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(op == 'reset' ? Icons.restart_alt : icon, size: 16),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      big,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
+                    ),
                   ),
-                ),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: fg.withValues(alpha: 0.75),
+                    ),
+                  ),
+                  if (progress != null) ...[
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      // Largura fixa: dentro do FittedBox a barra não teria limite.
+                      width: c.maxWidth.isFinite ? c.maxWidth * 0.8 : 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: LinearProgressIndicator(
+                          value: progress.clamp(0.0, 1.0),
+                          minHeight: 3,
+                          backgroundColor: fg.withValues(alpha: 0.15),
+                          valueColor: AlwaysStoppedAnimation(
+                            fg.withValues(alpha: 0.8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              Text(label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 10, color: fg.withValues(alpha: 0.75))),
-              if (progress != null) ...[
-                const SizedBox(height: 4),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: progress.clamp(0.0, 1.0),
-                    minHeight: 3,
-                    backgroundColor: fg.withValues(alpha: 0.15),
-                    valueColor: AlwaysStoppedAnimation(fg.withValues(alpha: 0.8)),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        );
-      }),
+            ),
+          );
+        },
+      ),
     );
   }
 

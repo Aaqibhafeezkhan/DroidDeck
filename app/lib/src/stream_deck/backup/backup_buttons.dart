@@ -116,7 +116,8 @@ class _BackupButtonsState extends State<BackupButtons> {
               icon: Icon(icon, size: 18),
               label: Text(label),
               style: TextButton.styleFrom(
-                minimumSize: const Size(double.infinity, 36),
+                alignment: Alignment.centerLeft,
+                minimumSize: const Size(double.infinity, 38),
                 foregroundColor: muted,
               ),
             ),
