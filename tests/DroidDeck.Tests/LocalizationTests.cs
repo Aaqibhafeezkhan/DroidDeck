@@ -95,7 +95,7 @@ namespace DroidDeck.Tests
         private static readonly HashSet<string> SameInEnglish = new()
         {
             "Discord", "OBS Studio", "Soundboard", "Windows", "Home Assistant", "Spotify", "Twitch", "YouTube", "Streaming",
-            "Voicemeeter", "Elgato Key Light", "Philips Hue", "Govee", "MQTT", "Streamer.bot", "VTube Studio",
+            "Script", "Voicemeeter", "Elgato Key Light", "Philips Hue", "Govee", "MQTT", "Streamer.bot", "VTube Studio",
         };
 
         private readonly WebApplicationFactory<DroidDeck.Program> _factory;

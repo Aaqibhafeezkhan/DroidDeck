@@ -48,6 +48,7 @@ class ActionPicker extends StatefulWidget {
     'launchApp',
     'activatewindow',
     'http',
+    'script',
   };
 
   static bool isPrivilegedType(String type) =>

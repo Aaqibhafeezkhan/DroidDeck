@@ -26,7 +26,7 @@ namespace DroidDeck.Services
     public static class ActionPolicy
     {
         private static readonly HashSet<string> PrivilegedTypes =
-            new(StringComparer.OrdinalIgnoreCase) { "launchapp", "launch_app", "activatewindow", "hotkey", "http" };
+            new(StringComparer.OrdinalIgnoreCase) { "launchapp", "launch_app", "activatewindow", "hotkey", "http", "script" };
 
         private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 

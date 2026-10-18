@@ -205,6 +205,17 @@ namespace DroidDeck.Lib
             ["Backup de uma versão mais nova do DroidDeck. Atualize o DroidDeck no PC."] = "Backup from a newer DroidDeck version. Update DroidDeck on the PC.",
             ["Arquivo de backup corrompido."] = "Corrupted backup file.",
             ["O arquivo não parece um perfil do Stream Deck."] = "This file does not look like a Stream Deck profile.",
+            ["Roda um script do PowerShell, do Python ou um .bat, com argumentos."] = "Runs a PowerShell or Python script or a .bat file, with arguments.",
+            ["Escrito aqui"] = "Written here",
+            ["Um arquivo do PC"] = "A file on the PC",
+            ["Linguagem"] = "Language",
+            ["Prompt de comando (.bat)"] = "Command Prompt (.bat)",
+            ["Código"] = "Code",
+            ["Os argumentos chegam em $args (PowerShell), sys.argv (Python) ou %1, %2… (.bat)."] = "Arguments arrive in $args (PowerShell), sys.argv (Python) or %1, %2… (.bat).",
+            ["Arquivo"] = "File",
+            [".ps1, .py, .bat ou .cmd."] = ".ps1, .py, .bat or .cmd.",
+            ["Separados por espaço; use aspas para um argumento com espaços."] = "Separated by spaces; use quotes for an argument with spaces.",
+            ["Botões que abrem programas, enviam atalhos, ativam janelas, rodam scripts ou fazem requisições HTTP só podem ser criados ou alterados no configurador do PC (http://localhost:4787)."] = "Buttons that open programs, send shortcuts, activate windows, run scripts or make HTTP requests can only be created or changed in the PC configurator (http://localhost:4787).",
 
             // Integracoes com conta
             ["Integração desconhecida."] = "Unknown integration.",

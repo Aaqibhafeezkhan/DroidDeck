@@ -49,6 +49,7 @@ namespace DroidDeck
             services.AddSingleton<IActionProvider, TuyaProvider>();
             services.AddSingleton<IActionProvider, WindowsProvider>();
             services.AddSingleton<IActionProvider, HttpProvider>();
+            services.AddSingleton<IActionProvider, ScriptProvider>();
             services.AddSingleton<IActionProvider, TimerProvider>();
             services.AddSingleton<IActionProvider, SteamProvider>();
             services.AddSingleton<IActionProvider, HomeAssistantProvider>();

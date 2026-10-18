@@ -205,6 +205,17 @@ namespace DroidDeck.Lib
             ["Backup de uma versão mais nova do DroidDeck. Atualize o DroidDeck no PC."] = "Copia de seguridad de una versión más nueva de DroidDeck. Actualiza DroidDeck en la PC.",
             ["Arquivo de backup corrompido."] = "Archivo de copia de seguridad dañado.",
             ["O arquivo não parece um perfil do Stream Deck."] = "El archivo no parece un perfil de Stream Deck.",
+            ["Roda um script do PowerShell, do Python ou um .bat, com argumentos."] = "Ejecuta un script de PowerShell, de Python o un .bat, con argumentos.",
+            ["Escrito aqui"] = "Escrito aquí",
+            ["Um arquivo do PC"] = "Un archivo del PC",
+            ["Linguagem"] = "Lenguaje",
+            ["Prompt de comando (.bat)"] = "Símbolo del sistema (.bat)",
+            ["Código"] = "Código",
+            ["Os argumentos chegam em $args (PowerShell), sys.argv (Python) ou %1, %2… (.bat)."] = "Los argumentos llegan en $args (PowerShell), sys.argv (Python) o %1, %2… (.bat).",
+            ["Arquivo"] = "Archivo",
+            [".ps1, .py, .bat ou .cmd."] = ".ps1, .py, .bat o .cmd.",
+            ["Separados por espaço; use aspas para um argumento com espaços."] = "Separados por espacios; usa comillas para un argumento con espacios.",
+            ["Botões que abrem programas, enviam atalhos, ativam janelas, rodam scripts ou fazem requisições HTTP só podem ser criados ou alterados no configurador do PC (http://localhost:4787)."] = "Los botones que abren programas, envían atajos, activan ventanas, ejecutan scripts o hacen solicitudes HTTP solo se pueden crear o cambiar en el configurador del PC (http://localhost:4787).",
 
             // Integracoes com conta
             ["Integração desconhecida."] = "Integración desconocida.",

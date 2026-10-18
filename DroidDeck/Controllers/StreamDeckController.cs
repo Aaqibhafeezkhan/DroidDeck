@@ -121,7 +121,7 @@ namespace DroidDeck.Controllers
 
         private ObjectResult PrivilegedOnlyOnPc(string? label) => StatusCode(403, new
         {
-            error = L.T("Botões que abrem programas, enviam atalhos, ativam janelas ou fazem requisições HTTP só podem ser criados ou alterados no configurador do PC (http://localhost:4787).")
+            error = L.T("Botões que abrem programas, enviam atalhos, ativam janelas, rodam scripts ou fazem requisições HTTP só podem ser criados ou alterados no configurador do PC (http://localhost:4787).")
                 + (string.IsNullOrWhiteSpace(label) ? "" : L.T(" Botão: \"{label}\".", ("label", label)))
         });
 
