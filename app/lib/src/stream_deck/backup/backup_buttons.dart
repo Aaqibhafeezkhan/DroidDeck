@@ -83,6 +83,28 @@ class _BackupButtonsState extends State<BackupButtons> {
         : tr('{n} perfis importados.', {'n': count});
   }
 
+  Future<String> _importStreamDeck() async {
+    final bytes = await pickBackupFile(accept: '.streamDeckProfile,.zip');
+    if (bytes == null || !mounted) return '';
+    final r = await _client.importStreamDeck(bytes);
+    widget.onImported?.call();
+    final profiles = (r['profiles'] as num?)?.toInt() ?? 0;
+    final unsupported = ((r['unsupported'] as List?) ?? const []).cast<String>();
+    final stripped = (r['stripped'] as num?)?.toInt() ?? 0;
+    final parts = [
+      profiles == 1
+          ? tr('1 perfil importado do Stream Deck.')
+          : tr('{n} perfis importados do Stream Deck.', {'n': profiles}),
+      if (unsupported.isNotEmpty)
+        tr('Sem equivalente (ficaram só com o título): {names}.',
+            {'names': unsupported.join(', ')}),
+      if (stripped > 0)
+        tr('{n} botões de atalho ou programa ficaram sem ação: crie-os no configurador do PC.',
+            {'n': stripped}),
+    ];
+    return parts.join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -105,6 +127,9 @@ class _BackupButtonsState extends State<BackupButtons> {
           button(Icons.download, tr('Exportar backup'), () => _run(_export)),
           if (canPickBackup)
             button(Icons.upload, tr('Importar backup'), () => _run(_import)),
+          if (canPickBackup)
+            button(Icons.grid_view, tr('Importar do Stream Deck'),
+                () => _run(_importStreamDeck)),
         ],
       );
     }
@@ -132,6 +157,14 @@ class _BackupButtonsState extends State<BackupButtons> {
             leading: const Icon(Icons.upload_file),
             title: Text(tr('Importar backup')),
             onTap: _busy ? null : () => _run(_import),
+          ),
+        if (canPickBackup)
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.grid_view),
+            title: Text(tr('Importar do Stream Deck')),
+            subtitle: Text(tr('Perfil exportado pelo app da Elgato (.streamDeckProfile).')),
+            onTap: _busy ? null : () => _run(_importStreamDeck),
           ),
       ],
     );

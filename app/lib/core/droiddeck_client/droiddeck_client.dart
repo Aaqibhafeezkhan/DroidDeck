@@ -352,6 +352,15 @@ class DroidDeckClient {
     return ((response.data as Map?)?['imported'] as num?)?.toInt() ?? 0;
   }
 
+  /// Importa um perfil do app da Elgato (.streamDeckProfile) como perfis novos.
+  /// Devolve {profiles, buttons, unsupported: [nomes], stripped, firstProfileId}.
+  Future<Map<String, dynamic>> importStreamDeck(List<int> bytes) async {
+    final response = await _dio.post('/api/import/streamdeck',
+        data: Uint8List.fromList(bytes),
+        options: Options(contentType: 'application/octet-stream'));
+    return Map<String, dynamic>.from(response.data as Map);
+  }
+
   /// Catálogo dos tipos de ação (GET /api/actions/schema). Servidores anteriores
   /// à 1.8 não têm o endpoint: aí lança, e o editor usa o catálogo embutido.
   Future<List<Map<String, dynamic>>> getActionSchema() async {

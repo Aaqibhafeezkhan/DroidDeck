@@ -13,6 +13,6 @@ Future<void> saveBackupFile(List<int> bytes, String name) async {
 }
 
 /// Escolher arquivo só existe no configurador do PC.
-Future<List<int>?> pickBackupFile() async => null;
+Future<List<int>?> pickBackupFile({String accept = ''}) async => null;
 
 const bool canPickBackup = false;

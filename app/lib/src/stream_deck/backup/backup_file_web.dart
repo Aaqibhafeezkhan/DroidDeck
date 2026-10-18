@@ -21,11 +21,11 @@ Future<void> saveBackupFile(List<int> bytes, String name) async {
 }
 
 /// Abre o seletor de arquivos do navegador. Null se o usuário cancelar.
-Future<List<int>?> pickBackupFile() {
+Future<List<int>?> pickBackupFile({String accept = '.droiddeck,.zip'}) {
   final completer = Completer<List<int>?>();
   final input = web.HTMLInputElement()
     ..type = 'file'
-    ..accept = '.droiddeck,.zip';
+    ..accept = accept;
   input.onchange = (web.Event _) {
     final file = input.files?.item(0);
     if (file == null) {

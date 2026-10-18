@@ -204,6 +204,7 @@ namespace DroidDeck.Lib
             ["Não é um backup do DroidDeck."] = "No es una copia de seguridad de DroidDeck.",
             ["Backup de uma versão mais nova do DroidDeck. Atualize o DroidDeck no PC."] = "Copia de seguridad de una versión más nueva de DroidDeck. Actualiza DroidDeck en la PC.",
             ["Arquivo de backup corrompido."] = "Archivo de copia de seguridad dañado.",
+            ["O arquivo não parece um perfil do Stream Deck."] = "El archivo no parece un perfil de Stream Deck.",
 
             // Integracoes com conta
             ["Integração desconhecida."] = "Integración desconocida.",

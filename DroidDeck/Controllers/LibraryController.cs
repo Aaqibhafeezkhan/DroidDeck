@@ -98,5 +98,50 @@ namespace DroidDeck.Controllers
             await _hub.Clients.All.SendAsync("ReceiveDeckUpdate", new { profileId = (string?)null });
             return Ok(new { imported = count });
         }
+
+        // ---- Perfis do Stream Deck da Elgato ----
+
+        /// <summary>
+        /// Importa um .streamDeckProfile (corpo = o arquivo) como perfis novos. De fora do PC,
+        /// os botoes que abrem programas ou enviam atalhos entram sem a acao (mesma regra do
+        /// POST profiles), e a resposta diz quantos.
+        /// </summary>
+        [HttpPost("api/import/streamdeck")]
+        [RequestSizeLimit(StreamDeckImport.MaxSize)]
+        public async Task<IActionResult> ImportStreamDeck()
+        {
+            using var ms = new MemoryStream();
+            await Request.Body.CopyToAsync(ms);
+            ms.Position = 0;
+
+            var layout = _config.GetLayout();
+            StreamDeckImport.Result result;
+            try { result = StreamDeckImport.Read(ms, layout.Rows, layout.Columns); }
+            catch (InvalidDataException ex) { return BadRequest(new { error = L.T(ex.Message) }); }
+
+            var stripped = 0;
+            if (!ActionPolicy.IsLocal(HttpContext.Connection))
+            {
+                foreach (var button in result.Profiles.SelectMany(p => p.Buttons))
+                {
+                    if (!ActionPolicy.IsPrivileged(button.Action)) continue;
+                    button.Action = null;
+                    button.Toggle = false;
+                    stripped++;
+                }
+            }
+
+            _backup.Import(result.Profiles);
+            _logger.LogInformation("Stream Deck importado: {Profiles} perfis, {Buttons} botoes", result.Profiles.Count, result.Buttons);
+            await _hub.Clients.All.SendAsync("ReceiveDeckUpdate", new { profileId = (string?)null });
+            return Ok(new
+            {
+                profiles = result.Profiles.Count,
+                buttons = result.Buttons,
+                unsupported = result.Unsupported,
+                stripped,
+                firstProfileId = result.Profiles.FirstOrDefault()?.Id,
+            });
+        }
     }
 }
