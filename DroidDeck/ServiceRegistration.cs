@@ -55,6 +55,13 @@ namespace DroidDeck
             services.AddSingleton<IActionProvider, SpotifyProvider>();
             services.AddSingleton<IActionProvider, TwitchProvider>();
             services.AddSingleton<IActionProvider, YouTubeProvider>();
+            services.AddSingleton<IActionProvider, StreamerBotProvider>();
+            services.AddSingleton<IActionProvider, VTubeStudioProvider>();
+            services.AddSingleton<IActionProvider, VoicemeeterProvider>();
+            services.AddSingleton<IActionProvider, HueProvider>();
+            services.AddSingleton<IActionProvider, KeyLightProvider>();
+            services.AddSingleton<IActionProvider, GoveeProvider>();
+            services.AddSingleton<IActionProvider, MqttProvider>();
             foreach (var clientOnly in ClientOnlyProvider.All())
                 services.AddSingleton(clientOnly);
             return services;
@@ -77,6 +84,15 @@ namespace DroidDeck
             services.AddAccountIntegration<SpotifyIntegration>();
             services.AddAccountIntegration<TwitchIntegration>();
             services.AddAccountIntegration<YouTubeIntegration>();
+
+            // Locais, sem conta na nuvem: com tela (pareamento, broker, endereco)...
+            services.AddAccountIntegration<HueIntegration>();
+            services.AddAccountIntegration<MqttIntegration>();
+            services.AddAccountIntegration<StreamerBotIntegration>();
+            services.AddAccountIntegration<VTubeStudioIntegration>();
+            // ...e sem tela nenhuma (o IP vai em cada botao, o Voicemeeter e o do PC).
+            services.AddSingleton<IVoicemeeterApi, VoicemeeterRemote>();
+            services.AddSingleton<GoveeLan>();
             return services;
         }
 

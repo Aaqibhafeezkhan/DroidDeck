@@ -25,6 +25,13 @@ change according to the type.
 | [Spotify](../integrations/spotify.md) | PC | Player, like, shuffle, playlists and the cover on the button. |
 | [Twitch](../integrations/twitch.md) | PC | Marker, clip, ad, chat, poll and title. |
 | [YouTube](../integrations/youtube.md) | PC | Live chat and viewers. |
+| [Streamer.bot](../integrations/streamerbot.md) | PC | Runs a Streamer.bot action, with arguments. |
+| [VTube Studio](../integrations/vtubestudio.md) | PC | Triggers model hotkeys or loads a model. |
+| [Voicemeeter](../integrations/voicemeeter.md) | PC | Mute and gain of strips and buses, Macro Buttons, parameters. |
+| [Philips Hue](../integrations/hue.md) | PC | Lights, rooms and scenes through the Hue Bridge. |
+| [Elgato Key Light](../integrations/elgato.md) | PC | On/off, brightness and temperature of Elgato lights. |
+| [Govee](../integrations/govee.md) | PC | Govee lights over the LAN API. |
+| [MQTT](../integrations/mqtt.md) | PC | Publishes a message to your broker. |
 | [Timer, pomodoro & counter](#timer) | PC | A live clock on the button. |
 | [Windows](#windows) | PC | Switches the default audio device, locks, sleeps or turns the screen off. |
 | [HTTP request](#http) | PC | Calls a webhook or any API. |

@@ -82,6 +82,13 @@ All parameter values are strings.
 | `spotify` | `operation`: `playPause`·`next`·`previous`·`like`·`shuffle`·`repeat`·`volume` (`step`)·`playlist` (`uri`, `shuffleOn`)·`nowPlaying` |
 | `twitch` | `operation`: `marker` (`description`)·`clip`·`ad` (`length`)·`chat` (`message`)·`poll` (`question`, `choices` one per line, `duration`)·`title` (`title`)·`status` |
 | `youtube` | `operation`: `chat` (`message`)·`status` |
+| `streamerbot` | `action` (id or name), `args` (`key=value` per line, or JSON) |
+| `vtubestudio` | `operation`: `hotkey` (`hotkey`: id or name)·`model` (`model`: model id) |
+| `voicemeeter` | `operation`: `toggle_mute`·`mute`·`unmute`·`set_gain` (`gain` dB)·`adjust_gain` (`step` dB) with `target`: `strip`·`bus` and `index` (1–8)·`macro` (`button`)·`param_set` (`parameter`, `value`)·`param_toggle` (`parameter`) |
+| `hue` | `operation`: `toggle`·`on`·`off`·`brightness` (`brightness` %)·`brightness_step` (`step` %) with `target`: `light`·`group` and `id`·`scene` (`scene`) |
+| `keylight` | `host` (IP or IP:port); `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`brightness_step` (`step`)·`temperature` (`kelvin`)·`temperature_step` (`kelvinStep`) |
+| `govee` | `ip`; `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`color` (`color` #RRGGBB)·`temperature` (`kelvin`) |
+| `mqtt` | `topic`, `payload`, `qos` (0–2), `retain` (`true`/`false`) |
 
 `open_profile` and `back` exist only on the phone.
 
@@ -136,7 +143,8 @@ Two-state buttons add `toggle` (bool), `activeAction` (run on the tap that turns
 | `/api/obs` | `POST config` `{host, port, password}` · `POST connect` · `GET state` · `GET scenes` · `GET audio-inputs` · `GET sources` · `GET scene-items?scene=` · `GET filters?source=` |
 | `/api/Soundboard` | `GET search?q=` · `GET trending` · `POST play` · `POST stop` · `GET state` · `GET devices` · `GET/POST config` |
 | `/api/tuya` | `POST pair/start` `{userCode}` · `POST pair/poll` (410 when the QR expired) · `GET state` · `POST connect` · `POST devices/refresh` · `POST command` `{deviceId, code, value}` |
-| `/api/integrations/{name}` | `homeassistant`, `spotify`, `twitch`, `youtube`. `GET` status `{connected, configured, account, message, loginPending, userCode, verificationUri, redirectUri, fields}` · `POST` the setup fields (connects or starts sign-in in the PC's browser) · `DELETE` forget the account · `GET options/{list}` (`entities?operation=`, `playlists`) · `GET callback` (OAuth return, no API key) |
+| `/api/govee` | `GET devices` — searches the network for Govee devices with LAN Control (about 2 s); list of `{value: ip, label}` |
+| `/api/integrations/{name}` | `homeassistant`, `spotify`, `twitch`, `youtube`, `hue`, `mqtt`, `streamerbot`, `vtubestudio`. `GET` status `{connected, configured, account, message, loginPending, userCode, verificationUri, redirectUri, fields}` · `POST` the setup fields (connects or starts sign-in in the PC's browser) · `DELETE` forget the account · `GET options/{list}` (`entities?operation=`, `playlists`, Hue `items?target=`·`scenes`, Streamer.bot `actions`, VTube Studio `hotkeys`·`models`) · `GET callback` (OAuth return, no API key) |
 
 Responses follow the request's `Accept-Language`: with `en`, action types, field labels and error
 messages come in English.
@@ -158,6 +166,7 @@ Connect with `?access_token=<key>`. The hub only pushes events; commands go thro
 | `ReceiveObsState` | Connection, current scene, recording/streaming/virtual cam/replay, scenes, audio inputs |
 | `ReceiveTuyaState` | Connection, push, devices with status and functions |
 | `ReceiveTuyaDeviceState` | `{deviceId, status}` — changed values only |
+| `ReceiveHueState`, `ReceiveMqttState`, `ReceiveStreamerBotState`, `ReceiveVTubeStudioState` | `{connected}` (VTube Studio also sends `model`) |
 | `ReceiveTimerState` | `{buttonId: {mode, running, finished, elapsedMs, durationMs, count, phase, cycles}}` — on every change |
 | `ReceiveWindowsState` | `{defaultOutput, defaultInput}` — default audio device ids |
 | `ReceiveAutoProfile` | `{profileId, app}` — profile of the focused app; `profileId` null when the app has none |
