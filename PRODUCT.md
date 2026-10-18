@@ -47,7 +47,7 @@ Existe outro projeto chamado DroidDeck (roda jogos da Steam no Android). Toda su
 
 ## Brand Commitments
 
-- Nome: DroidDeck. Logo oficial: grade 3×3 de teclas amarelas (website/landing/logo.svg), usada no site e na documentação; o app ainda mostra três hexágonos na tela de abertura (decisão do usuário em 2026-10-18: a grade é o logo).
+- Nome: DroidDeck. Logo oficial: grade 3×3 de teclas amarelas num aparelho escuro (website/landing/logo.svg), usada no site, na documentação e no app (ícone do Android, tela de abertura e ícones web). Decisão do usuário em 2026-10-18.
 - Voz: direta, concreta, informal (você), sem jargão para quem não é técnico; frases como "Dê um novo trabalho àquele celular antigo" e "Pareado, não aberto".
 - O amarelo do logo é o destaque da marca em todas as superfícies (decisão do usuário em 2026-10-18).
 
