@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:droiddeck/core/core.dart';
 import 'package:flutter/material.dart';
@@ -6,15 +8,45 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../buttons/button_icons.dart';
 
-/// Abre a galeria e devolve a imagem escolhida em base64 (até 512×512), ou null.
+/// Maior GIF aceito como ícone (vai inteiro no perfil, que trafega a cada mudança).
+const maxGifBytes = 2 * 1024 * 1024;
+
+/// Abre a galeria e devolve a imagem escolhida em base64, ou null. Fotos são reduzidas
+/// para até 512×512 em PNG; GIF animado vai como está (reduzir perderia a animação).
+/// Lança [FormatException] para GIF grande demais.
 Future<String?> pickButtonImage() async {
-  final image = await ImagePicker().pickImage(
-    source: ImageSource.gallery,
-    maxWidth: 512,
-    maxHeight: 512,
-  );
+  final image = await ImagePicker().pickImage(source: ImageSource.gallery);
   if (image == null) return null;
-  return base64Encode(await image.readAsBytes());
+  final bytes = await image.readAsBytes();
+  final isGif = bytes.length > 4 &&
+      bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x38; // GIF8
+  if (isGif) {
+    if (bytes.length > maxGifBytes) {
+      throw FormatException(tr('GIF grande demais (máximo de 2 MB).'));
+    }
+    return base64Encode(bytes);
+  }
+  return base64Encode(await _shrink(bytes, 512));
+}
+
+/// Reduz para caber em [max]×[max], em PNG. Imagem menor (ou que não decodifica) fica igual.
+Future<Uint8List> _shrink(Uint8List bytes, int max) async {
+  try {
+    final probe = await ui.instantiateImageCodec(bytes);
+    final frame = await probe.getNextFrame();
+    final w = frame.image.width, h = frame.image.height;
+    frame.image.dispose();
+    if (w <= max && h <= max) return bytes;
+    final scale = max / (w > h ? w : h);
+    final codec = await ui.instantiateImageCodec(bytes,
+        targetWidth: (w * scale).round(), targetHeight: (h * scale).round());
+    final small = (await codec.getNextFrame()).image;
+    final data = await small.toByteData(format: ui.ImageByteFormat.png);
+    small.dispose();
+    return data == null ? bytes : data.buffer.asUint8List();
+  } catch (_) {
+    return bytes;
+  }
 }
 
 /// Grade com os ícones embutidos; o primeiro quadrado é "sem ícone".

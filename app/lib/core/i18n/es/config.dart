@@ -112,8 +112,8 @@ const Map<String, String> esConfig = {
   'Tema, cores, estilo dos botões, vibração e idioma':
       'Tema, colores, estilo de los botones, vibración e idioma',
   'Integrações': 'Integraciones',
-  'Discord, OBS, Twitch, YouTube, Spotify, Soundboard, Home Assistant e Tuya':
-      'Discord, OBS, Twitch, YouTube, Spotify, Soundboard, Home Assistant y Tuya',
+  'Discord, OBS, Spotify, Twitch, Home Assistant, Hue, Voicemeeter e mais':
+      'Discord, OBS, Spotify, Twitch, Home Assistant, Hue, Voicemeeter y más',
   'Preencha o Client ID e o Client Secret.':
       'Completa el Client ID y el Client Secret.',
   'Credenciais salvas. Agora toque em "Conectar".':

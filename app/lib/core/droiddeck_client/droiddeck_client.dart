@@ -352,6 +352,25 @@ class DroidDeckClient {
     return ((response.data as Map?)?['imported'] as num?)?.toInt() ?? 0;
   }
 
+  /// Controle deslizante: volume (0-100) do alvo ("output", "input" ou "app" + nome do
+  /// processo). Null se o alvo não existe agora (app fechado).
+  Future<Map<String, dynamic>?> getSlider(String target, String app) async {
+    try {
+      final r = await _dio.get('/api/slider',
+          queryParameters: {'target': target, if (app.isNotEmpty) 'app': app});
+      return Map<String, dynamic>.from(r.data as Map);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> setSlider(String target, String app, int volume) async {
+    try {
+      await _dio.put('/api/slider',
+          data: {'target': target, 'app': app, 'volume': volume});
+    } catch (_) {}
+  }
+
   /// Importa um perfil do app da Elgato (.streamDeckProfile) como perfis novos.
   /// Devolve {profiles, buttons, unsupported: [nomes], stripped, firstProfileId}.
   Future<Map<String, dynamic>> importStreamDeck(List<int> bytes) async {

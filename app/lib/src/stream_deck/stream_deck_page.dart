@@ -1,6 +1,7 @@
 import 'package:droiddeck/src/config/pc_switcher.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/src/stream_deck/layout/desktop_layout.dart';
+import 'package:droiddeck/src/stream_deck/layout/grid_placement.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_catalog.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/dynamic_deck_button.dart';
@@ -319,38 +320,41 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     });
   }
 
-  /// Grade fixa cols×rows, centralizada, sem rolagem.
+  /// Grade fixa cols×rows, centralizada, sem rolagem. Botões grandes ocupam várias casas.
   Widget _buildButtonGrid(
     DeckProfile profile,
     List<DeckProfile> profiles,
     _GridFit g,
   ) {
+    final layout = GridLayout.of(profile.buttons, g.rows, g.cols);
+    final step = g.cell + g.spacing;
+    double size(int span) => span * g.cell + (span - 1) * g.spacing;
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(g.rows, (row) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: row < g.rows - 1 ? g.spacing : 0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: List.generate(g.cols, (col) {
-                final existing = profile.buttons.firstWhereOrNull(
-                  (b) => b.row == row && b.column == col,
-                );
-                return Padding(
-                  padding: EdgeInsets.only(
-                    right: col < g.cols - 1 ? g.spacing : 0,
-                  ),
-                  child: SizedBox(
+      child: SizedBox(
+        width: size(g.cols),
+        height: size(g.rows),
+        child: Stack(
+          children: [
+            for (var row = 0; row < g.rows; row++)
+              for (var col = 0; col < g.cols; col++)
+                if (layout.isFree(row, col))
+                  Positioned(
+                    left: col * step,
+                    top: row * step,
                     width: g.cell,
                     height: g.cell,
-                    child: _buildCell(row, col, existing, profiles),
+                    child: _buildCell(row, col, null, profiles),
                   ),
-                );
-              }),
-            ),
-          );
-        }),
+            for (final p in layout.placements)
+              Positioned(
+                left: p.column * step,
+                top: p.row * step,
+                width: size(p.columnSpan),
+                height: size(p.rowSpan),
+                child: _buildCell(p.row, p.column, p.button, profiles),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -46,6 +46,8 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
   late String? _infoType = widget.button.dynamicType;
   late Map<String, String> _infoParams = Map.of(widget.button.dynamicParameters ?? const {});
   late TwoStateValue _twoState = TwoStateValue.of(widget.button);
+  late int _columnSpan = widget.button.columnSpan;
+  late int _rowSpan = widget.button.rowSpan;
 
   /// Ações que refletem um estado ligado/desligado (e portanto têm "cor de ativo").
   bool get _isStatefulAction => _catalog.find(_tap?.type)?.stateful ?? false;
@@ -91,6 +93,8 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
       activeLabel: _showsActive && activeLabel.isNotEmpty ? activeLabel : null,
       activeIconName: _showsActive ? _twoState.activeIcon : null,
       activeIconBase64: _showsActive ? _twoState.activeIconBase64 : null,
+      columnSpan: _columnSpan,
+      rowSpan: _rowSpan,
     ));
   }
 
@@ -121,7 +125,15 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
       });
 
   Future<void> _pickImage() async {
-    final image = await pickButtonImage();
+    final String? image;
+    try {
+      image = await pickButtonImage();
+    } on FormatException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+      return;
+    }
     if (image != null) _suggestIcon(image);
   }
 
@@ -236,9 +248,48 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
   }
 
   /// Ícone e cores.
+  /// Tamanho do botão em casas da grade (largura × altura).
+  Widget _buildSize() {
+    Widget picker(String label, int value, ValueChanged<int> onChanged) => Expanded(
+          child: DropdownButtonFormField<int>(
+            initialValue: value,
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+              isDense: true,
+            ),
+            items: [
+              for (var n = 1; n <= 4; n++) DropdownMenuItem(value: n, child: Text('$n')),
+            ],
+            onChanged: (v) => setState(() => onChanged(v ?? 1)),
+          ),
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(tr('Tamanho'), style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            picker(tr('Largura (casas)'), _columnSpan, (v) => _columnSpan = v),
+            const SizedBox(width: 12),
+            picker(tr('Altura (casas)'), _rowSpan, (v) => _rowSpan = v),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          tr('Um botão grande não cobre outros botões: ele para onde houver um.'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+
   List<Widget> _buildLook() {
     const bold = TextStyle(fontWeight: FontWeight.bold);
     return [
+      _buildSize(),
+      const SizedBox(height: 24),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

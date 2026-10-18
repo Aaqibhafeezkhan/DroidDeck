@@ -56,6 +56,10 @@ namespace DroidDeck.Models
         /// <summary>Parametros do botao de informacao (cidade do clima, comando, URL...).</summary>
         public Dictionary<string, string>? DynamicParameters { get; set; }
 
+        /// <summary>Casas ocupadas (botao grande). Row/Column sao o canto superior esquerdo.</summary>
+        public int ColumnSpan { get; set; } = 1;
+        public int RowSpan { get; set; } = 1;
+
         /// <summary>Acao de um gesto: "tap" (padrao), "longPress", "doubleTap" ou "active" (Toggle ligado).</summary>
         public DeckAction? ActionFor(string? gesture) => (gesture ?? "").ToLowerInvariant() switch
         {

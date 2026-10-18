@@ -125,7 +125,9 @@ class ButtonLook {
   static Widget cover(String base64, {double fraction = 0.78, IconData fallback = Icons.image}) {
     return Flexible(
       child: LayoutBuilder(builder: (context, c) {
-        final side = c.maxWidth.isFinite ? c.maxWidth * fraction : 64.0;
+        // Botão grande (2×1) não é quadrado: a imagem não passa da altura disponível.
+        final w = c.maxWidth.isFinite ? c.maxWidth * fraction : 64.0;
+        final side = c.maxHeight.isFinite && c.maxHeight < w ? c.maxHeight : w;
         return ClipRRect(
           borderRadius: BorderRadius.circular(6),
           child: SizedBox(

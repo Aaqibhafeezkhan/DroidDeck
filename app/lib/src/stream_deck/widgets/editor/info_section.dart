@@ -34,6 +34,7 @@ class InfoSection extends StatelessWidget {
     'now_playing': 'Tocando agora',
     'command': 'Saída de um comando (PC)',
     'url': 'Valor de uma URL (PC)',
+    'volume_slider': 'Controle deslizante de volume',
   };
 
   /// Comando e URL rodam no PC: como os atalhos, só mudam no configurador.
@@ -169,6 +170,38 @@ class InfoSection extends StatelessWidget {
               hint: 'data.items[0].name', help: tr('Vazio = a resposta inteira.')),
           _field('format', tr('Modelo'), hint: '{value}', help: tr('{value} é o valor lido.')),
           _field('interval', tr('Atualizar a cada (segundos)'), hint: '60', number: true),
+        ];
+      case 'volume_slider':
+        final target = _p('target', 'output');
+        return [
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: DropdownButtonFormField<String>(
+              key: ValueKey('slider_target_$target'),
+              initialValue: target,
+              decoration: InputDecoration(
+                labelText: tr('Controla'),
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(value: 'output', child: Text(tr('Som do PC (saída padrão)'))),
+                DropdownMenuItem(value: 'input', child: Text(tr('Microfone (entrada padrão)'))),
+                DropdownMenuItem(value: 'app', child: Text(tr('Um aplicativo'))),
+              ],
+              onChanged: (v) => _set('target', v ?? 'output'),
+            ),
+          ),
+          if (target == 'app')
+            _field('app', tr('Processo do aplicativo'),
+                hint: 'Spotify', help: tr('Nome do processo, sem .exe (Spotify, chrome, Discord).')),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              tr('Arraste o dedo no botão. Deixe o botão mais largo ou mais alto em "Tamanho" '
+                  'para ter mais precisão.'),
+              style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+            ),
+          ),
         ];
       default:
         return const [];

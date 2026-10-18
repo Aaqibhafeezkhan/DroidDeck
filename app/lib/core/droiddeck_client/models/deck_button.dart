@@ -67,6 +67,14 @@ class DeckButton {
   @JsonKey(name: 'dynamicParameters')
   final Map<String, String>? dynamicParameters;
 
+  /// Quantas casas o botão ocupa (botão grande: 2×1, 2×2...). A posição é a do canto
+  /// superior esquerdo.
+  @JsonKey(name: 'columnSpan', defaultValue: 1)
+  final int columnSpan;
+
+  @JsonKey(name: 'rowSpan', defaultValue: 1)
+  final int rowSpan;
+
   DeckButton({
     required this.id,
     required this.row,
@@ -86,6 +94,8 @@ class DeckButton {
     this.activeIconName,
     this.activeIconBase64,
     this.dynamicParameters,
+    this.columnSpan = 1,
+    this.rowSpan = 1,
   });
 
   bool get hasActiveLook =>
@@ -101,6 +111,8 @@ class DeckButton {
     int? column,
     String? label,
     DeckAction? action,
+    int? columnSpan,
+    int? rowSpan,
   }) =>
       DeckButton(
         id: id ?? this.id,
@@ -121,6 +133,8 @@ class DeckButton {
         activeIconName: activeIconName,
         activeIconBase64: activeIconBase64,
         dynamicParameters: dynamicParameters,
+        columnSpan: columnSpan ?? this.columnSpan,
+        rowSpan: rowSpan ?? this.rowSpan,
       );
 
   /// Ação de um gesto: 'tap', 'longPress' ou 'doubleTap'.

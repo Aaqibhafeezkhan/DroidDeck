@@ -10,4 +10,34 @@ final Map<String, String> esFeatures = {
   'Importar do Stream Deck': 'Importar de Stream Deck',
   'Perfil exportado pelo app da Elgato (.streamDeckProfile).':
       'Perfil exportado por la app de Elgato (.streamDeckProfile).',
+  'Tamanho':
+      'Tamaño',
+  'Largura (casas)':
+      'Ancho (casillas)',
+  'Altura (casas)':
+      'Alto (casillas)',
+  'Um botão grande não cobre outros botões: ele para onde houver um.':
+      'Un botón grande no cubre otros botones: se detiene donde haya uno.',
+  'Microfone':
+      'Micrófono',
+  'Volume':
+      'Volumen',
+  'Controle deslizante de volume':
+      'Control deslizante de volumen',
+  'Controla':
+      'Controla',
+  'Som do PC (saída padrão)':
+      'Sonido del PC (salida predeterminada)',
+  'Microfone (entrada padrão)':
+      'Micrófono (entrada predeterminada)',
+  'Um aplicativo':
+      'Una aplicación',
+  'Processo do aplicativo':
+      'Proceso de la aplicación',
+  'Nome do processo, sem .exe (Spotify, chrome, Discord).':
+      'Nombre del proceso, sin .exe (Spotify, chrome, Discord).',
+  'Arraste o dedo no botão. Deixe o botão mais largo ou mais alto em "Tamanho" para ter mais precisão.':
+      'Desliza el dedo sobre el botón. Haz el botón más ancho o más alto en "Tamaño" para tener más precisión.',
+  'GIF grande demais (máximo de 2 MB).':
+      'GIF demasiado grande (máximo 2 MB).',
 };

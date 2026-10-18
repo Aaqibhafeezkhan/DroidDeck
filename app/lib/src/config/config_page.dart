@@ -322,7 +322,7 @@ class ConfigPageState extends State<ConfigPage> {
               leading: const Icon(Icons.extension_outlined),
               title: Text(tr('Integrações')),
               subtitle: Text(tr(
-                  'Discord, OBS, Twitch, YouTube, Spotify, Soundboard, Home Assistant e Tuya')),
+                  'Discord, OBS, Spotify, Twitch, Home Assistant, Hue, Voicemeeter e mais')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const IntegrationsPage()),

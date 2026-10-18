@@ -478,6 +478,9 @@ namespace DroidDeck.Services
         {
             using var input = new MemoryStream(bytes);
             using var source = System.Drawing.Image.FromStream(input);
+            // GIF animado vai como esta: reduzir perderia a animacao.
+            if (source.RawFormat.Equals(ImageFormat.Gif) && bytes.Length <= 2 * 1024 * 1024)
+                return Convert.ToBase64String(bytes);
             if (source.Width <= IconSize && source.Height <= IconSize && source.RawFormat.Equals(ImageFormat.Png))
                 return Convert.ToBase64String(bytes);
             using var bitmap = new Bitmap(IconSize, IconSize);

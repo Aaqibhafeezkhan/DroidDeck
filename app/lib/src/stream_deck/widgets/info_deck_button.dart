@@ -215,7 +215,9 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
         children: [
           Flexible(
             child: LayoutBuilder(builder: (context, c) {
-              final side = c.maxWidth.isFinite ? c.maxWidth * 0.62 : 48.0;
+              // Botão grande (2×1) não é quadrado: a imagem não passa da altura disponível.
+        final w = c.maxWidth.isFinite ? c.maxWidth * 0.62 : 48.0;
+        final side = c.maxHeight.isFinite && c.maxHeight < w ? c.maxHeight : w;
               return ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: SizedBox(

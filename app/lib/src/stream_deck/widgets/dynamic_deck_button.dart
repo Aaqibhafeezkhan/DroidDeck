@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../buttons/colors.dart';
 import 'info_deck_button.dart';
+import 'slider_deck_button.dart';
 
 class DynamicDeckButton extends StatelessWidget {
   final DeckButton button;
@@ -29,6 +30,16 @@ class DynamicDeckButton extends StatelessWidget {
         button: button,
         onTap: onTap,
         onLongPress: onLongPress,
+      );
+    }
+
+    // Controle deslizante de volume.
+    if (sliderTypes.contains(button.dynamicType)) {
+      return SliderDeckButton(
+        button: button,
+        onTap: onTap,
+        onLongPress: onLongPress,
+        interactive: !WebMode.configurator,
       );
     }
 

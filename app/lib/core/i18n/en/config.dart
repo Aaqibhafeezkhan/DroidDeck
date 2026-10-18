@@ -112,8 +112,8 @@ const Map<String, String> enConfig = {
   'Tema, cores, estilo dos botões, vibração e idioma':
       'Theme, colors, button style, vibration and language',
   'Integrações': 'Integrations',
-  'Discord, OBS, Twitch, YouTube, Spotify, Soundboard, Home Assistant e Tuya':
-      'Discord, OBS, Twitch, YouTube, Spotify, Soundboard, Home Assistant and Tuya',
+  'Discord, OBS, Spotify, Twitch, Home Assistant, Hue, Voicemeeter e mais':
+      'Discord, OBS, Spotify, Twitch, Home Assistant, Hue, Voicemeeter and more',
   'Preencha o Client ID e o Client Secret.':
       'Fill in the Client ID and Client Secret.',
   'Credenciais salvas. Agora toque em "Conectar".':

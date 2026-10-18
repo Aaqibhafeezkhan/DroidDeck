@@ -82,7 +82,15 @@ class _TwoStateSectionState extends State<TwoStateSection> {
   }
 
   Future<void> _pickImage() async {
-    final image = await pickButtonImage();
+    final String? image;
+    try {
+      image = await pickButtonImage();
+    } on FormatException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+      return;
+    }
     if (image != null) {
       widget.onChanged(v.copyWith(activeIconBase64: () => image, activeIcon: () => null));
     }

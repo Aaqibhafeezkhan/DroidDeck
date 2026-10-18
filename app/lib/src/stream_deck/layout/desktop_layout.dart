@@ -1,3 +1,4 @@
+import 'grid_placement.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/button_property_panel.dart';
 import 'package:droiddeck/src/stream_deck/widgets/dynamic_deck_button.dart';
@@ -8,7 +9,6 @@ import 'package:droiddeck/core/core.dart';
 import 'package:droiddeck/src/stream_deck/widgets/profile_settings_dialog.dart';
 import 'package:droiddeck/src/stream_deck/backup/backup_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 
 class SteamDeckDesktopLayout extends StatefulWidget {
   final StreamDeckController controller;
@@ -250,25 +250,40 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
           Center(
             child: SizedBox(
               width: 800, // Constrain width for desktop
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: cols,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.0,
-                ),
-                itemCount: rows * cols,
-                itemBuilder: (context, index) {
-                  final row = index ~/ cols;
-                  final col = index % cols;
-                  final existingButton = profile.buttons.firstWhereOrNull(
-                    (b) => b.row == row && b.column == col,
-                  );
-                  return _buildSlot(row, col, existingButton);
-                },
-              ),
+              child: LayoutBuilder(builder: (context, c) {
+                const spacing = 16.0;
+                final cell = (c.maxWidth - spacing * (cols - 1)) / cols;
+                final step = cell + spacing;
+                double size(int span) => span * cell + (span - 1) * spacing;
+                final layout = GridLayout.of(profile.buttons, rows, cols);
+                return SizedBox(
+                  width: c.maxWidth,
+                  height: size(rows),
+                  child: Stack(
+                    children: [
+                      for (var row = 0; row < rows; row++)
+                        for (var col = 0; col < cols; col++)
+                          if (layout.isFree(row, col))
+                            Positioned(
+                              left: col * step,
+                              top: row * step,
+                              width: cell,
+                              height: cell,
+                              child: _buildSlot(row, col, null),
+                            ),
+                      // Botões grandes ocupam várias casas.
+                      for (final p in layout.placements)
+                        Positioned(
+                          left: p.column * step,
+                          top: p.row * step,
+                          width: size(p.columnSpan),
+                          height: size(p.rowSpan),
+                          child: _buildSlot(p.row, p.column, p.button),
+                        ),
+                    ],
+                  ),
+                );
+              }),
             ),
           ),
         ],
