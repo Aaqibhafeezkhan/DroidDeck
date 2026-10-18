@@ -21,6 +21,10 @@ class IntegrationsPage extends StatelessWidget {
         'spotify' => const AccountIntegrationPage(spec: spotifySpec),
         'twitch' => const AccountIntegrationPage(spec: twitchSpec),
         'youtube' => const AccountIntegrationPage(spec: youTubeSpec),
+        'hue' => const AccountIntegrationPage(spec: hueSpec),
+        'mqtt' => const AccountIntegrationPage(spec: mqttSpec),
+        'streamerbot' => const AccountIntegrationPage(spec: streamerBotSpec),
+        'vtubestudio' => const AccountIntegrationPage(spec: vtubeStudioSpec),
         _ => null,
       };
 
@@ -33,6 +37,10 @@ class IntegrationsPage extends StatelessWidget {
     ('soundboard', Icons.library_music, 'Soundboard', 'Sons do MyInstants: saída e volume'),
     ('homeassistant', Icons.home_outlined, 'Home Assistant', 'Luzes, cenas, scripts e sensores'),
     ('tuya', Icons.lightbulb_outline, 'Casa inteligente (Tuya)', 'Smart Life, Nova Digital e outras marcas'),
+    ('hue', Icons.emoji_objects_outlined, 'Philips Hue', 'Luzes, salas e cenas pelo Hue Bridge'),
+    ('mqtt', Icons.hub_outlined, 'MQTT', 'Publicar mensagens no seu broker'),
+    ('streamerbot', Icons.smart_toy_outlined, 'Streamer.bot', 'Ações do Streamer.bot, com argumentos'),
+    ('vtubestudio', Icons.face, 'VTube Studio', 'Atalhos e modelos do VTube Studio'),
   ];
 
   @override

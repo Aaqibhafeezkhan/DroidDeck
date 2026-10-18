@@ -129,6 +129,74 @@ const youTubeSpec = AccountIntegrationSpec(
   ],
 );
 
+// ---- Integrações locais (sem conta na nuvem), com a mesma tela ----
+
+const hueSpec = AccountIntegrationSpec(
+  name: 'hue',
+  title: 'Philips Hue',
+  icon: Icons.emoji_objects_outlined,
+  stateEvent: 'ReceiveHueState',
+  connectLabel: 'Parear',
+  fields: [
+    IntegrationField('bridge', 'IP do Hue Bridge', hint: 'Vazio = procurar na rede'),
+  ],
+  steps: [
+    'O PC e o Hue Bridge precisam estar na mesma rede.',
+    'Digite o IP do bridge (no app Hue: Configurações → Bridges) ou deixe vazio para procurar.',
+    'Aperte o botão redondo em cima do Hue Bridge.',
+    'Em até 30 segundos, toque em Parear aqui.',
+  ],
+);
+
+const mqttSpec = AccountIntegrationSpec(
+  name: 'mqtt',
+  title: 'MQTT',
+  icon: Icons.hub_outlined,
+  stateEvent: 'ReceiveMqttState',
+  fields: [
+    IntegrationField('server', 'Broker', hint: 'mqtt://192.168.0.10:1883'),
+    IntegrationField('username', 'Usuário (opcional)'),
+    IntegrationField('password', 'Senha (opcional)', secret: true),
+  ],
+  steps: [
+    'Use o endereço do seu broker (Mosquitto, o add-on do Home Assistant, EMQX...). A porta padrão é 1883.',
+    'Para TLS, comece com mqtts:// (porta padrão 8883).',
+    'Depois, crie botões do tipo MQTT com o tópico e a mensagem a publicar.',
+  ],
+);
+
+const streamerBotSpec = AccountIntegrationSpec(
+  name: 'streamerbot',
+  title: 'Streamer.bot',
+  icon: Icons.smart_toy_outlined,
+  stateEvent: 'ReceiveStreamerBotState',
+  fields: [
+    IntegrationField('url', 'Endereço do WebSocket Server', hint: 'ws://127.0.0.1:8080/'),
+    IntegrationField('password', 'Senha (se tiver)', secret: true),
+  ],
+  steps: [
+    'No Streamer.bot, abra Servers/Clients → WebSocket Server.',
+    'Marque "Auto Start" e clique em Start Server (o padrão é 127.0.0.1, porta 8080).',
+    'Streamer.bot em outro PC: lá, troque o endereço para 0.0.0.0; aqui, use o IP daquele PC.',
+    'Se ligou "Authentication", preencha a mesma senha.',
+  ],
+);
+
+const vtubeStudioSpec = AccountIntegrationSpec(
+  name: 'vtubestudio',
+  title: 'VTube Studio',
+  icon: Icons.face,
+  stateEvent: 'ReceiveVTubeStudioState',
+  fields: [
+    IntegrationField('url', 'Endereço da API', hint: 'ws://localhost:8001'),
+  ],
+  steps: [
+    'No VTube Studio, abra as Configurações (engrenagem) e ligue "Iniciar API (permitir plugins)".',
+    'Toque em Conectar aqui: o VTube Studio pergunta se permite o DroidDeck. Clique em Permitir.',
+    'A porta padrão é 8001; se mudou no VTube Studio, mude aqui também.',
+  ],
+);
+
 /// Tela de configuração de uma integração com conta.
 class AccountIntegrationPage extends StatefulWidget {
   final AccountIntegrationSpec spec;

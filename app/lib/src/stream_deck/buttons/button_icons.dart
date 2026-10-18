@@ -59,6 +59,14 @@ const Map<String, IconData> buttonIcons = {
   'extension': Icons.extension,
   'sensors': Icons.sensors,
   'smart_display': Icons.smart_display,
+  // Integrações locais (Voicemeeter, Elgato, Hue, Govee, MQTT, Streamer.bot, VTube Studio).
+  'tune': Icons.tune,
+  'wb_incandescent': Icons.wb_incandescent,
+  'emoji_objects': Icons.emoji_objects,
+  'light_mode': Icons.light_mode,
+  'hub': Icons.hub,
+  'smart_toy': Icons.smart_toy,
+  'face': Icons.face,
 };
 
 IconData buttonIconData(String name) =>

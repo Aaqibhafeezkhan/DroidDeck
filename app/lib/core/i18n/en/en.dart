@@ -2,6 +2,7 @@ import 'config.dart';
 import 'core.dart';
 import 'deck.dart';
 import 'editors.dart';
+import 'local_integrations.dart';
 
 /// Traduções para inglês, por área do app (não é const: a mesma chave pode aparecer em
 /// mais de um arquivo; vale a última). Chave = texto em português, exatamente como
@@ -11,4 +12,5 @@ final Map<String, String> enStrings = {
   ...enDeck,
   ...enEditors,
   ...enConfig,
+  ...enLocalIntegrations,
 };
