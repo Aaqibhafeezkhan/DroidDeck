@@ -36,8 +36,8 @@ button immediately, without waiting for the event; **Delete** removes it.
 - Automations run on the PC: they work with the phone off or disconnected.
 - The PC checks every couple of seconds, so an app event can take up to about 2 s to fire.
 - The button runs just as if you had tapped it, including a [two-state](actions.md#two-states) button,
-  which switches state. A [multi-action](actions.md#multi-action) button keeps its
-  [step conditions](actions.md#conditions).
+  which switches state. A [multi-action](multi-action.md) button keeps its
+  [step conditions](multi-action.md#conditions).
 - If the button is deleted, the automation stays in the list as *(button deleted)* and does nothing.
 - Since an automation only presses saved buttons, it can't do anything a button couldn't already do.
 

@@ -19,10 +19,10 @@ Falhas de integração retornam `502` com `{error}`.
 
 ## Ações privilegiadas
 
-**Atalho de teclado**, **abrir app**, **ativar janela** e **script** executam código no PC, e a **requisição HTTP**
+**Atalho de teclado**, **abrir programa**, **ativar janela** e **script** executam código no PC, e a **requisição HTTP**
 sai com o acesso de rede do PC, então ficam protegidas até de quem tem a chave. Requisições que não vêm do próprio PC (loopback) não podem:
 
-- executá-las pelo `execute` — use o `press` com um botão salvo no PC;
+- executá-las pelo `execute`; use o `press` com um botão salvo no PC;
 - criar um botão com uma dessas ações, ou mudar os parâmetros dela, pelo `POST profiles`. Mover,
   renomear, mudar a cor e apagar esses botões continua liberado.
 
@@ -49,7 +49,7 @@ curl -X POST http://192.168.0.10:4787/api/StreamDeck/execute \
   -d '{"type":"mixer","parameters":{"operation":"mute","processName":"Spotify"}}'
 ```
 
-## Deck — `/api/StreamDeck`
+## Deck: `/api/StreamDeck` { #deck-apistreamdeck }
 
 | Método | Rota | Descrição |
 |---|---|---|
@@ -67,7 +67,10 @@ curl -X POST http://192.168.0.10:4787/api/StreamDeck/execute \
 { "type": "hotkey", "parameters": { "keys": "^+m" } }
 ```
 
-Todos os valores de parâmetros são strings.
+Todos os valores de parâmetros são strings. A tabela abaixo é um resumo; a fonte oficial, legível
+por máquina, é o [`GET /api/actions/schema`](#action-types-apiactions), que lista cada tipo de ação
+com os parâmetros (`fields[].key`), os valores aceitos (`options`) e quando cada campo vale
+(`visibleWhen`).
 
 | `type` | Parâmetros |
 |---|---|
@@ -93,16 +96,20 @@ Todos os valores de parâmetros são strings.
 | `govee` | `ip`; `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`color` (`color` #RRGGBB)·`temperature` (`kelvin`) |
 | `mqtt` | `topic`, `payload`, `qos` (0–2), `retain` (`true`/`false`) |
 | `script` | `source`: `inline` (`language`: `powershell`·`python`·`cmd`; `code`) ou `file` (`path`); `arguments` |
+| `http` | `method`: `POST`·`GET`·`PUT`·`PATCH`·`DELETE`; `url`; `headers` (um `Nome: valor` por linha); em POST, PUT e PATCH, `contentType` (`application/json`·`application/x-www-form-urlencoded`·`text/plain`) e `body` |
+| `timer` | `mode`: `countdown` (`durationMin`)·`stopwatch`·`pomodoro` (`workMin`, `breakMin`)·`counter` (`step`); `operation`: `toggle`·`reset`·`skip`·`increment`·`decrement`; `target`: `self` ou o id de outro botão de timer |
+| `windows` | `operation`: `setDefaultAudio` (`deviceKind`: `output`·`input`; `deviceId`; `altDeviceId` para alternar entre dois, ou `none`)·`lock`·`sleep`·`displayOff` |
+| `steam` | `appId`: o id numérico do app na Steam (de `GET /api/steam/games`) |
 
 `open_profile` e `back` existem só no celular.
 
-## Áudio — `/api/v1/Mixer`, `/api/v1/Media`
+## Áudio: `/api/v1/Mixer`, `/api/v1/Media` { #audio }
 
 | Método | Rota | Descrição |
 |---|---|---|
 | GET | `Mixer/out`, `Mixer/in` | Dispositivos de saída / entrada com suas sessões de app. |
 | GET | `Mixer/out/{id}`, `Mixer/in/{id}` | Um dispositivo. |
-| PUT | `Mixer/out/{id}`, `Mixer/in/{id}` | `{session, volume?, mute?}` — `session` é o id de um processo, ou `-1` para o dispositivo inteiro. |
+| PUT | `Mixer/out/{id}`, `Mixer/in/{id}` | `{session, volume?, mute?}`: `session` é o id de um processo, ou `-1` para o dispositivo inteiro. |
 | GET | `Media/sessions` | Sessões de mídia, com miniaturas. |
 | GET | `Media/sessions/{id}` | Uma sessão. |
 | POST | `Media/sessions/{id}/command` | `{command}`. |
@@ -124,7 +131,7 @@ casa do canto superior esquerdo).
 | GET | `/api/slider?target=output\|input\|app&app=` | Controle deslizante: `{volume, mute, label}` atual da saída padrão, da entrada padrão ou de um app (nome do processo sem `.exe`). `404` quando o alvo não existe no momento (ex.: o app não tem sessão de áudio). |
 | PUT | `/api/slider` | `{target, app, volume}` (0–100). Devolve o estado novo. |
 
-## Biblioteca — backup, Steam, apps
+## Biblioteca: backup, Steam, apps { #library }
 
 | Método | Caminho | Descrição |
 |---|---|---|
@@ -133,15 +140,15 @@ casa do canto superior esquerdo).
 | GET | `/api/steam/games` | Jogos instalados na Steam (`{value: appId, label: nome}`). |
 | GET | `/api/steam/icon/{appId}` | `{iconBase64}`: PNG quadrado recortado da capa do jogo. |
 | GET | `/api/system/apps` | Programas com janela visível (para a troca automática de perfil). |
-| GET | `/api/system/info` | `{name, version}` — o nome do PC no Windows, usado para identificar os PCs pareados. |
+| GET | `/api/system/info` | `{name, version}`: o nome do PC no Windows, usado para identificar os PCs pareados. |
 | GET | `/api/info` | Valores atuais dos botões de informação, o que está tocando e os botões de dois estados ligados. |
 | GET / POST | `/api/macro`, `/api/macro/start`, `/api/macro/stop` | Gravação de macro pelo teclado. Só do próprio PC (senão `403`); `stop` devolve `{steps}` no formato da multiação. |
 | POST | `/api/import/streamdeck` | Importa um `.streamDeckProfile` (corpo = o arquivo, até 50 MB) como perfis novos. Devolve `{profiles, buttons, unsupported, stripped, firstProfileId}`; de fora do PC, botões privilegiados entram sem a ação e `stripped` conta quantos. `400` com `{error}` se não for um perfil do Stream Deck. |
-| GET | `/api/share/{profileId}` | `{data, url, qr, images}` — o perfil comprimido num link (`url` é a página de compartilhamento do site com `#data`); `qr` diz se cabe num QR code; `images`, se imagens próprias ficaram de fora. |
+| GET | `/api/share/{profileId}` | `{data, url, qr, images}`: o perfil comprimido num link (`url` é a página de compartilhamento do site com `#data`); `qr` diz se cabe num QR code; `images`, se imagens próprias ficaram de fora. |
 | GET | `/api/share/{profileId}/qr` | O link de compartilhamento como QR code em PNG. |
 | POST | `/api/share/import` | `{data}` de um link compartilhado → salvo como perfil novo. Devolve `{profileId, name, buttons, stripped}`; mesma regra das ações privilegiadas da importação do Stream Deck. |
 
-## Automações — `/api/triggers`
+## Automações: `/api/triggers` { #automations }
 
 | Método | Caminho | Descrição |
 |---|---|---|
@@ -154,7 +161,7 @@ Uma automação é `{id, name, enabled, event, time, days, app, profileId, butto
 `startup`; `if` é uma condição opcional no formato da multiação. Como as automações só apertam botões
 salvos, elas seguem as regras com que esses botões foram criados.
 
-## Tipos de ação — `/api/actions`
+## Tipos de ação: `/api/actions` { #action-types-apiactions }
 
 | Método | Caminho | Descrição |
 |---|---|---|
@@ -162,6 +169,35 @@ salvos, elas seguem as regras com que esses botões foram criados.
 | GET | `state/{type}` | Estado ao vivo atual de um tipo (o mesmo conteúdo do evento SignalR dele). |
 | GET | `timer/targets` | Botões de timer que outro botão pode controlar. |
 | GET | `windows/audio-devices?kind=output\|input` | Dispositivos de áudio ativos (`{value, label}`). |
+
+O schema é a fonte oficial dos parâmetros das ações: o editor do app monta os formulários a partir
+dele, então um tipo de ação ou campo novo aparece aqui primeiro. Os textos seguem o
+`Accept-Language`. Uma resposta resumida:
+
+```json
+[
+  {
+    "type": "steam",
+    "title": "Jogo da Steam",
+    "icon": "sports_esports",
+    "category": "Sistema",
+    "privileged": false,
+    "stateful": false,
+    "editor": "steam",
+    "stateEvent": null,
+    "fields": [
+      {
+        "key": "appId",
+        "label": "Jogo",
+        "kind": "select",
+        "required": true,
+        "optionsSource": "/api/steam/games",
+        "visibleWhen": null
+      }
+    ]
+  }
+]
+```
 
 ## Integrações
 
@@ -171,19 +207,19 @@ salvos, elas seguem as regras com que esses botões foram criados.
 | `/api/obs` | `POST config` `{host, port, password}` · `POST connect` · `GET state` · `GET scenes` · `GET audio-inputs` · `GET sources` · `GET scene-items?scene=` · `GET filters?source=` |
 | `/api/Soundboard` | `GET search?q=` · `GET trending` · `POST play` · `POST stop` · `GET state` · `GET devices` · `GET/POST config` |
 | `/api/tuya` | `POST pair/start` `{userCode}` · `POST pair/poll` (410 quando o QR expirou) · `GET state` · `POST connect` · `POST devices/refresh` · `POST command` `{deviceId, code, value}` |
-| `/api/govee` | `GET devices` — procura na rede os aparelhos Govee com Controle LAN (cerca de 2 s); lista de `{value: ip, label}` |
+| `/api/govee` | `GET devices`: procura na rede os aparelhos Govee com Controle LAN (cerca de 2 s); lista de `{value: ip, label}` |
 | `/api/integrations/{nome}` | `homeassistant`, `spotify`, `twitch`, `youtube`, `hue`, `mqtt`, `streamerbot`, `vtubestudio`. `GET` estado `{connected, configured, account, message, loginPending, userCode, verificationUri, redirectUri, fields}` · `POST` os campos da configuração (conecta ou abre o login no navegador do PC) · `DELETE` esquece a conta · `GET options/{lista}` (`entities?operation=`, `playlists`, Hue `items?target=`·`scenes`, Streamer.bot `actions`, VTube Studio `hotkeys`·`models`) · `GET callback` (retorno do OAuth, sem chave da API) |
 
 As respostas seguem o `Accept-Language` do pedido: com `en`, tipos de ação, rótulos dos campos e
 mensagens de erro vêm em inglês.
 
-## Hub SignalR — `/deckHub`
+## Hub SignalR: `/deckHub` { #signalr-hub }
 
 Conecte com `?access_token=<key>`. O hub só envia eventos; os comandos passam pelo REST.
 
 | Evento | Payload |
 |---|---|
-| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage}` — a cada segundo |
+| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage}`: a cada segundo |
 | `ReceiveMediaStatus` | `{playing}` |
 | `ReceiveMediaState` | `{sessionId, command, playing}` |
 | `ReceiveVolumeChange` | `{deviceId, type, data}` |
@@ -193,22 +229,22 @@ Conecte com `?access_token=<key>`. O hub só envia eventos; os comandos passam p
 | `ReceiveDiscordState` | Conexão, mudo/ensurdecido, canal, volumes, modo de voz, participantes |
 | `ReceiveObsState` | Conexão, cena atual, gravação/transmissão/câmera virtual/replay, cenas, entradas de áudio |
 | `ReceiveTuyaState` | Conexão, push, dispositivos com status e funções |
-| `ReceiveTuyaDeviceState` | `{deviceId, status}` — só os valores alterados |
+| `ReceiveTuyaDeviceState` | `{deviceId, status}`: só os valores alterados |
 | `ReceiveHueState`, `ReceiveMqttState`, `ReceiveStreamerBotState`, `ReceiveVTubeStudioState` | `{connected}` (o VTube Studio manda também `model`) |
-| `ReceiveTimerState` | `{buttonId: {mode, running, finished, elapsedMs, durationMs, count, phase, cycles}}` — a cada mudança |
-| `ReceiveWindowsState` | `{defaultOutput, defaultInput}` — ids dos dispositivos de áudio padrão |
-| `ReceiveAutoProfile` | `{profileId, app}` — perfil do app em foco; `profileId` nulo quando o app não tem perfil |
-| `ReceivePlaybackState` | `{playing, title}` — soundboard |
-| `ReceiveButtonToggles` | `{buttonId: true}` — botões de dois estados ligados |
-| `ReceiveInfoState` | `{buttonId: {text, sub, code, isDay, error}}` — botões de clima, comando e URL |
+| `ReceiveTimerState` | `{buttonId: {mode, running, finished, elapsedMs, durationMs, count, phase, cycles}}`: a cada mudança |
+| `ReceiveWindowsState` | `{defaultOutput, defaultInput}`: ids dos dispositivos de áudio padrão |
+| `ReceiveAutoProfile` | `{profileId, app}`: perfil do app em foco; `profileId` nulo quando o app não tem perfil |
+| `ReceivePlaybackState` | `{playing, title}`: soundboard |
+| `ReceiveButtonToggles` | `{buttonId: true}`: botões de dois estados ligados |
+| `ReceiveInfoState` | `{buttonId: {text, sub, code, isDay, error}}`: botões de clima, comando e URL |
 | `ReceiveNowPlaying` | `{title, artist, playing, thumbnailBase64}` |
-| `ReceiveHomeAssistantState` | `{connected, entities: {id: {state, name, unit, brightness, color}}}` — entidades usadas nos botões |
+| `ReceiveHomeAssistantState` | `{connected, entities: {id: {state, name, unit, brightness, color}}}`: entidades usadas nos botões |
 | `ReceiveSpotifyState` | `{connected, account, playing, track, artist, liked, shuffle, repeat, volume, device, coverBase64}` |
 | `ReceiveTwitchState`, `ReceiveYouTubeState` | `{connected, account, live, viewers, title}` |
 
 Ao conectar, o novo cliente recebe o estado atual do Discord, do layout, do OBS e da Tuya.
 
-## Descoberta — UDP 7573
+## Descoberta: UDP 7573 { #discovery }
 
 Envie o texto ASCII `DroidDeckDiscoveryRequest` em broadcast para a porta 7573. O servidor responde
 com `{"ip": "...", "name": "<machine name>"}`. A descoberta nunca retorna a chave de API.

@@ -1,7 +1,7 @@
 # Configurator
 
 The configurator is the editor for your decks. It runs in the PC's browser and is served by
-DroidDeck itself — open it from the tray (**Abrir no navegador**) or go to
+DroidDeck itself — open it from the tray (**Open in browser**) or go to
 **`http://localhost:4787/`**.
 
 !!! note "Use it on the PC itself"
@@ -11,11 +11,13 @@ DroidDeck itself — open it from the tray (**Abrir no navegador**) or go to
 
 ## Layout
 
+<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
+
 The screen has three panels:
 
-1. **Profiles** — your list of decks. **New** creates one; the trash icon deletes it after confirmation.
-2. **Grid** — the buttons of the selected profile. Click a cell to select it.
-3. **Properties** — label, icon, colours and the action of the selected button. Click **Save**.
+1. **Profiles**: your list of decks. **New profile** creates one; the trash icon deletes it after confirmation.
+2. **Grid**: the buttons of the selected profile. Click a cell to select it.
+3. **Properties**: label, icon, colours and the action of the selected button. Click **Save**.
 
 - **Drag and drop** a button to move it. Dropping it on an occupied cell swaps the two.
 - The pencil icon renames the profile.
@@ -46,7 +48,7 @@ You can also edit on the phone itself:
 - **Tap an empty cell** to create a button there.
 - The gear icon in the title bar renames the profile.
 
-!!! note "Hotkey, launch app and multi-actions are edited on the PC"
+!!! note "Keyboard shortcuts, programs and multi-actions are edited on the PC"
     Buttons that send keys or open programs can run anything on your PC, so they can only be created
     or changed in the configurator on the PC itself. On the phone you can still use them and change
     their label, icon and colour; the editor shows a lock with what the button does.
@@ -66,5 +68,9 @@ You can also edit on the phone itself:
 
 ## Backup
 
-Profiles are JSON files in `%AppData%\DroidDeck\Profiles\`. To back up your decks, or move them to
-another PC, copy that folder. See [Files & settings](../reference/files.md).
+Use **Export backup** in the sidebar to save every profile, with its images, as one `.droiddeck`
+file, and **Import backup** to bring it back on this or another PC. The phone can export one too.
+See [Backup](../guide/profiles.md#backup).
+
+Behind the scenes, profiles are JSON files in `%AppData%\DroidDeck\Profiles\`; see
+[Files & settings](../reference/files.md).

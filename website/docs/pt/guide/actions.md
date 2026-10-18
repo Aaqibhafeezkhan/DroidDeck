@@ -1,85 +1,103 @@
 # Botões e ações
 
-Cada botão executa uma **ação**. Escolha o tipo de ação no painel de propriedades; os campos abaixo
-dele mudam de acordo com o tipo.
+Cada botão executa uma **ação**. Escolha em **Ação** no editor do botão; os campos abaixo mudam de
+acordo com o tipo. Todas as ações rodam no PC, menos **Abrir perfil** e **Voltar**, que rodam no
+celular.
 
-!!! info "Atalho de teclado, Abrir app, Script e Requisição HTTP são criados no PC"
-    Por segurança, botões que enviam teclas, abrem programas, rodam scripts ou fazem requisições HTTP
-    (inclusive multi-ações com esses passos) só podem ser criados ou alterados no
-    [configurador](../getting-started/configurator.md), no PC. O celular executa esses botões normalmente.
-
-| Tipo de ação | Roda no | Resumo |
-|---|---|---|
-| [Atalho de teclado](#hotkey) | PC | Envia uma combinação de teclas para a janela em foco. |
-| [Abrir app](#launch-app) | PC | Abre um programa, arquivo, pasta ou URL. |
-| [Mídia](#media) | PC | Tocar/pausar, próxima, anterior, parar. |
-| [Mixer](#mixer) | PC | Silencia apps; silencia ou ajusta o volume de dispositivos de áudio. |
-| [Abrir perfil](#open-profile-and-back) | Celular | Abre outro perfil como uma pasta. |
-| [Voltar](#open-profile-and-back) | Celular | Sai de uma pasta. |
-| [Multiação](#multi-action) | PC | Executa vários passos em sequência, com esperas. |
-| [Discord](../integrations/discord.md) | PC | Controles de voz e soundboard. |
-| [OBS](../integrations/obs.md) | PC | Cenas, gravação, transmissão e mais. |
-| [Soundboard](../integrations/soundboard.md) | PC | Toca um som. |
-| [Tuya](../integrations/tuya.md) | PC | Controla dispositivos de casa inteligente. |
-| [Home Assistant](../integrations/homeassistant.md) | PC | Luzes, tomadas, cenas, scripts e sensores. |
-| [Streamer.bot](../integrations/streamerbot.md) | PC | Dispara uma ação do Streamer.bot, com argumentos. |
-| [VTube Studio](../integrations/vtubestudio.md) | PC | Dispara atalhos do modelo ou carrega um modelo. |
-| [Voicemeeter](../integrations/voicemeeter.md) | PC | Mudo e ganho de entradas e saídas, Macro Buttons, parâmetros. |
-| [Philips Hue](../integrations/hue.md) | PC | Luzes, salas e cenas pelo Hue Bridge. |
-| [Elgato Key Light](../integrations/elgato.md) | PC | Liga/desliga, brilho e temperatura das luzes Elgato. |
-| [Govee](../integrations/govee.md) | PC | Luzes Govee pela API LAN. |
-| [MQTT](../integrations/mqtt.md) | PC | Publica uma mensagem no seu broker. |
-| [Spotify](../integrations/spotify.md) | PC | Player, curtir, aleatório, playlists e a capa no botão. |
-| [Twitch](../integrations/twitch.md) | PC | Marcador, clipe, anúncio, chat, enquete e título. |
-| [YouTube](../integrations/youtube.md) | PC | Chat da live e espectadores. |
-| [Timer, pomodoro e contador](#timer) | PC | Relógio ao vivo no botão. |
-| [Windows](#windows) | PC | Troca o áudio padrão, trava, suspende ou desliga a tela. |
-| [Requisição HTTP](#http) | PC | Chama um webhook ou qualquer API. |
-| [Script](#script) | PC | Roda um script do PowerShell, do Python ou um `.bat`, com argumentos. |
-| [Jogo da Steam](#steam) | PC | Abre um jogo instalado, com a capa no botão. |
-
-Cada botão também pode ter uma ação de [toque longo e de toque duplo](#gestures), ser um
+Além do toque normal, um botão pode ter uma ação de [toque longo e de toque duplo](#gestures), ser um
 [botão de dois estados](#two-states), [mostrar uma informação](monitors.md) (relógio, clima, o que
 está tocando, um controle deslizante de volume...), ocupar [mais de uma casa](#size) e ser apertado por
 uma [automação](automations.md).
 
+!!! info "Atalho de teclado, Abrir programa, Script e Requisição HTTP são criados no PC"
+    Por segurança, botões que enviam teclas, abrem programas, rodam scripts ou fazem requisições HTTP
+    (inclusive multiações com esses passos) só podem ser criados ou alterados no
+    [configurador](../getting-started/configurator.md), no PC. O celular executa esses botões normalmente.
+
+## Tipos de ação { #action-types }
+
+### No PC { #on-the-pc }
+
+Envie teclas, abra coisas e automatize o próprio Windows.
+
+| Ação | O que faz |
+|---|---|
+| [Atalho de teclado](#hotkey) | Envia uma combinação de teclas para a janela em foco. |
+| [Abrir programa](#launch-app) | Abre um programa, arquivo, pasta ou URL. |
+| [Multiação](#multi-action) | Executa vários passos em sequência, com esperas e condições. |
+| [Script](#script) | Roda um script do PowerShell, do Python ou um `.bat`, com argumentos. |
+| [Requisição HTTP](#http) | Chama um webhook ou qualquer API. |
+| [Windows](#windows) | Troca o áudio padrão, trava, suspende ou desliga a tela. |
+| [Jogo da Steam](#steam) | Abre um jogo instalado, com a capa no botão. |
+
+### Mídia e áudio { #media-and-audio }
+
+Controle o que está tocando e o volume.
+
+| Ação | O que faz |
+|---|---|
+| [Mídia](#media) | Tocar/pausar, próxima, anterior, parar. |
+| [Mixer](#mixer) | Silencia apps; silencia ou ajusta o volume de dispositivos de áudio. |
+| [Spotify](../integrations/spotify.md) | Player, curtir, aleatório, playlists e a capa no botão. |
+| [Voicemeeter](../integrations/voicemeeter.md) | Mudo e ganho de entradas e saídas, Macro Buttons, parâmetros. |
+| [Soundboard](../integrations/soundboard.md) | Toca um som no seu microfone. |
+
+### Streaming { #streaming }
+
+Chat de voz, a sua live e as ferramentas em volta dela. Cada uma precisa da integração configurada uma vez.
+
+| Ação | O que faz |
+|---|---|
+| [Discord](../integrations/discord.md) | Controles de voz e soundboard. |
+| [OBS](../integrations/obs.md) | Cenas, gravação, transmissão e mais. |
+| [Twitch](../integrations/twitch.md) | Marcador, clipe, anúncio, chat, enquete e título. |
+| [YouTube](../integrations/youtube.md) | Chat da live e espectadores. |
+| [Streamer.bot](../integrations/streamerbot.md) | Dispara uma ação do Streamer.bot, com argumentos. |
+| [VTube Studio](../integrations/vtubestudio.md) | Dispara atalhos do modelo ou carrega um modelo. |
+
+### Luzes e casa inteligente { #lights-and-smart-home }
+
+Aparelhos na sua rede ou na sua central de casa inteligente.
+
+| Ação | O que faz |
+|---|---|
+| [Tuya](../integrations/tuya.md) | Lâmpadas, tomadas e interruptores do Smart Life. |
+| [Home Assistant](../integrations/homeassistant.md) | Luzes, tomadas, cenas, scripts e sensores. |
+| [Philips Hue](../integrations/hue.md) | Luzes, salas e cenas pelo Hue Bridge. |
+| [Elgato Key Light](../integrations/elgato.md) | Liga/desliga, brilho e temperatura das luzes Elgato. |
+| [Govee](../integrations/govee.md) | Luzes Govee pela API LAN. |
+| [MQTT](../integrations/mqtt.md) | Publica uma mensagem no seu broker. |
+
+### Timers e navegação { #timers-and-navigation }
+
+| Ação | O que faz |
+|---|---|
+| [Timer, pomodoro e contador](#timer) | Relógio ou contagem ao vivo no botão. |
+| [Abrir perfil](#open-profile-and-back) | Abre outro perfil como uma pasta (no celular). |
+| [Voltar](#open-profile-and-back) | Sai de uma pasta (no celular). |
+
 ## Atalho de teclado { #hotkey }
 
-Envia teclas para **a janela que está em foco** no PC.
+Envia teclas para **a janela que está em foco** no PC, com a sintaxe *SendKeys* do Windows mais `#`
+para a tecla Windows: `^c` é Ctrl+C, `^+s` é Ctrl+Shift+S, `%{F4}` é Alt+F4, `#d` mostra a área de
+trabalho. A sintaxe completa, as teclas especiais e as limitações estão em
+[Atalhos de teclado](hotkeys.md).
 
-O campo **Keys** usa a sintaxe *SendKeys* do Windows, mais `#` para a tecla Windows:
+## Abrir programa { #launch-app }
 
-| Símbolo | Tecla | Exemplo |
-|---|---|---|
-| `^` | Ctrl | `^c` → Ctrl+C |
-| `+` | Shift | `^+s` → Ctrl+Shift+S |
-| `%` | Alt | `%{F4}` → Alt+F4 |
-| `#` | Windows | `#d` → mostrar a área de trabalho, `#+s` → ferramenta de captura |
-| `( )` | Segura os modificadores num grupo | `+(abc)` → ABC |
-| `~` | Enter | `^a~` |
-| `{NOME}` | Tecla especial | `{ENTER}`, `{TAB}`, `{ESC}`, `{SPACE}`, `{F1}`…`{F24}`, `{UP}`, `{DOWN}`, `{LEFT}`, `{RIGHT}`, `{HOME}`, `{END}`, `{PGUP}`, `{PGDN}`, `{INS}`, `{DEL}`, `{BS}`, `{PRTSC}`, `{NUMPAD0}`…`{NUMPAD9}`, `{VOLUME_UP}`, `{VOLUME_DOWN}`, `{VOLUME_MUTE}`, `{MEDIA_PLAY_PAUSE}`, `{MEDIA_NEXT}`, `{MEDIA_PREV}` |
-| `{NOME n}` | Repetir | `{TAB 3}` |
-| `{x}` | O próprio caractere | `{+}`, `{^}`, `{%}`, `{#}`, `{~}`, `{(}`, `{{}` |
-
-Qualquer outro caractere é digitado como está. Com Ctrl, Alt ou Windows, letras ignoram maiúsculas:
-`^C` é Ctrl+C; use `+` para o Shift.
-
-As teclas saem com o scancode do teclado e ficam apertadas por um instante, então a maioria dos
-jogos que leem o teclado diretamente também as recebe.
-
-!!! warning "Limitações"
-    - O Windows bloqueia entradas para apps rodando **como administrador**, a menos que o DroidDeck também rode como administrador.
-    - Jogos com anti-cheat podem ignorar teclas simuladas.
-    - Algumas combinações são reservadas pelo Windows e não podem ser simuladas, como Ctrl+Alt+Del e Win+L.
-
-## Abrir app { #launch-app }
-
-O caminho aceita qualquer coisa que você abriria pelo *Executar* (++win+r++): um `.exe`
+O **Caminho** aceita qualquer coisa que você abriria pelo *Executar* (++win+r++): um `.exe`
 (`C:\Windows\System32\notepad.exe`), um documento, uma pasta ou uma URL (`https://…`, `steam://…`).
+
+## Multiação { #multi-action }
+
+Executa vários passos, um depois do outro, cada um com uma espera e, se você quiser, só quando uma
+[condição](multi-action.md#conditions) vale (a live está no ar, um app está aberto, é dia de semana...).
+Dá também para [gravar os passos pelo teclado](multi-action.md#record). Veja
+[Multiação](multi-action.md).
 
 ## Mídia { #media }
 
-Controla a sessão de mídia que o Windows mostra no overlay de mídia — Spotify, navegadores, players.
+Controla a sessão de mídia que o Windows mostra no overlay de mídia: Spotify, navegadores, players.
 
 **Comando de mídia:** **Play / Pause** (padrão), **Próxima faixa**, **Faixa anterior**, **Parar**.
 Um botão de tocar/pausar troca o ícone ao vivo entre ▶ e ⏸.
@@ -104,55 +122,6 @@ Defina uma **cor ativa** para o botão acender enquanto o alvo estiver silenciad
 
 **Abrir perfil** mostra outro perfil por cima do atual, como uma pasta. Dá para aninhar pastas.
 **Voltar** fecha a pasta atual; a seta da barra de título faz o mesmo. As duas ações rodam só no celular.
-
-## Multiação { #multi-action }
-
-Executa vários passos, um depois do outro. Cada passo tem uma **espera** (ms) que acontece **antes**
-de ele rodar (**Esperar antes (ms)**). O editor oferece três tipos de passo:
-
-- **Hotkey** — teclas, como acima;
-- **Abrir app** — caminho, como acima;
-- **Mutar app** — alterna o mudo de um processo.
-
-Exemplo — "Iniciar reunião": abrir o app de reunião, esperar 3000 ms, enviar `^+m`.
-
-Passos de outros tipos (Discord, OBS, scripts... — vindos de uma
-[importação do Stream Deck](import-share.md#stream-deck), por exemplo) são mantidos e executados, mesmo o
-editor só criando esses três tipos.
-
-### Condições { #conditions }
-
-Cada passo tem um campo **Só se**. Com uma condição, o passo só roda quando ela vale; senão ele é pulado
-e a multiação segue. **Não** inverte: o passo roda quando a condição *não* vale. O padrão, **Sempre**,
-roda o passo toda vez.
-
-| Só se… | Valor |
-|---|---|
-| **A live do OBS estiver no ar** | — |
-| **O OBS estiver gravando** | — |
-| **O microfone do Discord estiver mudo** | — |
-| **O áudio do Discord estiver desativado** | — |
-| **Um botão de dois estados estiver ligado** | O botão de [dois estados](#two-states), escolhido numa lista. |
-| **Um app estiver aberto** | Nome do processo sem `.exe`, ex.: `Spotify`. |
-| **Um app estiver em foco** | Nome do processo da janela em foco. |
-| **For entre dois horários** | `08:00-18:00`. Um intervalo que passa da meia-noite funciona: `22:00-06:00`. |
-| **For um destes dias da semana** | `0` = domingo … `6` = sábado, com intervalos e vírgulas: `1-5`, `0,6`. |
-
-- A condição é conferida na vez do passo, depois da espera dele. A espera acontece mesmo que o passo
-  acabe pulado.
-- Exemplo — um botão "Entrar ao vivo": iniciar a transmissão; depois, *só se* o `obs64` **não**
-  estiver em foco, trocar para a cena da live; e *só se* for entre `18:00-23:59`, acender a luz da mesa.
-
-### Gravar do teclado { #record }
-
-No configurador do PC, **Gravar do teclado** grava o que você digitar no teclado do PC e transforma
-em passos de atalho: vá até o programa, digite a sequência e clique em **Parar**.
-
-- Teclas digitadas em sequência viram um passo só (`oi{ENTER}`); uma pausa de mais de meio segundo
-  começa um passo novo, com a espera arredondada para 100 ms.
-- A gravação para sozinha depois de 60 segundos.
-- Por ler o teclado inteiro, só funciona no configurador aberto no próprio PC; o celular não tem esse
-  botão. Revise os passos antes de salvar: tudo o que foi digitado entra, inclusive senhas.
 
 ## Timer, pomodoro e contador { #timer }
 
@@ -190,24 +159,26 @@ responder, e o resultado fica no log do DroidDeck.
 
 Roda um script no PC, sem janela. **Script** escolhe de onde ele vem:
 
-- **Escrito aqui** — escolha a **Linguagem** (PowerShell, Python ou Prompt de comando `.bat`) e digite
+- **Escrito aqui**: escolha a **Linguagem** (PowerShell, Python ou Prompt de comando `.bat`) e digite
   o **Código** no botão. O DroidDeck o salva em `%LocalAppData%\DroidDeck\scripts\` e roda de lá.
-- **Um arquivo do PC** — o caminho (**Arquivo**) de um `.ps1`, `.py`, `.bat` ou `.cmd`.
+- **Um arquivo do PC**: o caminho (**Arquivo**) de um `.ps1`, `.py`, `.bat` ou `.cmd`.
 
 Os **Argumentos (opcional)** são separados por espaço; use aspas para um argumento com espaços
 (`"meu jogo" 2`). Eles chegam em `$args` (PowerShell), `sys.argv` (Python) ou `%1`, `%2`… (`.bat`), então
 um mesmo arquivo de script serve para vários botões, cada um com os seus argumentos.
 
-- O PowerShell roda com `-NoProfile -ExecutionPolicy Bypass`. O Python usa o `py` do instalador oficial,
-  ou o `python` do `PATH`. A pasta de trabalho é a pasta do script.
-- Um script que passa de **5 minutos** é encerrado.
-- A saída não aparece no botão. Erros (código de saída diferente de zero) vão para o log do DroidDeck.
-  Para mostrar um valor num botão, use a informação [Saída de um comando](monitors.md#informacao).
+??? note "Como os scripts rodam"
+    - O PowerShell roda com `-NoProfile -ExecutionPolicy Bypass`. O Python usa o `py` do instalador
+      oficial, ou o `python` do `PATH`. A pasta de trabalho é a pasta do script.
+    - Um script que passa de **5 minutos** é encerrado.
+    - A saída não aparece no botão. Erros (código de saída diferente de zero) vão para o log do
+      DroidDeck. Para mostrar um valor num botão, use a informação
+      [Saída de um comando](monitors.md#informacao).
 
 !!! warning "Só é criado no PC"
-    Um script pode fazer tudo o que a sua conta do Windows faz, então — como os atalhos — botões de script
-    só podem ser criados ou alterados no configurador do PC. O celular e o deck no navegador executam
-    esses botões normalmente.
+    Um script pode fazer tudo o que a sua conta do Windows faz, então, como os atalhos de teclado,
+    botões de script só podem ser criados ou alterados no configurador do PC. O celular e o deck no
+    navegador executam esses botões normalmente.
 
 ## Jogo da Steam { #steam }
 
@@ -218,7 +189,7 @@ imagem, abra a biblioteca da Steam uma vez para ela baixar as capas.
 ## Tamanho { #size }
 
 Em **Tamanho**, no editor, **Largura (casas)** e **Altura (casas)** fazem um botão ocupar até 4 × 4
-casas — um botão de mudo grande, um [controle deslizante de volume](monitors.md#volume-slider) alto, um
+casas: um botão de mudo grande, um [controle deslizante de volume](monitors.md#volume-slider) alto, um
 relógio largo. A posição do botão é a casa do canto superior esquerdo.
 
 Um botão grande nunca cobre outros botões: ele para onde houver outro botão e é cortado na borda da
@@ -245,7 +216,7 @@ Na seção **Dois estados** do editor:
   os celulares mostram o mesmo e ele continua depois de reiniciar.
 - **Ação quando ligado** (opcional) roda no toque que desliga o botão. Exemplo: o toque liga a gravação
   por um atalho e o seguinte manda o atalho de parar. Sem ela, o mesmo toque roda sempre.
-- **Rótulo quando ativo** e **Ícone quando ativo** trocam o visual quando o botão está ativo — pelo
+- **Rótulo quando ativo** e **Ícone quando ativo** trocam o visual quando o botão está ativo, pelo
   alternar ou pelo estado da própria ação (mudo do Discord, gravação do OBS, lâmpada acesa...).
   A **cor quando ativo** fica junto das cores do botão.
 

@@ -20,12 +20,12 @@ ficaram sem equivalente.
 
 | Ação do Stream Deck | Vira |
 |---|---|
-| Hotkey, Hotkey Switch | [Atalho de teclado](actions.md#hotkey) (teclas convertidas para a sintaxe do DroidDeck) |
+| Hotkey, Hotkey Switch | [Atalho de teclado](hotkeys.md) (teclas convertidas para a sintaxe do DroidDeck) |
 | Text | Atalho que digita o texto (mais Enter, se estava marcado) |
 | Open, Website | [Abrir app](actions.md#launch-app) |
 | Multimedia | Tocar/pausar, próxima, anterior; aumentar/diminuir volume e mudo da saída padrão |
 | Create Folder / Parent Folder | Abrir perfil / Voltar |
-| Multi Action | [Multiação](actions.md#multi-action); passos de *Delay* viram a espera do passo anterior |
+| Multi Action | [Multiação](multi-action.md); passos de *Delay* viram a espera do passo anterior |
 | Plugin do Discord (oficial): mudo, ensurdecer | [Discord](../integrations/discord.md) alternar mudo / ensurdecer |
 | Plugin do OBS (oficial): gravar, transmitir, replay buffer, câmera virtual, cena | Os equivalentes do [OBS](../integrations/obs.md) |
 

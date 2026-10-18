@@ -10,11 +10,13 @@ DroidDeck — abra-o pela bandeja (**Abrir no navegador**) ou acesse **`http://l
 
 ## Layout
 
+<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
+
 A tela tem três painéis:
 
-1. **Perfis** — sua lista de decks. **New** cria um; o ícone de lixeira apaga, após confirmação.
-2. **Grade** — os botões do perfil selecionado. Clique em uma célula para selecioná-la.
-3. **Propriedades** — rótulo, ícone, cores e a ação do botão selecionado. Clique em **Salvar**.
+1. **Perfis**: sua lista de decks. **Novo perfil** cria um; o ícone de lixeira apaga, após confirmação.
+2. **Grade**: os botões do perfil selecionado. Clique em uma célula para selecioná-la.
+3. **Propriedades**: rótulo, ícone, cores e a ação do botão selecionado. Clique em **Salvar**.
 
 - **Arraste e solte** um botão para movê-lo. Soltar em uma célula ocupada troca os dois de lugar.
 - O ícone de lápis renomeia o perfil.
@@ -45,7 +47,7 @@ Você também pode editar no próprio celular:
 - **Toque em uma célula vazia** para criar um botão ali.
 - O ícone de engrenagem na barra de título renomeia o perfil.
 
-!!! note "Atalho, abrir app e multi-ação são editados no PC"
+!!! note "Atalhos de teclado, programas e multiações são editados no PC"
     Botões que enviam teclas ou abrem programas conseguem rodar qualquer coisa no seu PC, por isso só
     podem ser criados ou alterados no configurador, no próprio PC. No celular você continua usando
     esses botões e pode mudar nome, ícone e cor; o editor mostra um cadeado com o que o botão faz.
@@ -65,5 +67,9 @@ Você também pode editar no próprio celular:
 
 ## Backup
 
-Os perfis são arquivos JSON em `%AppData%\DroidDeck\Profiles\`. Para fazer backup dos seus decks, ou
-levá-los para outro PC, copie essa pasta. Veja [Arquivos e configurações](../reference/files.md).
+Use **Exportar backup** na barra lateral para salvar todos os perfis, com as imagens, num único arquivo
+`.droiddeck`, e **Importar backup** para trazê-los de volta neste ou em outro PC. O celular também
+exporta um. Veja [Backup](../guide/profiles.md#backup).
+
+Por baixo dos panos, os perfis são arquivos JSON em `%AppData%\DroidDeck\Profiles\`; veja
+[Arquivos e configurações](../reference/files.md).

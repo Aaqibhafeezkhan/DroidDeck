@@ -5,11 +5,18 @@ dois vêm anexados em toda [release no GitHub](https://github.com/ggfto/DroidDec
 
 ## Windows
 
+!!! warning "Windows SmartScreen"
+    O instalador ainda não tem assinatura de código, então ao executá-lo o Windows pode mostrar
+    *"O Windows protegeu o computador"*. Clique em **Mais informações → Executar assim mesmo**.
+
 1. Baixe o **`DroidDeck-Setup.exe`** da release mais recente.
 2. Execute. A instalação é por usuário (não pede administrador) e cria atalhos na área de trabalho
    e no menu Iniciar.
 3. Na primeira execução, o DroidDeck liga o **Iniciar com o Windows** e oferece liberar o
-   [firewall](#firewall) para a rede local.
+   [firewall](#firewall) para a rede local. Aceite, para o celular conseguir chegar ao PC.
+
+O app não tem janela. Ele fica na **bandeja do sistema**, e uma notificação confirma que está rodando
+em `http://localhost:4787/`. O build é autocontido, então você não precisa instalar o .NET.
 
 O DroidDeck instalado **se atualiza sozinho**: ele procura versões novas nas releases do GitHub,
 baixa em segundo plano e aplica a atualização na próxima vez que abrir. Para atualizar na hora, use
@@ -21,16 +28,14 @@ Windows.
     `DroidDeck.exe`. Essa cópia não se atualiza sozinha: o item **Baixar versão mais recente…** da
     bandeja abre a página da release.
 
-O app não tem janela. Ele fica na **bandeja do sistema**, e uma notificação confirma que está rodando
-em `http://localhost:4787/`. O build é autocontido, então você não precisa instalar o .NET.
-
-!!! warning "Windows SmartScreen"
-    O executável ainda não tem assinatura de código, então o Windows pode mostrar *"O Windows protegeu
-    o computador"*. Clique em **Mais informações → Executar assim mesmo**.
-
 ### Menu da bandeja
 
-Clique com o botão direito no ícone da bandeja:
+Clique com o botão direito no ícone do DroidDeck na bandeja (ele pode estar atrás da seta **^**):
+
+<figure class="dd-figure" markdown>
+![Menu da bandeja do DroidDeck: Abrir no navegador, Parear dispositivo (QR), Iniciar com o Windows, Liberar no firewall (rede local), Conexão USB (cabo), a versão, Procurar atualização e Sair](../../assets/screenshots/tray-menu-pt.png){ .dd-shot width="440" height="412" loading="lazy" }
+<figcaption>O menu da bandeja. As marcas mostram as opções ligadas.</figcaption>
+</figure>
 
 | Item | O que faz |
 |---|---|
@@ -38,6 +43,7 @@ Clique com o botão direito no ícone da bandeja:
 | **Parear dispositivo (QR)…** | Mostra o QR code de pareamento para o celular. |
 | **Iniciar com o Windows** | Inicia o DroidDeck quando você entra no Windows. |
 | **Liberar no firewall (rede local)** | Cria as regras do [firewall](#firewall). Marcado quando elas já existem. |
+| **Conexão USB (cabo)** | Conecta um celular Android pelo [cabo USB](browser-usb.md#usb). |
 | **Procurar atualização** | Procura uma versão nova e, quando há uma baixada, vira **Reiniciar para atualizar**. |
 | **Sair** | Fecha o DroidDeck. |
 

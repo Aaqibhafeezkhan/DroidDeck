@@ -4,7 +4,7 @@
 
 1. **Same network**: phone and PC must be on the same local network. Guest Wi-Fi networks and
    "AP isolation" block devices from seeing each other.
-2. **Firewall**: use **Liberar no firewall (rede local)** in the tray menu, or allow TCP 4787 and UDP 7573 by hand (see [Installation](getting-started/installation.md#firewall)),
+2. **Firewall**: use **Allow through firewall (local network)** in the tray menu, or allow TCP 4787 and UDP 7573 by hand (see [Installation](getting-started/installation.md#firewall)),
    and make sure Windows marks your network as **Private**.
 3. **DroidDeck is running**: look for the tray icon. On the PC, `http://localhost:4787/api/ping`
    should return `{"ok":true,...}`.
@@ -18,8 +18,8 @@
 
 ## The USB connection doesn't connect
 
-- The tray item must be checked and say *aguardando celular* (waiting for a phone) or *celular
-  conectado* (phone connected).
+- The tray item **USB connection (cable)** must be checked and say *waiting for phone* or
+  *1 phone connected*.
 - **USB debugging** must be on, and the phone must have accepted the **Allow USB debugging?** prompt.
   If you dismissed it, unplug and plug the cable back in. Some cables only charge: try another one.
 - The phone must be paired with this PC first, with the QR code; the cable doesn't carry the key.
@@ -37,10 +37,10 @@ on the machine where DroidDeck runs.
 
 ## A hotkey does nothing
 
-- The keys go to the **focused window** — make sure the right app is in front.
+- The keys go to the **focused window**: make sure the right app is in front.
 - Apps running **as administrator** ignore input from a non-administrator DroidDeck.
 - Games with anti-cheat may ignore simulated keys.
-- Check the syntax in [Hotkey](guide/actions.md#hotkey).
+- Check the syntax in [Keyboard shortcuts](guide/hotkeys.md).
 
 ## Media buttons do nothing
 

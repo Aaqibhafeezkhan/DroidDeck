@@ -1,90 +1,106 @@
 # Buttons & actions
 
-Each button runs one **action**. Pick the action type in the properties panel; the fields below it
-change according to the type.
+Each button runs one **action**. Pick it under **Action** in the button editor; the fields below
+change with the type. Every action runs on the PC, except **Open profile** and **Back**, which
+run on the phone.
 
-!!! info "Hotkey, Launch app, Script and HTTP request are created on the PC"
+Besides the normal tap, a button can have a [long-press and a double-tap](#gestures) action, be a
+[two-state button](#two-states), [show information](monitors.md) (clock, weather, what's playing, a
+volume slider...), take [more than one cell](#size) and be pressed by an [automation](automations.md).
+
+!!! info "Keyboard shortcut, Open program, Script and HTTP request are created on the PC"
     For security, buttons that send keys, open programs, run scripts or make HTTP requests (including
-    multi-actions with those steps) can only be created or changed in the [configurator](../getting-started/configurator.md)
-    on the PC. The phone runs them normally.
+    multi-actions with those steps) can only be created or changed in the
+    [configurator](../getting-started/configurator.md) on the PC. The phone runs them normally.
 
-| Action type | Runs on | Summary |
-|---|---|---|
-| [Hotkey](#hotkey) | PC | Sends a key combination to the focused window. |
-| [Launch app](#launch-app) | PC | Opens a program, file, folder or URL. |
-| [Media](#media) | PC | Play/pause, next, previous, stop. |
-| [Mixer](#mixer) | PC | Mute apps; mute or change the volume of audio devices. |
-| [Open profile](#open-profile-and-back) | Phone | Opens another profile as a folder. |
-| [Back](#open-profile-and-back) | Phone | Returns from a folder. |
-| [Multi-action](#multi-action) | PC | Runs several steps in sequence, with delays. |
-| [Discord](../integrations/discord.md) | PC | Voice controls and soundboard. |
-| [OBS](../integrations/obs.md) | PC | Scenes, recording, streaming and more. |
-| [Soundboard](../integrations/soundboard.md) | PC | Plays a sound. |
-| [Tuya](../integrations/tuya.md) | PC | Controls smart-home devices. |
-| [Home Assistant](../integrations/homeassistant.md) | PC | Lights, plugs, scenes, scripts and sensors. |
-| [Spotify](../integrations/spotify.md) | PC | Player, like, shuffle, playlists and the cover on the button. |
-| [Twitch](../integrations/twitch.md) | PC | Marker, clip, ad, chat, poll and title. |
-| [YouTube](../integrations/youtube.md) | PC | Live chat and viewers. |
-| [Streamer.bot](../integrations/streamerbot.md) | PC | Runs a Streamer.bot action, with arguments. |
-| [VTube Studio](../integrations/vtubestudio.md) | PC | Triggers model hotkeys or loads a model. |
-| [Voicemeeter](../integrations/voicemeeter.md) | PC | Mute and gain of strips and buses, Macro Buttons, parameters. |
-| [Philips Hue](../integrations/hue.md) | PC | Lights, rooms and scenes through the Hue Bridge. |
-| [Elgato Key Light](../integrations/elgato.md) | PC | On/off, brightness and temperature of Elgato lights. |
-| [Govee](../integrations/govee.md) | PC | Govee lights over the LAN API. |
-| [MQTT](../integrations/mqtt.md) | PC | Publishes a message to your broker. |
-| [Timer, pomodoro & counter](#timer) | PC | A live clock on the button. |
-| [Windows](#windows) | PC | Switches the default audio device, locks, sleeps or turns the screen off. |
-| [HTTP request](#http) | PC | Calls a webhook or any API. |
-| [Script](#script) | PC | Runs a PowerShell or Python script or a `.bat` file, with arguments. |
-| [Steam game](#steam) | PC | Opens an installed game, with its cover on the button. |
+## Action types
 
-Each button can also have a [long-press and a double-tap](#gestures) action, be a
-[two-state button](#two-states), [show information](monitors.md) (clock, weather, what's
-playing, a volume slider...), take [more than one cell](#size) and be pressed by an
-[automation](automations.md).
+### On the PC
 
-## Hotkey
+Send keys, open things and script Windows itself.
 
-Sends keys to **the window that has focus** on the PC.
+| Action | What it does |
+|---|---|
+| [Keyboard shortcut](#hotkey) | Sends a key combination to the focused window. |
+| [Open program](#launch-app) | Opens a program, file, folder or URL. |
+| [Multi-action](#multi-action) | Runs several steps in sequence, with delays and conditions. |
+| [Script](#script) | Runs a PowerShell or Python script or a `.bat` file, with arguments. |
+| [HTTP request](#http) | Calls a webhook or any API. |
+| [Windows](#windows) | Switches the default audio device, locks, sleeps or turns the screen off. |
+| [Steam game](#steam) | Opens an installed game, with its cover on the button. |
 
-**Keys** uses the Windows *SendKeys* syntax, plus `#` for the Windows key:
+### Media and audio
 
-| Symbol | Key | Example |
-|---|---|---|
-| `^` | Ctrl | `^c` → Ctrl+C |
-| `+` | Shift | `^+s` → Ctrl+Shift+S |
-| `%` | Alt | `%{F4}` → Alt+F4 |
-| `#` | Windows | `#d` → show desktop, `#+s` → screenshot tool |
-| `( )` | Hold modifiers for a group | `+(abc)` → ABC |
-| `~` | Enter | `^a~` |
-| `{NAME}` | Special key | `{ENTER}`, `{TAB}`, `{ESC}`, `{SPACE}`, `{F1}`…`{F24}`, `{UP}`, `{DOWN}`, `{LEFT}`, `{RIGHT}`, `{HOME}`, `{END}`, `{PGUP}`, `{PGDN}`, `{INS}`, `{DEL}`, `{BS}`, `{PRTSC}`, `{NUMPAD0}`…`{NUMPAD9}`, `{VOLUME_UP}`, `{VOLUME_DOWN}`, `{VOLUME_MUTE}`, `{MEDIA_PLAY_PAUSE}`, `{MEDIA_NEXT}`, `{MEDIA_PREV}` |
-| `{NAME n}` | Repeat | `{TAB 3}` |
-| `{x}` | The character itself | `{+}`, `{^}`, `{%}`, `{#}`, `{~}`, `{(}`, `{{}` |
+Control what's playing and how loud it is.
 
-Any other character is typed as is. With Ctrl, Alt or Windows, letters ignore case: `^C` is Ctrl+C;
-use `+` for Shift.
+| Action | What it does |
+|---|---|
+| [Media](#media) | Play/pause, next, previous, stop. |
+| [Mixer](#mixer) | Mutes apps; mutes or changes the volume of audio devices. |
+| [Spotify](../integrations/spotify.md) | Player, like, shuffle, playlists and the cover on the button. |
+| [Voicemeeter](../integrations/voicemeeter.md) | Mute and gain of strips and buses, Macro Buttons, parameters. |
+| [Soundboard](../integrations/soundboard.md) | Plays a sound into your mic. |
 
-Keys are sent with their hardware scan codes and held for a moment, so most games that read the
-keyboard directly also receive them.
+### Streaming
 
-!!! warning "Limitations"
-    - Windows blocks input to apps running **as administrator** unless DroidDeck also runs as administrator.
-    - Games with anti-cheat may ignore simulated keys.
-    - Some combinations are reserved by Windows and can't be simulated, such as Ctrl+Alt+Del and Win+L.
+Voice chat, your stream and the tools around it. Each one needs its integration set up once.
 
-## Launch app
+| Action | What it does |
+|---|---|
+| [Discord](../integrations/discord.md) | Voice controls and soundboard. |
+| [OBS](../integrations/obs.md) | Scenes, recording, streaming and more. |
+| [Twitch](../integrations/twitch.md) | Marker, clip, ad, chat, poll and title. |
+| [YouTube](../integrations/youtube.md) | Live chat and viewers. |
+| [Streamer.bot](../integrations/streamerbot.md) | Runs a Streamer.bot action, with arguments. |
+| [VTube Studio](../integrations/vtubestudio.md) | Triggers model hotkeys or loads a model. |
+
+### Lights and smart home
+
+Devices on your network or in your smart-home hub.
+
+| Action | What it does |
+|---|---|
+| [Tuya](../integrations/tuya.md) | Smart Life lights, plugs and switches. |
+| [Home Assistant](../integrations/homeassistant.md) | Lights, plugs, scenes, scripts and sensors. |
+| [Philips Hue](../integrations/hue.md) | Lights, rooms and scenes through the Hue Bridge. |
+| [Elgato Key Light](../integrations/elgato.md) | On/off, brightness and temperature of Elgato lights. |
+| [Govee](../integrations/govee.md) | Govee lights over the LAN API. |
+| [MQTT](../integrations/mqtt.md) | Publishes a message to your broker. |
+
+### Timers and navigation
+
+| Action | What it does |
+|---|---|
+| [Timer, pomodoro & counter](#timer) | A live clock or count on the button. |
+| [Open profile](#open-profile-and-back) | Opens another profile as a folder (on the phone). |
+| [Back](#open-profile-and-back) | Returns from a folder (on the phone). |
+
+## Keyboard shortcut { #hotkey }
+
+Sends keys to **the window that has focus** on the PC, using the Windows *SendKeys* syntax plus `#`
+for the Windows key: `^c` is Ctrl+C, `^+s` is Ctrl+Shift+S, `%{F4}` is Alt+F4, `#d` shows the
+desktop. The full syntax, special keys and limitations are on [Keyboard shortcuts](hotkeys.md).
+
+## Open program { #launch-app }
 
 **Path** accepts anything you could open from *Run* (++win+r++): an `.exe`
 (`C:\Windows\System32\notepad.exe`), a document, a folder or a URL (`https://…`, `steam://…`).
 
-## Media
+## Multi-action { #multi-action }
 
-Controls the media session Windows is showing in its media overlay — Spotify, browsers, players.
+Runs several steps one after the other, each with a delay, and each optionally only when a
+[condition](multi-action.md#conditions) holds (the stream is live, an app is open, it's a weekday...).
+You can also [record the steps from the keyboard](multi-action.md#record). See
+[Multi-action](multi-action.md).
 
-**Command:** `Play/Pause` (default), `Next`, `Previous`, `Stop`. A play/pause button switches its
+## Media { #media }
+
+Controls the media session Windows is showing in its media overlay: Spotify, browsers, players.
+
+**Command:** **Play / Pause** (default), **Next track**, **Previous track**, **Stop**. A play/pause button switches its
 icon live between ▶ and ⏸.
 
-## Mixer
+## Mixer { #mixer }
 
 | Operation | App target | Device target |
 |---|---|---|
@@ -100,61 +116,11 @@ icon live between ▶ and ⏸.
 
 Set an **active colour** to light the button up while the target is muted.
 
-## Open profile and back
+## Open profile and back { #open-profile-and-back }
 
 **Open profile** shows another profile on top of the current one, like a folder. Folders can be
 nested. **Back** closes the current folder; the title-bar arrow does the same. Both actions run on
 the phone only.
-
-## Multi-action
-
-Runs several steps one after the other. Each step has a **delay** (ms) that is waited **before** it
-runs. The editor offers three step kinds:
-
-- **Hotkey** — keys, as above;
-- **Open app** — path, as above;
-- **Mute app** — toggles mute of a process.
-
-Example — "Start meeting": open the meeting app, wait 3000 ms, send `^+m`.
-
-Steps of other types (Discord, OBS, scripts... — for example from a
-[Stream Deck import](import-share.md#stream-deck)) are kept and run, even though the editor only
-creates these three kinds.
-
-### Conditions { #conditions }
-
-Each step has an **Only if** field. With a condition, the step only runs when it's met; otherwise it is
-skipped and the multi-action moves on. **Not** inverts it: the step runs when the condition is *not*
-met. The default, **Always**, runs the step every time.
-
-| Only if… | Value |
-|---|---|
-| **The OBS stream is live** | — |
-| **OBS is recording** | — |
-| **The Discord mic is muted** | — |
-| **Discord audio is deafened** | — |
-| **A two-state button is on** | The [two-state](#two-states) button, picked from a list. |
-| **An app is open** | Process name without `.exe`, e.g. `Spotify`. |
-| **An app is focused** | Process name of the window in focus. |
-| **It is between two times** | `08:00-18:00`. A range that crosses midnight works: `22:00-06:00`. |
-| **It is one of these weekdays** | `0` = Sunday … `6` = Saturday, with ranges and commas: `1-5`, `0,6`. |
-
-- The condition is checked when the step's turn comes, after its delay. The delay is waited even if the
-  step is then skipped.
-- Example — one "Go live" button: start streaming, then *only if* `obs64` is **not** focused, switch
-  to the stream scene; and *only if* it's between `18:00-23:59`, turn the desk light on.
-
-### Record from the keyboard { #record }
-
-In the PC configurator, **Record from keyboard** records what you type on the PC's keyboard and turns
-it into hotkey steps: go to the program, type the sequence and click **Stop**.
-
-- Keys typed in a row become a single step (`hi{ENTER}`); a pause longer than half a second starts a
-  new step, with the delay rounded to 100 ms.
-- Recording stops on its own after 60 seconds.
-- Because it reads the whole keyboard, it only works in the configurator open on the PC itself; the
-  phone doesn't have this button. Review the steps before saving: everything typed goes in, passwords
-  included.
 
 ## Timer, pomodoro & counter { #timer }
 
@@ -192,24 +158,26 @@ format (JSON, form or text). The request has 10 seconds to answer; the result go
 
 Runs a script on the PC, with no window. **Script** picks where it comes from:
 
-- **Written here** — pick the **Language** (PowerShell, Python or Command Prompt `.bat`) and type the
+- **Written here**: pick the **Language** (PowerShell, Python or Command Prompt `.bat`) and type the
   **Code** in the button. DroidDeck saves it to `%LocalAppData%\DroidDeck\scripts\` and runs it from
   there.
-- **A file on the PC** — the **File** path of a `.ps1`, `.py`, `.bat` or `.cmd`.
+- **A file on the PC**: the **File** path of a `.ps1`, `.py`, `.bat` or `.cmd`.
 
 **Arguments (optional)** are separated by spaces; use quotes for an argument with spaces
 (`"my game" 2`). They arrive in `$args` (PowerShell), `sys.argv` (Python) or `%1`, `%2`… (`.bat`), so one
 script file can serve several buttons, each with its own arguments.
 
-- PowerShell runs with `-NoProfile -ExecutionPolicy Bypass`. Python uses the `py` launcher from the
-  official installer, or `python` from the `PATH`. The working folder is the script's folder.
-- A script that runs for more than **5 minutes** is stopped.
-- Output isn't shown on the button. Errors (non-zero exit code) go to DroidDeck's log. To show a value on
-  a button, use the [Command output](monitors.md#information) info instead.
+??? note "How scripts run"
+    - PowerShell runs with `-NoProfile -ExecutionPolicy Bypass`. Python uses the `py` launcher from the
+      official installer, or `python` from the `PATH`. The working folder is the script's folder.
+    - A script that runs for more than **5 minutes** is stopped.
+    - Output isn't shown on the button. Errors (non-zero exit code) go to DroidDeck's log. To show a
+      value on a button, use the [Command output](monitors.md#information) info instead.
 
 !!! warning "Created on the PC only"
-    A script can do anything your Windows account can, so — like hotkeys — script buttons can only be
-    created or changed in the configurator on the PC. The phone and browser decks run them normally.
+    A script can do anything your Windows account can, so, like keyboard shortcuts, script buttons can
+    only be created or changed in the configurator on the PC. The phone and browser decks run them
+    normally.
 
 ## Steam game { #steam }
 
@@ -220,7 +188,7 @@ game shows no image, open your Steam library once so it downloads the covers.
 ## Size { #size }
 
 Under **Size** in the editor, **Width (cells)** and **Height (cells)** make a button span up to 4 × 4
-cells — a big mute button, a tall [volume slider](monitors.md#volume-slider), a wide clock. The
+cells: a big mute button, a tall [volume slider](monitors.md#volume-slider), a wide clock. The
 button's position is its top-left cell.
 
 A large button never covers other buttons: it stops where another button is, and it's cut at the edge
@@ -229,7 +197,7 @@ of the grid. To make room, move the neighbours first.
 ## Long press and double tap { #gestures }
 
 Besides the normal tap, a button can have one action for **holding** and another for **double
-tapping** (the editor's *Toque longo e toque duplo* section). They take the same action types as the
+tapping** (the editor's **Long press and double tap** section). They take the same action types as the
 tap.
 
 - Example: a timer that starts on tap and resets on long press; an OBS scene on tap and recording on
@@ -249,7 +217,7 @@ In the editor's **Two states** section:
 - **Action when on** (optional) runs on the tap that turns the button off. Example: one tap starts
   recording with a hotkey and the next sends the stop hotkey. Without it, the same action runs every
   time.
-- **Label when active** and **Icon when active** change the look while the button is active — through
+- **Label when active** and **Icon when active** change the look while the button is active, through
   the toggle or through the action's own state (Discord mute, OBS recording, a light on...). The
   **active colour** sits with the button's colours.
 

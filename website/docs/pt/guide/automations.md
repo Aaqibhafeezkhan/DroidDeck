@@ -36,8 +36,8 @@ hora, sem esperar o acontecimento; **Excluir** apaga.
 - O PC confere a cada dois segundos, mais ou menos, então um acontecimento de app pode levar uns 2 s
   para disparar.
 - O botão roda como se você o tivesse tocado, inclusive um botão de [dois estados](actions.md#two-states),
-  que troca de estado. Um botão de [multiação](actions.md#multi-action) mantém as
-  [condições dos passos](actions.md#conditions).
+  que troca de estado. Um botão de [multiação](multi-action.md) mantém as
+  [condições dos passos](multi-action.md#conditions).
 - Se o botão for apagado, a automação fica na lista como *(botão apagado)* e não faz nada.
 - Como a automação só aperta botões salvos, ela não consegue fazer nada que um botão já não pudesse.
 

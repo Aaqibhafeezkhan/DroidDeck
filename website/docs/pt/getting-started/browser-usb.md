@@ -12,6 +12,11 @@ usá-lo pelo navegador, sem instalar nada.
 2. No topo da janela, escolha **Abrir no navegador**. O QR code muda.
 3. Aponte a câmera do aparelho para o código e abra o link.
 
+<figure class="dd-figure" markdown>
+![A janela de pareamento com Abrir no navegador selecionado: um QR code para a câmera, o link "Copiar o endereço (para abrir em outro PC)" e a linha "IP: 192.168.0.10:4787  Chave: a1b2c3d4…"](../../assets/screenshots/pairing-browser-pt.png){ .dd-shot width="402" height="602" loading="lazy" }
+<figcaption>Modo Abrir no navegador. O endereço e a chave são exemplos.</figcaption>
+</figure>
+
 O deck abre com os seus botões. O link leva a chave de API: a página a guarda no navegador e a tira da
 barra de endereço, então o endereço que aparece (e que você salva nos favoritos) já não tem a chave.
 
@@ -31,7 +36,7 @@ barra de endereço, então o endereço que aparece (e que você salva nos favori
 
 !!! info "As mesmas regras do celular"
     O deck no navegador se comporta como o app Android: executa todos os botões, mas botões com
-    [ações privilegiadas](../guide/actions.md) (atalho de teclado, abrir app, script, requisição HTTP) só
+    [ações privilegiadas](../guide/actions.md) (atalho de teclado, abrir programa, script, requisição HTTP) só
     podem ser criados ou alterados no configurador do próprio PC. A página usa HTTP simples na sua rede
     local, como a conexão do app.
 

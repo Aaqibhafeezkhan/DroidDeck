@@ -20,12 +20,12 @@ no equivalent.
 
 | Stream Deck action | Becomes |
 |---|---|
-| Hotkey, Hotkey Switch | [Hotkey](actions.md#hotkey) (keys converted to DroidDeck's syntax) |
+| Hotkey, Hotkey Switch | [Keyboard shortcut](hotkeys.md) (keys converted to DroidDeck's syntax) |
 | Text | Hotkey that types the text (plus Enter, if it was set) |
 | Open, Website | [Launch app](actions.md#launch-app) |
 | Multimedia | Play/pause, next, previous; volume up/down and mute of the default output |
 | Create Folder / Parent Folder | Open profile / Back |
-| Multi Action | [Multi-action](actions.md#multi-action); *Delay* steps become the delay of the step before |
+| Multi Action | [Multi-action](multi-action.md); *Delay* steps become the delay of the step before |
 | Discord plugin (official): mute, deafen | [Discord](../integrations/discord.md) toggle mute / deafen |
 | OBS plugin (official): record, stream, replay buffer, virtual camera, scene | [OBS](../integrations/obs.md) equivalents |
 

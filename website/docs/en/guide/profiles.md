@@ -36,7 +36,7 @@ To share a single profile, or bring one in from an Elgato Stream Deck, see
 [Import & share](import-share.md).
 
 !!! info "Backups with privileged actions"
-    A backup with hotkey, launch-app or HTTP-request buttons can only be imported from the configurator
+    A backup with keyboard-shortcut, open-program or HTTP-request buttons can only be imported from the configurator
     on the PC, under the same security rule as the buttons themselves.
 
 ## Without a connection to the PC { #offline }

@@ -1,4 +1,238 @@
-:root { --md-accent-fg-color: #e0a800; }
-[data-md-color-scheme="slate"] { --md-accent-fg-color: #FDD400; }
-.md-header { background: #111; }
-.md-tabs { background: #111; }
+/* DroidDeck docs: brand layer over Material for MkDocs.
+   Tokens follow the landing page (website/landing/index.html): near-black surfaces,
+   amber #FDD400 as the one accent, Space Grotesk for display, Inter for text. */
+
+:root {
+  --dd-bg: #0d0d0f;
+  --dd-bg2: #141417;
+  --dd-card: #18181c;
+  --dd-line: #26262c;
+  --dd-fg: #f4f4f5;
+  --dd-muted: #a1a1aa;
+  --dd-amber: #fdd400;
+  --dd-ink: #111111;          /* text on filled amber */
+  --dd-display: "Space Grotesk", var(--md-text-font-family, "Inter"), system-ui, sans-serif;
+  --dd-measure: 62ch;           /* 62 "0"-widths of Inter = about 72-78 real characters per line */
+}
+
+/* ---------- Light scheme: white page, near-black header, ochre links ---------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #0d0d0f;
+  --md-primary-fg-color--light: #18181c;
+  --md-primary-fg-color--dark: #000000;
+  --md-primary-bg-color: #f4f4f5;
+  --md-primary-bg-color--light: rgba(244, 244, 245, 0.72);
+
+  --md-accent-fg-color: #5c4700;                       /* hover: darker ochre, 9:1 on white */
+  --md-accent-fg-color--transparent: rgba(253, 212, 0, 0.18);
+  --md-accent-bg-color: var(--dd-ink);
+
+  --md-typeset-a-color: #7a6000;                       /* 6.0:1 on white */
+  --dd-focus: #7a6000;
+  --dd-selection: rgba(253, 212, 0, 0.45);
+  --dd-scroll: #c4c4cc;
+  --dd-scroll-hover: #8a8a94;
+  --md-default-fg-color--light: #52525b;               /* 7.7:1 on white */
+}
+
+/* ---------- Dark scheme: landing near-black ---------- */
+[data-md-color-scheme="slate"] {
+  --md-hue: 240;
+  --md-primary-fg-color: var(--dd-bg);
+  --md-primary-fg-color--light: var(--dd-card);
+  --md-primary-fg-color--dark: #000000;
+  --md-primary-bg-color: var(--dd-fg);
+  --md-primary-bg-color--light: rgba(244, 244, 245, 0.72);
+
+  --md-accent-fg-color: #ffe14d;
+  --md-accent-fg-color--transparent: rgba(253, 212, 0, 0.12);
+  --md-accent-bg-color: var(--dd-ink);
+
+  --md-default-bg-color: var(--dd-bg);
+  --md-default-bg-color--light: rgba(13, 13, 15, 0.54);
+  --md-default-fg-color: var(--dd-fg);
+  --md-default-fg-color--light: var(--dd-muted);       /* 7.6:1 on #0d0d0f */
+  --md-default-fg-color--lighter: #52525b;
+  --md-default-fg-color--lightest: var(--dd-line);
+
+  --md-code-bg-color: var(--dd-card);
+  --md-code-fg-color: #e4e4e7;
+  --md-typeset-color: var(--dd-fg);
+  --md-typeset-a-color: var(--dd-amber);               /* 13.5:1 on #0d0d0f */
+  --md-typeset-table-color: var(--dd-line);
+  --md-typeset-kbd-color: var(--dd-card);
+  --md-typeset-kbd-accent-color: var(--dd-line);
+  --md-typeset-kbd-border-color: #3f3f46;
+  --md-typeset-mark-color: rgba(253, 212, 0, 0.3);
+  --md-admonition-bg-color: var(--dd-bg2);
+
+  --md-footer-bg-color: var(--dd-bg2);
+  --md-footer-bg-color--dark: var(--dd-bg);
+  --md-footer-fg-color--light: var(--dd-muted);
+  --md-footer-fg-color--lighter: #8a8a94;
+
+  --dd-focus: var(--dd-amber);
+  --dd-selection: rgba(253, 212, 0, 0.32);
+  --dd-scroll: #34343c;
+  --dd-scroll-hover: #52525b;
+}
+
+/* Header and tabs share one surface: no mismatched strip. */
+.md-header,
+.md-tabs {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+.md-header { box-shadow: 0 1px 0 var(--dd-line); }
+.md-header[data-md-state="shadow"],
+.md-header--shadow { box-shadow: 0 1px 0 var(--dd-line), 0 6px 16px rgba(0, 0, 0, 0.35); }
+.md-header__title { font-family: var(--dd-display); font-weight: 700; letter-spacing: -0.01em; }
+
+/* ---------- Type ---------- */
+.md-typeset h1,
+.md-typeset h2 {
+  font-family: var(--dd-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--md-default-fg-color);
+  text-wrap: balance;
+}
+.md-typeset h1 { font-size: 2.2em; line-height: 1.15; margin-bottom: 0.8em; }
+.md-typeset h2 { font-size: 1.5em; line-height: 1.25; margin-top: 2em; }
+.md-typeset h3 { font-weight: 600; letter-spacing: -0.01em; margin-top: 1.8em; text-wrap: balance; }
+
+.md-typeset p,
+.md-typeset li { text-wrap: pretty; }
+
+/* Reading measure: prose, lists and callouts stop around 70 characters. Tables, code and
+   grids keep the full column. */
+.md-typeset > p,
+.md-typeset > ul,
+.md-typeset > ol,
+.md-typeset > dl,
+.md-typeset > blockquote,
+.md-typeset > .admonition,
+.md-typeset > details,
+.md-typeset > .tabbed-set > .tabbed-content > .tabbed-block > p {
+  max-width: var(--dd-measure);
+}
+
+/* Figures from the docs (mockups, screenshots). */
+.md-typeset img.dd-shot {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  height: auto;
+}
+.md-typeset figure.dd-figure { display: block; width: auto; margin: 1.5em 0; max-width: var(--dd-measure); text-align: left; }
+.md-typeset figure.dd-figure img.dd-shot { margin: 0; }
+.md-typeset figure.dd-figure--wide { max-width: none; }
+.md-typeset figure.dd-figure--wide img.dd-shot { width: 100%; }
+.md-typeset figure.dd-figure figcaption {
+  max-width: none;
+  margin: 0.6em 0 0;
+  font-style: normal;
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+  text-align: left;
+}
+.md-typeset .dd-todo-shot {
+  max-width: var(--dd-measure);
+  border: 1px dashed var(--md-default-fg-color--lighter);
+  border-radius: 10px;
+  padding: 1.2em 1em;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.75rem;
+}
+
+/* ---------- Tables ---------- */
+/* Full-width tables so stacked reference tables line up; the wrapper still scrolls sideways. */
+.md-typeset__table { display: block; }
+.md-typeset__table > table:not([class]) { display: table; width: 100%; }
+.md-typeset table:not([class]) {
+  font-size: 0.75rem;
+  border-color: var(--md-typeset-table-color);
+}
+.md-typeset table:not([class]) th {
+  font-weight: 600;
+  background-color: var(--md-code-bg-color);
+}
+/* Identifiers in the key columns never break mid-word; the description column wraps. */
+.md-typeset table:not([class]) td:not(:last-child) code { white-space: nowrap; word-break: keep-all; }
+.md-typeset table:not([class]) td { font-variant-numeric: tabular-nums; }
+
+/* ---------- Buttons ---------- */
+.md-typeset .md-button {
+  border-radius: 999px;
+  font-weight: 600;
+  padding: 0.55em 1.4em;
+  color: var(--md-default-fg-color);
+  border-color: var(--md-default-fg-color--lighter);
+}
+.md-typeset .md-button:hover,
+.md-typeset .md-button:focus-visible {
+  color: var(--md-default-fg-color);
+  background-color: var(--md-accent-fg-color--transparent);
+  border-color: var(--dd-amber);
+}
+.md-typeset .md-button--primary,
+.md-typeset .md-button--primary:hover,
+.md-typeset .md-button--primary:focus-visible {
+  background-color: var(--dd-amber);
+  border-color: var(--dd-amber);
+  color: var(--dd-ink);                                /* 13:1 on #FDD400 */
+}
+.md-typeset .md-button--primary:hover { background-color: #ffe14d; border-color: #ffe14d; }
+
+/* ---------- Navigation ---------- */
+.md-nav__link--active,
+.md-nav__item .md-nav__link--active,
+.md-nav__item .md-nav__link--active code { color: var(--md-typeset-a-color); font-weight: 600; }
+.md-nav__item--section > .md-nav__link {
+  font-family: var(--dd-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.md-nav__item--section .md-nav__item--section > .md-nav__link {
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset a { text-underline-offset: 0.2em; }
+
+/* Grid cards on the home page. */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li {
+  border-color: var(--md-default-fg-color--lightest);
+  border-radius: 12px;
+}
+.md-typeset .grid.cards > ul > li:hover { border-color: var(--md-default-fg-color--lighter); box-shadow: none; }
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li { background-color: var(--dd-bg2); }
+.md-typeset .grid.cards > ul > li > p:first-child { font-family: var(--dd-display); font-weight: 700; font-size: 1.05em; }
+.md-typeset .grid.cards .twemoji,
+.md-typeset .grid.cards .twemoji svg { color: var(--dd-amber); }
+[data-md-color-scheme="default"] .md-typeset .grid.cards .twemoji { color: #7a6000; }
+
+/* ---------- Browser surfaces ---------- */
+::selection { background-color: var(--dd-selection); color: inherit; }
+
+:focus-visible { outline: 2px solid var(--dd-focus); outline-offset: 2px; }
+.md-typeset :focus-visible { outline-color: var(--dd-focus); }
+
+html { scrollbar-color: var(--dd-scroll) transparent; }
+.md-sidebar__scrollwrap,
+.md-typeset pre > code,
+.md-typeset .md-typeset__scrollwrap { scrollbar-color: var(--dd-scroll) transparent; }
+.md-sidebar__scrollwrap:hover,
+.md-typeset pre > code:hover { scrollbar-color: var(--dd-scroll-hover) transparent; }
+::-webkit-scrollbar-thumb { background-color: var(--dd-scroll); }
+::-webkit-scrollbar-thumb:hover { background-color: var(--dd-scroll-hover); }
+
+/* Search highlights use the accent instead of the theme default. */
+.md-typeset mark { background-color: var(--md-typeset-mark-color, rgba(253, 212, 0, 0.35)); color: inherit; }
+
+/* Mermaid diagrams pick up the palette. */
+.md-typeset .mermaid { --md-mermaid-edge-color: var(--md-default-fg-color--light); --md-mermaid-node-bg-color: var(--md-accent-fg-color--transparent); --md-mermaid-node-fg-color: var(--md-default-fg-color); }
