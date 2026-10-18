@@ -62,8 +62,7 @@ class HomePageState extends State<HomePage> {
         isFullscreen: false,
       );
     }
-    return Scaffold(
-      body: Watch((context) {
+    final body = Watch((context) {
         final deckOnly = ThemeController.instance.deckOnly.value;
         // O deck tem carregamento e modo offline próprios; a espera aqui é só do áudio.
         if (!deckOnly &&
@@ -167,8 +166,8 @@ class HomePageState extends State<HomePage> {
             ),
           ],
         );
-      }),
-      bottomNavigationBar: Watch((context) {
+      });
+    final hideNav = Watch((context) {
         if (controller.isFullscreen.value ||
             ThemeController.instance.deckOnly.value) {
           return const SizedBox.shrink();
@@ -185,18 +184,55 @@ class HomePageState extends State<HomePage> {
             ),
           ],
           currentIndex: selectedIndex,
-          onTap: (val) {
-            _pageController.animateToPage(
-              val,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            );
-            setState(() {
-              selectedIndex = val;
-            });
-          },
+          onTap: _goToTab,
         );
-      }),
+      });
+    // Celular deitado: a navegação vai para uma faixa lateral (o Android recomenda o
+    // "rail" quando falta altura), e o deck ganha a altura que a barra de baixo comia.
+    final size = MediaQuery.sizeOf(context);
+    final landscape = size.width > size.height && size.height < 600;
+    if (!landscape) {
+      return Scaffold(body: body, bottomNavigationBar: hideNav);
+    }
+    return Scaffold(
+      body: Row(
+        children: [
+          Watch((context) {
+            if (controller.isFullscreen.value ||
+                ThemeController.instance.deckOnly.value) {
+              return const SizedBox.shrink();
+            }
+            return SafeArea(
+              right: false,
+              child: NavigationRail(
+                selectedIndex: selectedIndex,
+                onDestinationSelected: _goToTab,
+                labelType: NavigationRailLabelType.all,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.tune),
+                    label: Text(tr('Áudio')),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.grid_view),
+                    label: Text(tr('Deck')),
+                  ),
+                ],
+              ),
+            );
+          }),
+          Expanded(child: body),
+        ],
+      ),
     );
+  }
+
+  void _goToTab(int val) {
+    _pageController.animateToPage(
+      val,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    setState(() => selectedIndex = val);
   }
 }

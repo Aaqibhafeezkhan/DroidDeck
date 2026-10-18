@@ -303,10 +303,19 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     const target = 96.0; // tamanho-alvo do botão (confortável pra tocar)
     int cols = ((w + spacing) / (target + spacing)).floor();
     int rows = ((h + spacing) / (target + spacing)).floor();
+    // Deck no navegador: a grade é a do celular pareado quando ela cabe com teclas de
+    // tamanho decente (tablet, PC); senão o aparelho usa a própria grade e os botões
+    // entram em ordem de leitura (ver _buildButtonGrid).
     final shared = _sharedGrid;
     if (shared != null) {
-      cols = shared['columns']!;
-      rows = shared['rows']!;
+      final sc = shared['columns']!, sr = shared['rows']!;
+      final sharedCell = ((w - spacing * (sc - 1)) / sc) < ((h - spacing * (sr - 1)) / sr)
+          ? (w - spacing * (sc - 1)) / sc
+          : (h - spacing * (sr - 1)) / sr;
+      if (sharedCell >= 72) {
+        cols = sc;
+        rows = sr;
+      }
     }
     if (cols < 1) cols = 1;
     if (cols > 20) cols = 20;
@@ -333,22 +342,50 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     });
   }
 
-  /// Grade fixa cols×rows, centralizada, sem rolagem. Botões grandes ocupam várias casas.
+  /// Grade cols×rows, centralizada. Botões grandes ocupam várias casas. Num aparelho em
+  /// que a grade do celular pareado não cabe (iPhone em pé), os botões são reorganizados
+  /// em ordem de leitura na grade deste aparelho, com rolagem se passarem da tela.
   Widget _buildButtonGrid(
     DeckProfile profile,
     List<DeckProfile> profiles,
     _GridFit g,
   ) {
-    final layout = GridLayout.of(profile.buttons, g.rows, g.cols);
+    final shared = _sharedGrid;
+    final reflow = WebMode.deck &&
+        shared != null &&
+        (shared['columns'] != g.cols || shared['rows'] != g.rows);
+    final buttons = reflow ? reflowButtons(profile.buttons, g.cols) : profile.buttons;
+    // Na grade reorganizada a posição não é a salva: editar usa o botão original.
+    final original = {for (final b in profile.buttons) b.id: b};
+    var rows = g.rows;
+    if (reflow) {
+      for (final b in buttons) {
+        if (b.row + b.rowSpan > rows) rows = b.row + b.rowSpan;
+      }
+    }
+    final layout = GridLayout.of(buttons, rows, g.cols);
     final step = g.cell + g.spacing;
     double size(int span) => span * g.cell + (span - 1) * g.spacing;
-    return Center(
-      child: SizedBox(
-        width: size(g.cols),
-        height: size(g.rows),
-        child: Stack(
-          children: [
-            for (var row = 0; row < g.rows; row++)
+    // Fora do modo de edição as casas vazias não aparecem: centraliza só a área ocupada
+    // (um deck de 5 botões numa grade de 10 colunas não fica colado à esquerda).
+    var usedCols = g.cols, usedRows = rows;
+    if (!_editMode && layout.placements.isNotEmpty) {
+      usedCols = 0;
+      usedRows = 0;
+      for (final p in layout.placements) {
+        if (p.column + p.columnSpan > usedCols) usedCols = p.column + p.columnSpan;
+        if (p.row + p.rowSpan > usedRows) usedRows = p.row + p.rowSpan;
+      }
+    }
+    final grid = SizedBox(
+      width: size(usedCols),
+      height: size(usedRows),
+      child: Stack(
+        children: [
+          // Casas vazias: só no modo de edição (ou num deck vazio) e nunca na grade
+          // reorganizada, onde a casa não corresponde a uma posição salva.
+          if (!reflow)
+            for (var row = 0; row < rows; row++)
               for (var col = 0; col < g.cols; col++)
                 if (layout.isFree(row, col))
                   Positioned(
@@ -359,17 +396,21 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                     child: _buildCell(row, col, null, profiles,
                         showEmpty: _editMode || profile.buttons.isEmpty),
                   ),
-            for (final p in layout.placements)
-              Positioned(
-                left: p.column * step,
-                top: p.row * step,
-                width: size(p.columnSpan),
-                height: size(p.rowSpan),
-                child: _buildCell(p.row, p.column, p.button, profiles),
-              ),
-          ],
-        ),
+          for (final p in layout.placements)
+            Positioned(
+              left: p.column * step,
+              top: p.row * step,
+              width: size(p.columnSpan),
+              height: size(p.rowSpan),
+              child: _buildCell(p.row, p.column, original[p.button.id] ?? p.button, profiles),
+            ),
+        ],
       ),
+    );
+    if (usedRows <= g.rows) return Center(child: grid);
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(vertical: g.spacing),
+      child: Center(child: grid),
     );
   }
 

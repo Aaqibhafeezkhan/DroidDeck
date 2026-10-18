@@ -109,7 +109,12 @@ class ButtonLook {
         final side = c.maxWidth.isFinite && c.maxHeight.isFinite
             ? (c.maxWidth < c.maxHeight ? c.maxWidth : c.maxHeight)
             : 80.0;
-        final fontSize = (side * 0.13).clamp(10.0, 16.0);
+        // Regra do Relance: palavra nunca quebra no meio. Se a mais comprida não cabe na
+        // largura da tecla, a fonte encolhe (até 9) antes de o texto ser cortado.
+        final fontSize = text == null || !c.maxWidth.isFinite
+            ? (side * 0.13).clamp(10.0, 16.0)
+            : fitWordsFontSize(text, (side * 0.13).clamp(10.0, 16.0), c.maxWidth - 8,
+                MediaQuery.textScalerOf(context));
         final iconSize = (side * 0.36).clamp(20.0, 48.0);
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -175,4 +180,23 @@ class ButtonLook {
   /// Tira o "data:image/...;base64," da frente, quando vem.
   static String stripDataUri(String data) =>
       data.startsWith('data:') ? data.substring(data.indexOf(',') + 1) : data;
+}
+
+/// Maior tamanho (até [preferred], no mínimo 9) em que a palavra mais longa de [text]
+/// cabe em [maxWidth] numa linha só, em negrito médio (w600).
+double fitWordsFontSize(String text, double preferred, double maxWidth, TextScaler scaler) {
+  if (maxWidth <= 0) return preferred;
+  final words = text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty);
+  double widest = 0;
+  for (final w in words) {
+    final tp = TextPainter(
+      text: TextSpan(text: w, style: TextStyle(fontSize: preferred, fontWeight: FontWeight.w600)),
+      textDirection: TextDirection.ltr,
+      textScaler: scaler,
+      maxLines: 1,
+    )..layout();
+    if (tp.width > widest) widest = tp.width;
+  }
+  if (widest <= maxWidth) return preferred;
+  return (preferred * maxWidth / widest).clamp(9.0, preferred);
 }
