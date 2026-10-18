@@ -1,7 +1,6 @@
 import 'package:droiddeck/core/core.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_catalog.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../buttons/colors.dart';
@@ -54,7 +53,7 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
   bool get _showsActive => _isStatefulAction || _twoState.toggle;
 
   /// No navegador o painel roda no configurador (localhost); fora dele, no celular.
-  bool get _remote => !kIsWeb;
+  bool get _remote => !WebMode.configurator;
 
   @override
   void initState() {

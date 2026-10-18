@@ -1,4 +1,5 @@
 import 'config.dart';
+import 'connect.dart';
 import 'core.dart';
 import 'deck.dart';
 import 'editors.dart';
@@ -10,4 +11,5 @@ final Map<String, String> esStrings = {
   ...esDeck,
   ...esEditors,
   ...esConfig,
+  ...esConnect,
 };

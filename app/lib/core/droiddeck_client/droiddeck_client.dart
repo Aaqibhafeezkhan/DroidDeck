@@ -405,6 +405,16 @@ class DroidDeckClient {
     }
   }
 
+  /// A chave atual é aceita pelo PC? (falha de rede também conta como não)
+  Future<bool> checkKey() async {
+    try {
+      await _dio.get('/api/StreamDeck/layout');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// O celular reporta quantos botões cabem inteiros na tela.
   Future<void> saveLayout(int rows, int columns) async {
     await _dio.post(

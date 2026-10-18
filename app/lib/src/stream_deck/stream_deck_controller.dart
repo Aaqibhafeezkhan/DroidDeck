@@ -78,7 +78,7 @@ class StreamDeckController {
   }
 
   Future<void> _saveCache(List<DeckProfile> list) async {
-    if (kIsWeb) return; // o configurador roda no próprio PC
+    if (WebMode.configurator) return; // o configurador roda no próprio PC
     try {
       final json = jsonEncode(list.map((p) => p.toJson()).toList());
       await (await SharedPreferences.getInstance()).setString(_cacheKey, json);
@@ -86,7 +86,7 @@ class StreamDeckController {
   }
 
   Future<List<DeckProfile>> _loadCache() async {
-    if (kIsWeb) return const [];
+    if (WebMode.configurator) return const [];
     try {
       final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
       if (raw == null) return const [];

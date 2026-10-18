@@ -19,6 +19,17 @@ namespace DroidDeck.Lib
             return $"droiddeck://pair?ip={ip}&port={Port}&key={key}";
         }
 
+        /// <summary>
+        /// Endereco do deck no navegador (iPhone, tablet, outro PC), ja com a chave: a camera
+        /// abre direto e a pagina guarda a chave e a tira da barra de endereco.
+        /// </summary>
+        public static string BuildBrowserUrl()
+        {
+            var ip = NetworkInfo.GetLanIp();
+            var key = ApiKeyProvider.GetKey();
+            return $"http://{ip}:{Port}/?pair={System.Uri.EscapeDataString(key)}";
+        }
+
         public static byte[] BuildQrPng(string uri, int pixelsPerModule = 10)
         {
             var generator = new QRCodeGenerator();

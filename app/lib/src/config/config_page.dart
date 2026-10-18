@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:droiddeck/src/connection/constants.dart';
 import 'package:droiddeck/src/services/server_discovery_service.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
@@ -230,6 +231,24 @@ class ConfigPageState extends State<ConfigPage> {
     }
   }
 
+  /// Deck no navegador: mostra a qual PC está ligado e permite esquecer a chave.
+  Widget _buildBrowserPairing() {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: const Icon(Icons.computer),
+      title: Text(Uri.base.host),
+      subtitle: Text(tr('Este navegador está pareado com o PC.')),
+      trailing: TextButton(
+        onPressed: () async {
+          await (await SharedPreferences.getInstance()).remove(Constants.apiKeyKey);
+          if (!mounted) return;
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (_) => false);
+        },
+        child: Text(tr('Esquecer')),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,6 +261,9 @@ class ConfigPageState extends State<ConfigPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+            // No navegador o PC é o próprio endereço da página: sem lista de PCs nem IP.
+            if (kIsWeb) _buildBrowserPairing(),
+            if (!kIsWeb) ...[
             if (_pcs.isNotEmpty) ...[
               _buildPcList(),
               const Divider(height: 24),
@@ -282,6 +304,7 @@ class ConfigPageState extends State<ConfigPage> {
               onPressed: _saveAndGoBack,
               child: Text(tr('Salvar')),
             ),
+            ],
             const Divider(height: 32),
             ListTile(
               contentPadding: EdgeInsets.zero,

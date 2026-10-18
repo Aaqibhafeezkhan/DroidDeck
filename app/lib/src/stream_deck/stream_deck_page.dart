@@ -35,6 +35,10 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
   int? _reportedCols; // última grade reportada ao PC (evita reenvio)
   int? _reportedRows;
 
+  /// Deck no navegador: usa a grade do celular (guardada no PC) em vez de calcular a
+  /// própria — senão o navegador e o celular brigariam pela grade.
+  Map<String, int>? _sharedGrid;
+
   /// Modo de edição: o toque abre o editor em vez de executar. Necessário para editar
   /// botões cujo toque longo já tem uma ação própria.
   bool _editMode = false;
@@ -55,6 +59,7 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
   void initState() {
     super.initState();
     controller.loadProfiles();
+    if (WebMode.deck) _loadSharedGrid();
     // Catálogo de ações: ícones padrão e estados ao vivo (timers, Windows).
     ActionCatalog.instance.load();
 
@@ -67,6 +72,7 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
       if (v != lastSeen) {
         lastSeen = v;
         controller.loadProfiles();
+        if (WebMode.deck) _loadSharedGrid();
       }
     });
 
@@ -89,7 +95,7 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
       final auto = signalR.autoProfile.value;
       final enabled = ThemeController.instance.autoProfile.value;
       controller.profiles.value;
-      if (!enabled || kIsWeb || auto.isEmpty) return;
+      if (!enabled || WebMode.configurator || auto.isEmpty) return;
       final id = auto['profileId'] as String?;
       if (id == _appliedAuto) return;
       untracked(() {
@@ -105,6 +111,11 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
       if (connected && !wasConnected) untracked(controller.loadProfiles);
       wasConnected = connected;
     });
+  }
+
+  Future<void> _loadSharedGrid() async {
+    final grid = await Injector.get<DroidDeckClient>().getLayout();
+    if (grid != null && mounted) setState(() => _sharedGrid = grid);
   }
 
   void _jumpToPage(int index) {
@@ -278,6 +289,11 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     const target = 96.0; // tamanho-alvo do botão (confortável pra tocar)
     int cols = ((w + spacing) / (target + spacing)).floor();
     int rows = ((h + spacing) / (target + spacing)).floor();
+    final shared = _sharedGrid;
+    if (shared != null) {
+      cols = shared['columns']!;
+      rows = shared['rows']!;
+    }
     if (cols < 1) cols = 1;
     if (cols > 20) cols = 20;
     if (rows < 1) rows = 1;
@@ -382,7 +398,7 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
   Widget build(BuildContext context) {
     // Só o configurador web (PC) usa o layout de 3 painéis (perfis | grade | props).
     // No celular mostramos sempre a grade de blocos — deitado ou em pé.
-    if (kIsWeb) {
+    if (WebMode.configurator) {
       return SteamDeckDesktopLayout(
         controller: controller,
         onToggleFullscreen: widget.onToggleFullscreen,

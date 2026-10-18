@@ -3,6 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:droiddeck/src/connection/browser_url.dart';
+import 'package:droiddeck/src/connection/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_controller.dart';
 import 'audio_page.dart';
 import '../stream_deck/stream_deck_page.dart';
@@ -30,7 +33,7 @@ class HomePageState extends State<HomePage> {
       untracked(() => controller.isFullscreen.value = deckOnly);
     });
     // No web o foco é configurar o deck; não precisa do polling de mixer.
-    if (!kIsWeb) controller.startPolling();
+    if (WebMode.isDevice) controller.startPolling();
   }
 
   @override
@@ -44,7 +47,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // No navegador (configurador no PC), abre direto no editor de deck.
-    if (kIsWeb) {
+    if (WebMode.configurator) {
       return StreamDeckPage(
         onToggleFullscreen: () {},
         isFullscreen: false,
@@ -83,8 +86,16 @@ class HomePageState extends State<HomePage> {
                         onPressed: controller.fetchOutputs,
                         child: Text(tr('Tentar novamente'))),
                   TextButton.icon(
-                    onPressed: () =>
-                        Navigator.of(context).pushReplacementNamed('/config'),
+                    onPressed: () async {
+                      // No navegador, refazer é esquecer a chave e voltar à tela do QR.
+                      if (kIsWeb) {
+                        await (await SharedPreferences.getInstance())
+                            .remove(Constants.apiKeyKey);
+                      }
+                      if (!context.mounted) return;
+                      Navigator.of(context)
+                          .pushReplacementNamed(kIsWeb ? '/' : '/config');
+                    },
                     icon: const Icon(Icons.qr_code_scanner),
                     label: Text(tr('Refazer pareamento')),
                   ),
@@ -95,6 +106,7 @@ class HomePageState extends State<HomePage> {
         }
 
         // Toggle System UI based on fullscreen state
+        if (kIsWeb) setBrowserFullscreen(controller.isFullscreen.value);
         if (controller.isFullscreen.value) {
           SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
         } else {

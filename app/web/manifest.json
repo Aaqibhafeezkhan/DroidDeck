@@ -3,10 +3,10 @@
     "short_name": "DroidDeck",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "DroidDeck — configurador do deck.",
-    "orientation": "portrait-primary",
+    "background_color": "#0D0D0F",
+    "theme_color": "#0D0D0F",
+    "description": "DroidDeck — seu deck de botões para o PC.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

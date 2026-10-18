@@ -1,7 +1,9 @@
+import 'package:droiddeck/src/connection/browser_url.dart';
 import 'package:droiddeck/src/connection/pc_store.dart';
 import 'package:droiddeck/src/connection/constants.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/core/core.dart';
+import 'package:droiddeck/src/welcome/browser_pair_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,20 +24,43 @@ class SplashPageState extends State<SplashPage> {
 
   Future<void> _checkConfig() async {
     if (kIsWeb) {
-      // O web é servido pelo próprio PC: pega a chave via loopback (sem QR).
+      // O web é servido pelo próprio PC: no PC a chave vem pelo loopback (sem QR); de
+      // outro aparelho, do QR "Abrir no navegador" (?pair=) ou do que ficou salvo.
       final client = Injector.get<DroidDeckClient>();
       final signalR = Injector.get<SignalRService>();
       final origin = Uri.base.origin;
       client.setBaseUrl(origin);
+      String? key;
       try {
         final resp = await Dio().get('$origin/api/pairing/local-key');
-        final key = (resp.data is Map) ? resp.data['key'] as String? : null;
-        client.setApiKey(key);
-        await signalR.init(origin, apiKey: key);
-      } catch (_) {
-        // Aberto fora do localhost (LAN): sem chave automática.
-        await signalR.init(origin);
+        key = (resp.data is Map) ? resp.data['key'] as String? : null;
+      } catch (_) {}
+      var rejected = false;
+      if (key == null && WebMode.deck) {
+        final sp = await SharedPreferences.getInstance();
+        final fromUrl = Uri.base.queryParameters['pair'];
+        if (fromUrl != null && fromUrl.isNotEmpty) {
+          clearPairingFromUrl();
+          await sp.setString(Constants.apiKeyKey, fromUrl);
+        }
+        key = sp.getString(Constants.apiKeyKey);
+        if (key != null) {
+          client.setApiKey(key);
+          if (!await client.checkKey()) {
+            await sp.remove(Constants.apiKeyKey);
+            key = null;
+            rejected = true;
+          }
+        }
+        if (key == null) {
+          if (!mounted) return;
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (_) => BrowserPairPage(rejected: rejected)));
+          return;
+        }
       }
+      client.setApiKey(key);
+      await signalR.init(origin, apiKey: key);
       if (mounted) Navigator.of(context).pushReplacementNamed('/home');
       return;
     }
