@@ -19,8 +19,10 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final controller = HomeController();
-  final PageController _pageController = PageController();
-  int selectedIndex = 0;
+  // Abre no Deck (é para isso que se abre o app); lembra a última aba usada.
+  static const _tabKey = 'home_tab';
+  final PageController _pageController = PageController(initialPage: 1);
+  int selectedIndex = 1;
   void Function()? _deckOnlyCleanup;
 
   @override
@@ -34,6 +36,13 @@ class HomePageState extends State<HomePage> {
     });
     // No web o foco é configurar o deck; não precisa do polling de mixer.
     if (WebMode.isDevice) controller.startPolling();
+    SharedPreferences.getInstance().then((sp) {
+      final tab = sp.getInt(_tabKey);
+      if (tab != null && tab != selectedIndex && mounted) {
+        setState(() => selectedIndex = tab);
+        if (_pageController.hasClients) _pageController.jumpToPage(tab);
+      }
+    });
   }
 
   @override
@@ -77,7 +86,7 @@ class HomePageState extends State<HomePage> {
                   Text(
                     isAuthError
                         ? tr('Falha de autenticação (chave inválida ou expirada).\nRefaça o pareamento.')
-                        : tr('Erro: {error}', {'error': err}),
+                        : tr('O PC não respondeu. Confira se o DroidDeck está aberto nele e se os dois estão na mesma rede.'),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -126,6 +135,7 @@ class HomePageState extends State<HomePage> {
             setState(() {
               selectedIndex = index;
             });
+            SharedPreferences.getInstance().then((sp) => sp.setInt(_tabKey, index));
           },
           children: [
             Column(
@@ -169,9 +179,9 @@ class HomePageState extends State<HomePage> {
               icon: const Icon(Icons.tune),
               label: tr('Áudio'),
             ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view),
-              label: 'Deck',
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.grid_view),
+              label: tr('Deck'),
             ),
           ],
           currentIndex: selectedIndex,

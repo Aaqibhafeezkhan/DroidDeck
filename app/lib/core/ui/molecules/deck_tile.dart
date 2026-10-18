@@ -116,16 +116,7 @@ class DeckTile extends StatelessWidget {
     }
 
     if (onTap == null && onLongPress == null) return tile;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      // Vibra ao encostar, não ao soltar: é o que dá a sensação de botão físico.
-      onTapDown: onTap == null
-          ? null
-          : (_) => ThemeController.instance.tapFeedback(),
-      onTap: onTap,
-      onLongPress: onLongPress,
-      child: tile,
-    );
+    return _Pressable(onTap: onTap, onLongPress: onLongPress, child: tile);
   }
 
   Widget _content(Color fg, EdgeInsets padding) {
@@ -149,6 +140,55 @@ class DeckTile extends StatelessWidget {
       return hsl.lightness < 0.62 ? hsl.withLightness(0.62).toColor() : c;
     }
     return hsl.lightness > 0.42 ? hsl.withLightness(0.42).toColor() : c;
+  }
+}
+
+/// Botão que afunda ao encostar o dedo (e vibra): sem vibração, o afundar é a única
+/// confirmação de que o toque pegou.
+class _Pressable extends StatefulWidget {
+  const _Pressable({required this.child, this.onTap, this.onLongPress});
+
+  final Widget child;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
+
+  @override
+  State<_Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<_Pressable> {
+  bool _down = false;
+
+  void _set(bool down) {
+    if (_down != down) setState(() => _down = down);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      // Vibra ao encostar, não ao soltar: é o que dá a sensação de botão físico.
+      onTapDown: (_) {
+        _set(true);
+        if (widget.onTap != null) ThemeController.instance.tapFeedback();
+      },
+      onTapUp: (_) => _set(false),
+      onTapCancel: () => _set(false),
+      onLongPressEnd: (_) => _set(false),
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
+      child: AnimatedScale(
+        scale: _down ? 0.93 : 1,
+        duration: Duration(milliseconds: reduce ? 0 : (_down ? 60 : 140)),
+        curve: Curves.easeOutCubic,
+        child: AnimatedOpacity(
+          opacity: _down ? 0.82 : 1,
+          duration: Duration(milliseconds: reduce ? 0 : 90),
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }
 

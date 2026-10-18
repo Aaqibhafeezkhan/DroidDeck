@@ -130,60 +130,45 @@ class _ActionPickerState extends State<ActionPicker> {
     });
   }
 
-  /// Seletor de tipo agrupado por categoria.
+  /// Campo do tipo de ação: mostra o escolhido e abre o seletor com busca.
   Widget _typePicker(BuildContext context) {
-    final schemas = _available;
-    final categories = <String, List<ActionSchema>>{};
-    for (final s in schemas) {
-      categories.putIfAbsent(s.category, () => []).add(s);
-    }
-    final known = schemas.any((s) => s.type == _type);
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-
-    final items = <DropdownMenuItem<String>>[
-      DropdownMenuItem(value: 'none', child: Text(tr('Nenhuma'))),
-      for (final entry in categories.entries) ...[
-        DropdownMenuItem<String>(
-          enabled: false,
-          value: '__${entry.key}',
-          child: Text(entry.key.toUpperCase(),
-              style: TextStyle(
-                  fontSize: 11,
-                  letterSpacing: 1.1,
-                  fontWeight: FontWeight.w600,
-                  color: muted)),
-        ),
-        for (final s in entry.value)
-          DropdownMenuItem(
-            value: s.type,
-            child: Row(
-              children: [
-                Icon(s.iconData, size: 18),
-                const SizedBox(width: 10),
-                Expanded(child: Text(s.title, overflow: TextOverflow.ellipsis)),
-              ],
-            ),
+    final schema = _catalog.find(_type);
+    final scheme = Theme.of(context).colorScheme;
+    final title = _type == 'none'
+        ? tr('Nenhuma')
+        : (schema?.title ?? tr('{type} (desconhecido)', {'type': _type}));
+    return Semantics(
+      button: true,
+      label: '${widget.label ?? tr('Ação')}: $title',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: _locked ? null : () => _openTypeSheet(context),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: widget.label ?? tr('Ação'),
+            border: const OutlineInputBorder(),
+            enabled: !_locked,
+            suffixIcon: const Icon(Icons.arrow_drop_down),
           ),
-      ],
-      // Tipo que este PC não anuncia (botão de uma versão mais nova/antiga).
-      if (!known && _type != 'none')
-        DropdownMenuItem(value: _type, child: Text(tr('{type} (desconhecido)', {'type': _type}))),
-    ];
-
-    return DropdownButtonFormField<String>(
-      value: _type,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: widget.label ?? tr('Ação'),
-        border: const OutlineInputBorder(),
+          child: Row(
+            children: [
+              Icon(schema?.iconData ?? Icons.block, size: 20,
+                  color: _type == 'none' ? scheme.onSurfaceVariant : scheme.primary),
+              const SizedBox(width: 10),
+              Expanded(child: Text(title, overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+        ),
       ),
-      items: items,
-      onChanged: _locked
-          ? null
-          : (val) {
-              if (val != null && !val.startsWith('__')) _selectType(val);
-            },
     );
+  }
+
+  Future<void> _openTypeSheet(BuildContext context) async {
+    final picked = await showDialog<String>(
+      context: context,
+      builder: (_) => _ActionTypeDialog(schemas: _available, current: _type),
+    );
+    if (picked != null) _selectType(picked);
   }
 
   /// Campos do tipo escolhido: tela própria ou formulário gerado pelo schema.
@@ -257,14 +242,150 @@ class _ActionPickerState extends State<ActionPicker> {
                     style: const TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(
-                  tr('Ações que abrem programas, enviam atalhos ou fazem requisições '
-                      'só podem ser alteradas no configurador do PC (http://localhost:4787). '
-                      'Aqui você pode mudar o nome, o ícone e as cores.'),
+                  tr('Ações que abrem programas, enviam atalhos, rodam scripts ou fazem '
+                      'requisições só mudam no editor do PC: clique no ícone do DroidDeck '
+                      'na bandeja → "Abrir no navegador". Aqui você pode mudar o nome, o '
+                      'ícone e as cores.'),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+/// Escolher o tipo de ação: busca, as mais usadas no topo e o resto por categoria, cada
+/// uma com uma linha dizendo o que faz.
+class _ActionTypeDialog extends StatefulWidget {
+  final List<ActionSchema> schemas;
+  final String current;
+
+  const _ActionTypeDialog({required this.schemas, required this.current});
+
+  /// O que a maioria procura primeiro.
+  static const popular = ['hotkey', 'mixer', 'media', 'launch_app', 'obs'];
+
+  @override
+  State<_ActionTypeDialog> createState() => _ActionTypeDialogState();
+}
+
+class _ActionTypeDialogState extends State<_ActionTypeDialog> {
+  String _query = '';
+
+  static String _fold(String s) => s
+      .toLowerCase()
+      .replaceAll(RegExp('[áàâã]'), 'a')
+      .replaceAll(RegExp('[éê]'), 'e')
+      .replaceAll('í', 'i')
+      .replaceAll(RegExp('[óôõ]'), 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ç', 'c');
+
+  bool _matches(ActionSchema s) {
+    if (_query.isEmpty) return true;
+    final q = _fold(_query);
+    return _fold(s.title).contains(q) ||
+        _fold(s.category).contains(q) ||
+        _fold(s.description ?? '').contains(q) ||
+        s.type.contains(q);
+  }
+
+  Widget _tile(ActionSchema s) {
+    final selected = s.type == widget.current;
+    return ListTile(
+      selected: selected,
+      leading: Icon(s.iconData),
+      title: Text(s.title),
+      subtitle: s.description == null
+          ? null
+          : Text(s.description!, maxLines: 2, overflow: TextOverflow.ellipsis),
+      trailing: selected ? const Icon(Icons.check) : null,
+      onTap: () => Navigator.pop(context, s.type),
+    );
+  }
+
+  Widget _header(String text) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+        child: Text(text,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600)),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final found = widget.schemas.where(_matches).toList();
+    final categories = <String, List<ActionSchema>>{};
+    for (final s in found) {
+      categories.putIfAbsent(s.category, () => []).add(s);
+    }
+    final popular = _query.isEmpty
+        ? [
+            for (final t in _ActionTypeDialog.popular)
+              ...widget.schemas.where((s) => s.type == t),
+          ]
+        : const <ActionSchema>[];
+
+    return Dialog(
+      insetPadding: const EdgeInsets.all(16),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520, maxHeight: 640),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: tr('Buscar ação (ex.: mudo, OBS, atalho)'),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                ),
+                onChanged: (v) => setState(() => _query = v.trim()),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  if (_query.isEmpty)
+                    ListTile(
+                      leading: const Icon(Icons.block),
+                      title: Text(tr('Nenhuma')),
+                      subtitle: Text(tr('O botão só mostra o rótulo ou uma informação.')),
+                      selected: widget.current == 'none',
+                      onTap: () => Navigator.pop(context, 'none'),
+                    ),
+                  if (popular.isNotEmpty) ...[
+                    _header(tr('Mais usadas')),
+                    for (final s in popular) _tile(s),
+                  ],
+                  for (final entry in categories.entries) ...[
+                    _header(entry.key),
+                    for (final s in entry.value) _tile(s),
+                  ],
+                  if (found.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(tr('Nenhuma ação com "{q}".', {'q': _query}),
+                          textAlign: TextAlign.center),
+                    ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: TextButton(
+                    onPressed: () => Navigator.pop(context), child: Text(tr('Cancelar'))),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:droiddeck/src/config/pc_switcher.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/src/stream_deck/layout/desktop_layout.dart';
 import 'package:droiddeck/src/stream_deck/layout/grid_placement.dart';
+import 'package:droiddeck/src/stream_deck/widgets/connection_chip.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_catalog.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/dynamic_deck_button.dart';
@@ -270,6 +271,18 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
         button: button,
         onSave: (b) async {
           final refused = await controller.updateButton(b);
+          // "Limpar botão" apaga na hora, mas dá para desfazer.
+          if (refused == null && b.id.isEmpty && button.id.isNotEmpty) {
+            messenger.showSnackBar(SnackBar(
+              content: Text(tr('Botão removido.')),
+              duration: const Duration(seconds: 6),
+              action: SnackBarAction(
+                label: tr('Desfazer'),
+                onPressed: () => controller.updateButton(button),
+              ),
+            ));
+            return;
+          }
           if (refused != null) {
             messenger.showSnackBar(
               SnackBar(
@@ -343,7 +356,8 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                     top: row * step,
                     width: g.cell,
                     height: g.cell,
-                    child: _buildCell(row, col, null, profiles),
+                    child: _buildCell(row, col, null, profiles,
+                        showEmpty: _editMode || profile.buttons.isEmpty),
                   ),
             for (final p in layout.placements)
               Positioned(
@@ -363,9 +377,13 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     int row,
     int col,
     DeckButton? existing,
-    List<DeckProfile> profiles,
-  ) {
+    List<DeckProfile> profiles, {
+    bool showEmpty = true,
+  }) {
     if (existing == null) {
+      // Fora do modo de edição, casa vazia é só espaço: um toque sem querer no meio de
+      // uma live não abre "Novo botão". Deck ainda vazio mostra os "+" para começar.
+      if (!showEmpty) return const SizedBox.shrink();
       final novo = DeckButton(
         id: '',
         label: tr('Novo botão'),
@@ -373,22 +391,28 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
         column: col,
         action: DeckAction(type: 'none'),
       );
-      return DeckEmptyTile(
-        onTap: () => _editButton(novo),
-        onLongPress: () => _editButton(novo),
+      return Semantics(
+        button: true,
+        label: tr('Criar botão'),
+        child: DeckEmptyTile(
+          onTap: () => _editButton(novo),
+          onLongPress: () => _editButton(novo),
+        ),
       );
     }
-    // Toque longo com ação própria executa a ação; sem ela (ou no modo de edição),
-    // abre o editor como sempre.
+    // Toque longo com ação própria executa a ação. Sem ela, editar só no modo de edição
+    // (lápis na barra); fora dele, um aviso diz como editar.
     final hasLongPress = existing.longPressAction != null;
     final tile = DynamicDeckButton(
       button: existing,
       onTap: _editMode
           ? () => _editButton(existing)
           : () => _handlePress(existing, profiles),
-      onLongPress: !_editMode && hasLongPress
-          ? () => _handlePress(existing, profiles, gesture: 'longPress')
-          : () => _editButton(existing),
+      onLongPress: _editMode
+          ? () => _editButton(existing)
+          : hasLongPress
+              ? () => _handlePress(existing, profiles, gesture: 'longPress')
+              : _hintEditMode,
     );
     // Só botões com toque duplo pagam a espera (~300 ms) para diferenciar do simples.
     if (_editMode || existing.doubleTapAction == null) return tile;
@@ -396,6 +420,18 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
       onDoubleTap: () => _handlePress(existing, profiles, gesture: 'doubleTap'),
       child: tile,
     );
+  }
+
+  void _hintEditMode() {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(tr('Para editar, toque no lápis da barra de cima.')),
+        action: SnackBarAction(
+          label: tr('Editar agora'),
+          onPressed: () => setState(() => _editMode = true),
+        ),
+      ));
   }
 
   @override
@@ -487,72 +523,12 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                 title: Text(
                   _navStack.isNotEmpty
                       ? (_folderProfile(profiles)?.name ?? tr('Pasta'))
-                      : (currentProfile?.name ?? 'StreamDeck'),
+                      : (currentProfile?.name ?? 'DroidDeck'),
                 ),
                 actions: [
-                  // SIGNALR DEBUG INDICATOR
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Center(
-                      child: Builder(
-                        builder: (context) {
-                          final status = Injector.get<SignalRService>()
-                              .connectionStatus
-                              .watch(context);
-                          Color color = Colors.grey;
-                          if (status == "Connected") color = Colors.green;
-                          if (status.startsWith("Conn Error"))
-                            color = Colors.red;
-                          return IconButton(
-                            onPressed: () {
-                              // Show Debug Info
-                              final signalR = Injector.get<SignalRService>();
-                              final debugData = signalR.lastDebugData.value;
-                              final currentUrl = signalR.currentUrl.value;
-
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text(tr('Diagnóstico da conexão')),
-                                  content: SingleChildScrollView(
-                                    child: Text(
-                                      tr('Status: {status}\n\nURL: {url}\n\nÚltimos dados:\n{data}',
-                                          {'status': status, 'url': currentUrl, 'data': debugData}),
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(ctx),
-                                      child: Text(tr('Fechar')),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            tooltip: status,
-                            icon: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: color,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  width: 2,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: Center(child: ConnectionChip()),
                   ),
                   const PcMenuButton(),
                   IconButton(

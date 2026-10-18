@@ -93,7 +93,7 @@ class InfoSection extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 tr('Botões que rodam um comando ou leem uma URL no PC só mudam no '
-                    'configurador do PC (http://localhost:4787).'),
+                    'editor do PC: ícone do DroidDeck na bandeja → "Abrir no navegador".'),
                 style: hint,
               ),
             ),

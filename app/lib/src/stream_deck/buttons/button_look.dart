@@ -68,7 +68,7 @@ class ButtonLook {
   }
 
   /// O ícone escolhido pelo usuário; sem ele, [fallback] ou o ícone do tipo de ação.
-  Widget icon({IconData? fallback, double size = 32}) {
+  Widget icon({IconData? fallback, double? size}) {
     if (button.iconBase64?.isNotEmpty ?? false) return base64Icon(button.iconBase64!);
     if (button.iconName?.isNotEmpty ?? false) {
       return Icon(buttonIconData(button.iconName!), size: size);
@@ -94,7 +94,7 @@ class ButtonLook {
     if (on && (button.activeIconBase64?.isNotEmpty ?? false)) {
       icon = base64Icon(button.activeIconBase64!);
     } else if (on && (button.activeIconName?.isNotEmpty ?? false)) {
-      icon = Icon(buttonIconData(button.activeIconName!), size: 32);
+      icon = Icon(buttonIconData(button.activeIconName!));
     }
     final text = on && (button.activeLabel?.isNotEmpty ?? false) ? button.activeLabel : label;
     return DeckTile(
@@ -103,21 +103,35 @@ class ButtonLook {
       activeColor: activeColor ?? this.activeColor,
       onTap: onTap,
       onLongPress: onLongPress,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          if (text != null && text.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 10, overflow: TextOverflow.ellipsis),
-              maxLines: 2,
-            ),
+      // Rótulo e ícone crescem com o botão: num tablet ou no configurador o texto não
+      // fica miúdo; num celular pequeno não estoura.
+      child: LayoutBuilder(builder: (context, c) {
+        final side = c.maxWidth.isFinite && c.maxHeight.isFinite
+            ? (c.maxWidth < c.maxHeight ? c.maxWidth : c.maxHeight)
+            : 80.0;
+        final fontSize = (side * 0.13).clamp(10.0, 16.0);
+        final iconSize = (side * 0.36).clamp(20.0, 48.0);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconTheme.merge(data: IconThemeData(size: iconSize), child: icon),
+            if (text != null && text.isNotEmpty) ...[
+              SizedBox(height: side * 0.04),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w600,
+                  height: 1.15,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                maxLines: 2,
+              ),
+            ],
           ],
-        ],
-      ),
+        );
+      }),
     );
   }
 

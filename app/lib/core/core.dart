@@ -32,3 +32,4 @@ export 'theme/app_theme.dart';
 export 'theme/theme_controller.dart';
 export 'ui/molecules/deck_tile.dart';
 export 'web_mode.dart';
+export 'ui/friendly_error.dart';

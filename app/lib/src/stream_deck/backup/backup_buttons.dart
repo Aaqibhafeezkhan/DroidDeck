@@ -42,7 +42,7 @@ class _BackupButtonsState extends State<BackupButtons> {
       if (data is Map && data['error'] is String) return data['error'] as String;
       if (e.response == null) return tr('O PC não respondeu.');
     }
-    return tr('Não deu certo: {error}', {'error': e});
+    return friendlyError(e);
   }
 
   Future<String> _export() async {
@@ -141,8 +141,9 @@ class _BackupButtonsState extends State<BackupButtons> {
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.save_alt),
           title: Text(tr('Exportar backup do deck')),
-          subtitle: Text(tr(
-              'Salva todos os perfis num arquivo .droiddeck. Para importar, use o configurador no PC.')),
+          subtitle: Text(canPickBackup
+              ? tr('Salva todos os perfis num arquivo .droiddeck.')
+              : tr('Salva todos os perfis num arquivo .droiddeck. Para importar, use o configurador no PC.')),
           trailing: _busy
               ? const SizedBox(
                   width: 20,

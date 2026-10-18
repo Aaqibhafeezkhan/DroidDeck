@@ -40,7 +40,9 @@ class ThemeController {
         presetId: presetById(prefs.getString(_presetKey)).id,
         mode:
             ThemeMode.values.asNameMap()[prefs.getString(_modeKey)] ??
-            ThemeMode.system,
+            // Escuro por padrão: o deck fica ao lado do monitor, muitas vezes num
+            // quarto escuro durante a live. Quem quiser escolhe "Sistema" ou "Claro".
+            ThemeMode.dark,
         accent: accent != null ? Color(accent) : null,
         tileStyle: DeckTileStyle.values
             .asNameMap()[prefs.getString(_tileStyleKey)],

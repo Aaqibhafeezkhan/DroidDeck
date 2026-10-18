@@ -160,4 +160,122 @@ final Map<String, String> enFeatures = {
       'Import',
   'Perfil "{name}" importado.':
       'Profile "{name}" imported.',
+  'O PC recusou a chave deste aparelho. Refaça o pareamento.':
+      'The PC rejected this device\'s key. Pair again.',
+  'O PC demorou demais para responder. Tente de novo.':
+      'The PC took too long to answer. Try again.',
+  'O PC não respondeu. Confira se o DroidDeck está aberto nele e se os dois estão na mesma rede.':
+      'The PC didn\'t answer. Check that DroidDeck is open on it and that both are on the same network.',
+  'O DroidDeck do PC teve um problema. Tente de novo; se repetir, reinicie o DroidDeck no PC.':
+      'DroidDeck on the PC ran into a problem. Try again; if it keeps happening, restart DroidDeck on the PC.',
+  'Algo deu errado. Tente de novo.':
+      'Something went wrong. Try again.',
+  'Não deu para salvar: {reason}':
+      'Couldn\'t save: {reason}',
+  'Dom':
+      'Sun',
+  'Seg':
+      'Mon',
+  'Ter':
+      'Tue',
+  'Qua':
+      'Wed',
+  'Qui':
+      'Thu',
+  'Sex':
+      'Fri',
+  'Sáb':
+      'Sat',
+  'todo dia':
+      'every day',
+  'dias úteis':
+      'weekdays',
+  'fim de semana':
+      'weekends',
+  'Escolher':
+      'Choose',
+  'Dias da semana':
+      'Days of the week',
+  'Aplicativo':
+      'App',
+  'Escolha um app aberto ou digite o nome':
+      'Pick an open app or type its name',
+  'Abra o app no PC para ele aparecer na lista.':
+      'Open the app on the PC for it to show up in the list.',
+  'Deck':
+      'Deck',
+  'Botão removido.':
+      'Button removed.',
+  'Desfazer':
+      'Undo',
+  'Criar botão':
+      'Create button',
+  'Para editar, toque no lápis da barra de cima.':
+      'To edit, tap the pencil in the top bar.',
+  'Editar agora':
+      'Edit now',
+  'Ações que abrem programas, enviam atalhos, rodam scripts ou fazem requisições só mudam no editor do PC: clique no ícone do DroidDeck na bandeja → "Abrir no navegador". Aqui você pode mudar o nome, o ícone e as cores.':
+      'Actions that open programs, send shortcuts, run scripts or make requests can only be changed in the PC editor: click the DroidDeck tray icon → "Open in browser". Here you can change the name, icon and colors.',
+  'Buscar ação (ex.: mudo, OBS, atalho)':
+      'Search actions (e.g. mute, OBS, shortcut)',
+  'O botão só mostra o rótulo ou uma informação.':
+      'The button only shows its label or a piece of info.',
+  'Mais usadas':
+      'Most used',
+  'Nenhuma ação com "{q}".':
+      'No action matches "{q}".',
+  'Salva todos os perfis num arquivo .droiddeck.':
+      'Saves all profiles to a .droiddeck file.',
+  'Perfis':
+      'Profiles',
+  'Opções do perfil':
+      'Profile options',
+  'Nome e troca automática':
+      'Name and auto-switch',
+  'Montando o deck':
+      'Building your deck',
+  'Clique num espaço vazio da grade para criar um botão.':
+      'Click an empty cell in the grid to create a button.',
+  'Clique num botão para mudar a ação, o ícone ou a cor.':
+      'Click a button to change its action, icon or color.',
+  'Arraste um botão para outro lugar para mover ou trocar.':
+      'Drag a button to another spot to move or swap it.',
+  'Tudo aparece no celular na hora. A grade tem o tamanho que cabe na tela dele.':
+      'Everything shows up on the phone right away. The grid is sized to fit its screen.',
+  'Descartar as alterações?':
+      'Discard changes?',
+  'O botão tem mudanças que ainda não foram salvas.':
+      'The button has changes that haven\'t been saved yet.',
+  'Continuar editando':
+      'Keep editing',
+  'Descartar':
+      'Discard',
+  'Grade do celular: {cols} × {rows}. Arraste um botão para mover ou trocar.':
+      'Phone grid: {cols} × {rows}. Drag a button to move or swap it.',
+  'Conectado a {pc}':
+      'Connected to {pc}',
+  'Reconectando…':
+      'Reconnecting…',
+  'PC desligado':
+      'PC offline',
+  'Tudo certo: este aparelho fala com o PC pelo cabo USB.':
+      'All good: this device talks to the PC over the USB cable.',
+  'Tudo certo: os botões e os dados ao vivo estão chegando do PC.':
+      'All good: buttons and live data are coming from the PC.',
+  'A conexão caiu e está voltando sozinha. Se demorar, confira se o PC está ligado e na mesma rede.':
+      'The connection dropped and is coming back by itself. If it takes long, check that the PC is on and on the same network.',
+  'O PC não está respondendo. Confira se o DroidDeck está aberto nele (ícone perto do relógio) e se os dois estão na mesma rede Wi-Fi. Enquanto isso, o último deck salvo continua aqui.':
+      'The PC isn\'t answering. Check that DroidDeck is open on it (icon near the clock) and that both are on the same Wi-Fi network. Meanwhile, the last saved deck stays here.',
+  'Conexão com o PC':
+      'Connection to the PC',
+  'Detalhes técnicos':
+      'Technical details',
+  'Botões que rodam um comando ou leem uma URL no PC só mudam no editor do PC: ícone do DroidDeck na bandeja → "Abrir no navegador".':
+      'Buttons that run a command or read a URL on the PC can only be changed in the PC editor: DroidDeck tray icon → "Open in browser".',
+  'Instale e abra o DroidDeck no PC':
+      'Install and open DroidDeck on the PC',
+  'Rode o DroidDeck-Setup.exe. Se o Windows avisar que o app não é reconhecido, clique em "Mais informações" → "Executar assim mesmo". Ele não abre janela: fica como um ícone na bandeja, perto do relógio. No Windows 11 o ícone pode estar escondido na setinha ^ ao lado.':
+      'Run DroidDeck-Setup.exe. If Windows warns that the app isn\'t recognized, click "More info" → "Run anyway". It doesn\'t open a window: it sits as an icon in the tray, near the clock. On Windows 11 the icon may be hidden under the ^ arrow next to it.',
+  'Clique com o botão direito no ícone do DroidDeck → "Parear dispositivo (QR)" e escaneie o código aqui no app. Celular e PC precisam estar na mesma rede Wi-Fi (ou ligados pelo cabo USB).':
+      'Right-click the DroidDeck icon → "Pair device (QR)" and scan the code here in the app. Phone and PC must be on the same Wi-Fi network (or connected by USB cable).',
 };

@@ -39,6 +39,9 @@ class _OpenProfileActionEditorState extends State<OpenProfileActionEditor> {
           onChanged: (val) {
             setState(() => _profileId = val);
             widget.args.onChanged({if (val != null) 'profileId': val});
+            // Pasta sem nome é um ícone mudo: sugere o nome do perfil como rótulo.
+            final name = profiles.where((p) => p.id == val).firstOrNull?.name;
+            if (name != null) widget.args.suggestLabel(name);
           },
         ),
         EditorHint(

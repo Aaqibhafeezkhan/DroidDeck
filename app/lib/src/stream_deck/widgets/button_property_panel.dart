@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:droiddeck/core/core.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_catalog.dart';
 import 'package:droiddeck/src/stream_deck/actions/action_picker.dart';
@@ -26,10 +28,10 @@ class ButtonPropertyPanel extends StatefulWidget {
   });
 
   @override
-  State<ButtonPropertyPanel> createState() => _ButtonPropertyPanelState();
+  State<ButtonPropertyPanel> createState() => ButtonPropertyPanelState();
 }
 
-class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
+class ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
   final _catalog = ActionCatalog.instance;
   late final _labelController = TextEditingController(text: widget.button.label);
 
@@ -61,6 +63,9 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
   void initState() {
     super.initState();
     _catalog.load();
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) _initialJson = jsonEncode(_compose().toJson());
+    });
   }
 
   @override
@@ -69,13 +74,15 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
     super.dispose();
   }
 
-  void _save() {
+  /// Id de um botão novo (fixo: o retrato de "não salvo" compara o botão inteiro).
+  late final String _newId = DateTime.now().millisecondsSinceEpoch.toString();
+
+  /// O botão como está no formulário agora.
+  DeckButton _compose() {
     final hasInfo = _infoType != null && _infoType!.isNotEmpty;
     final activeLabel = _twoState.activeLabel.trim();
-    widget.onSave(DeckButton(
-      id: widget.button.id.isEmpty
-          ? DateTime.now().millisecondsSinceEpoch.toString()
-          : widget.button.id,
+    return DeckButton(
+      id: widget.button.id.isEmpty ? _newId : widget.button.id,
       row: widget.button.row,
       column: widget.button.column,
       label: _labelController.text,
@@ -95,8 +102,18 @@ class _ButtonPropertyPanelState extends State<ButtonPropertyPanel> {
       activeIconBase64: _showsActive ? _twoState.activeIconBase64 : null,
       columnSpan: _columnSpan,
       rowSpan: _rowSpan,
-    ));
+    );
   }
+
+  void _save() => widget.onSave(_compose());
+
+  /// Retrato do formulário logo depois de abrir (os editores de ação ajustam os próprios
+  /// parâmetros no primeiro frame; por isso a espera curta).
+  String? _initialJson;
+
+  /// Há mudanças não salvas?
+  bool get isDirty =>
+      _initialJson != null && jsonEncode(_compose().toJson()) != _initialJson;
 
   void _delete() {
     widget.onSave(DeckButton(

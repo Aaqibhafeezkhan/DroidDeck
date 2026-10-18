@@ -116,10 +116,12 @@ class WelcomePage extends StatelessWidget {
               ),
               _Step(
                 number: 2,
-                title: tr('Abra o DroidDeck.exe'),
+                title: tr('Instale e abra o DroidDeck no PC'),
                 child: Text(
-                  tr('Descompacte o arquivo e abra o DroidDeck.exe. Ele não abre '
-                      'janela: fica como um ícone na bandeja, perto do relógio.'),
+                  tr('Rode o DroidDeck-Setup.exe. Se o Windows avisar que o app não é '
+                      'reconhecido, clique em "Mais informações" → "Executar assim mesmo". '
+                      'Ele não abre janela: fica como um ícone na bandeja, perto do relógio. '
+                      'No Windows 11 o ícone pode estar escondido na setinha ^ ao lado.'),
                   style: muted,
                 ),
               ),
@@ -129,7 +131,8 @@ class WelcomePage extends StatelessWidget {
                 child: Text(
                   tr('Clique com o botão direito no ícone do DroidDeck → '
                       '"Parear dispositivo (QR)" e escaneie o código aqui no app. '
-                      'Celular e PC precisam estar na mesma rede Wi-Fi.'),
+                      'Celular e PC precisam estar na mesma rede Wi-Fi (ou ligados pelo '
+                      'cabo USB).'),
                   style: muted,
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:droiddeck/src/config/triggers_page.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/button_property_panel.dart';
 import 'package:droiddeck/src/stream_deck/widgets/dynamic_deck_button.dart';
+import 'package:droiddeck/src/stream_deck/widgets/connection_chip.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/src/config/appearance_settings_page.dart';
 import 'package:droiddeck/src/config/integrations_page.dart';
@@ -44,6 +45,11 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
     });
   }
 
+  final _panelKey = GlobalKey<ButtonPropertyPanelState>();
+
+  /// Abaixo disso o painel de propriedades vira uma folha por cima da grade.
+  static const _widePanel = 1100.0;
+
   @override
   Widget build(BuildContext context) {
     final profiles = widget.controller.profiles.watch(context);
@@ -54,277 +60,343 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      body: Row(
-        children: [
-          // Left Sidebar: Profiles
-          Container(
-            width: 250,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              border: Border(right: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(tr('PERFIS'),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold)),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: profiles.length,
-                    itemBuilder: (context, index) {
-                      final profile = profiles[index];
-                      final isSelected = profile.id == currentProfile?.id;
-                      return ListTile(
-                        selected: isSelected,
-                        selectedTileColor:
-                            Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                        title: Text(profile.name),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete,
-                              size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                          tooltip: tr('Excluir perfil'),
-                          onPressed: () => _deleteProfile(profile),
-                        ),
-                        onTap: () {
-                          widget.controller.switchProfile(profile.id);
-                          setState(() {
-                            _selectedButton = null;
-                          });
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Divider(color: Theme.of(context).colorScheme.outlineVariant),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton.icon(
-                    onPressed: _createNewProfile,
-                    icon: Icon(Icons.add),
-                    label: Text(tr('Novo perfil')),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 40),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: TextButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const IntegrationsPage()),
-                    ),
-                    icon: const Icon(Icons.extension_outlined, size: 18),
-                    label: Text(tr('Integrações')),
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 36),
-                      foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: TextButton.icon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const TriggersPage()),
-                    ),
-                    icon: const Icon(Icons.bolt, size: 18),
-                    label: Text(tr('Automações')),
-                    style: TextButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 36),
-                      foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                Divider(color: Theme.of(context).colorScheme.outlineVariant),
-                BackupButtons(
-                  dense: true,
-                  onImported: widget.controller.loadProfiles,
-                ),
-              ],
-            ),
-          ),
-
-          // Center: Grid
-          Expanded(
-            child: Container(
-              color: DeckTheme.of(context).background,
-              child: Stack(
-                children: [
-                  Center(
-                    child: currentProfile == null
-                        ? Text(tr('Nenhum perfil selecionado'))
-                        : _buildDeckGrid(currentProfile),
-                  ),
-                  Positioned(
-                    top: 16,
-                    right: 16,
-                    child: Row(
+      body: LayoutBuilder(builder: (context, c) {
+        final wide = c.maxWidth >= _widePanel;
+        final panel = _buildPanel(profiles, overlay: !wide);
+        return Row(
+          children: [
+            _buildSidebar(profiles, currentProfile),
+            Expanded(
+              child: Container(
+                color: DeckTheme.of(context).background,
+                child: Stack(
+                  children: [
+                    Column(
                       children: [
-                        // SIGNALR DEBUG INDICATOR
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Builder(builder: (context) {
-                            final status = Injector.get<SignalRService>()
-                                .connectionStatus
-                                .watch(context);
-                            final debugData = Injector.get<SignalRService>()
-                                .lastDebugData
-                                .watch(context); // Watch debug signal
-                            Color color = Colors.grey;
-                            if (status == "Connected") color = Colors.green;
-                            if (status.startsWith("Conn Error"))
-                              color = Colors.red;
-                            return Tooltip(
-                              message: "$status\n$debugData", // Show Data
-                              child: Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                    color: color, shape: BoxShape.circle),
-                              ),
-                            );
-                          }),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.extension_outlined),
-                          tooltip: tr('Integrações'),
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const IntegrationsPage()),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.palette_outlined),
-                          tooltip: tr('Aparência'),
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => const AppearanceSettingsPage()),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          tooltip: tr('Perfil (nome e troca automática)'),
-                          onPressed: () => _renameProfile(currentProfile),
-                        ),
-                        IconButton(
-                          icon: Icon(widget.isFullscreen
-                              ? Icons.fullscreen_exit
-                              : Icons.fullscreen),
-                          tooltip: widget.isFullscreen
-                              ? tr('Sair da tela cheia')
-                              : tr('Tela cheia'),
-                          onPressed: widget.onToggleFullscreen,
+                        _buildTopBar(currentProfile),
+                        Expanded(
+                          child: currentProfile == null
+                              ? Center(child: Text(tr('Nenhum perfil selecionado')))
+                              : _buildDeckGrid(currentProfile),
                         ),
                       ],
                     ),
-                  )
-                ],
+                    // Tela estreita: o painel aparece por cima, só com um botão escolhido.
+                    if (!wide && _selectedButton != null)
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        width: 380,
+                        child: Material(
+                          elevation: 12,
+                          color: scheme.surfaceContainer,
+                          child: panel,
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
+            if (wide)
+              Container(
+                width: 360,
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainer,
+                  border: Border(left: BorderSide(color: scheme.outlineVariant)),
+                ),
+                child: panel,
+              ),
+          ],
+        );
+      }),
+    );
+  }
 
-          // Right Sidebar: Properties
-          Container(
-            width: 350,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              border: Border(left: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
+  Widget _buildSidebar(List<DeckProfile> profiles, DeckProfile? currentProfile) {
+    final scheme = Theme.of(context).colorScheme;
+    Widget tool(IconData icon, String label, VoidCallback onTap) => Padding(
+          padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
+          child: TextButton.icon(
+            onPressed: onTap,
+            icon: Icon(icon, size: 18),
+            label: Text(label),
+            style: TextButton.styleFrom(
+              alignment: Alignment.centerLeft,
+              minimumSize: const Size(double.infinity, 38),
+              foregroundColor: scheme.onSurfaceVariant,
             ),
-            child: _selectedButton == null
-                ? Center(child: Text(tr('Selecione um botão para editar')))
-                : ButtonPropertyPanel(
-                    key: ValueKey(_selectedButton!
-                        .id), // Force rebuild on selection change
-                    button: _selectedButton!,
-                    profiles: profiles,
-                    onSave: (btn) {
-                      widget.controller.updateButton(btn);
-                      // Update local selection to reflect changes
-                      setState(() {
-                        _selectedButton = btn;
-                      });
+          ),
+        );
+    return Container(
+      width: 240,
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainer,
+        border: Border(right: BorderSide(color: scheme.outlineVariant)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 8),
+            child: Text(tr('Perfis'),
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: scheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: profiles.length,
+              itemBuilder: (context, index) {
+                final profile = profiles[index];
+                final isSelected = profile.id == currentProfile?.id;
+                return ListTile(
+                  selected: isSelected,
+                  selectedTileColor: scheme.primary.withValues(alpha: 0.14),
+                  selectedColor: scheme.onSurface,
+                  title: Text(profile.name,
+                      style: TextStyle(fontWeight: isSelected ? FontWeight.w600 : null)),
+                  // Excluir fica num menu: um clique errado na linha não apaga nada.
+                  trailing: PopupMenuButton<String>(
+                    tooltip: tr('Opções do perfil'),
+                    icon: Icon(Icons.more_vert, size: 20, color: scheme.onSurfaceVariant),
+                    onSelected: (v) {
+                      if (v == 'settings') _renameProfile(profile);
+                      if (v == 'share') ShareProfileDialog.show(context, profile);
+                      if (v == 'delete') _deleteProfile(profile);
                     },
-                    onCancel: () {
-                      setState(() {
-                        _selectedButton = null;
-                      });
-                    },
+                    itemBuilder: (_) => [
+                      PopupMenuItem(value: 'settings', child: Text(tr('Nome e troca automática'))),
+                      PopupMenuItem(value: 'share', child: Text(tr('Compartilhar'))),
+                      PopupMenuItem(
+                          value: 'delete',
+                          child: Text(tr('Excluir perfil'), style: TextStyle(color: scheme.error))),
+                    ],
                   ),
+                  onTap: () => _guardDirty(() {
+                    widget.controller.switchProfile(profile.id);
+                    setState(() => _selectedButton = null);
+                  }),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+            child: FilledButton.icon(
+              onPressed: _createNewProfile,
+              icon: const Icon(Icons.add),
+              label: Text(tr('Novo perfil')),
+              style: FilledButton.styleFrom(minimumSize: const Size(double.infinity, 42)),
+            ),
+          ),
+          Divider(height: 1, color: scheme.outlineVariant),
+          const SizedBox(height: 6),
+          tool(Icons.extension_outlined, tr('Integrações'), () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const IntegrationsPage()))),
+          tool(Icons.bolt, tr('Automações'), () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const TriggersPage()))),
+          tool(Icons.palette_outlined, tr('Aparência'), () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const AppearanceSettingsPage()))),
+          const SizedBox(height: 6),
+          Divider(height: 1, color: scheme.outlineVariant),
+          BackupButtons(
+            dense: true,
+            onImported: widget.controller.loadProfiles,
+          ),
+          const SizedBox(height: 6),
+        ],
+      ),
+    );
+  }
+
+  /// Nome do perfil, o estado da conexão e as ações do perfil, com rótulos.
+  Widget _buildTopBar(DeckProfile? currentProfile) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 16, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              currentProfile?.name ?? '',
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          if (currentProfile != null)
+            TextButton.icon(
+              onPressed: () => _renameProfile(currentProfile),
+              icon: const Icon(Icons.tune, size: 18),
+              label: Text(tr('Opções do perfil')),
+            ),
+          const SizedBox(width: 8),
+          const ConnectionChip(),
+          IconButton(
+            icon: Icon(widget.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen),
+            tooltip: widget.isFullscreen ? tr('Sair da tela cheia') : tr('Tela cheia'),
+            onPressed: widget.onToggleFullscreen,
           ),
         ],
       ),
     );
+  }
+
+  /// Painel do botão escolhido, ou um guia curto quando nada está escolhido.
+  Widget _buildPanel(List<DeckProfile> profiles, {required bool overlay}) {
+    final selected = _selectedButton;
+    if (selected == null) {
+      final muted = Theme.of(context).colorScheme.onSurfaceVariant;
+      Widget step(IconData icon, String text) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 12),
+                Expanded(child: Text(text, style: TextStyle(color: muted, height: 1.4))),
+              ],
+            ),
+          );
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(tr('Montando o deck'),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 16),
+            step(Icons.add_box_outlined, tr('Clique num espaço vazio da grade para criar um botão.')),
+            step(Icons.touch_app_outlined, tr('Clique num botão para mudar a ação, o ícone ou a cor.')),
+            step(Icons.open_with, tr('Arraste um botão para outro lugar para mover ou trocar.')),
+            step(Icons.phone_android,
+                tr('Tudo aparece no celular na hora. A grade tem o tamanho que cabe na tela dele.')),
+          ],
+        ),
+      );
+    }
+    return ButtonPropertyPanel(
+      key: _panelKey,
+      button: selected,
+      profiles: profiles,
+      onSave: (btn) {
+        if (btn.id.isEmpty) {
+          _clearWithUndo(selected);
+        } else {
+          widget.controller.updateButton(btn);
+        }
+        setState(() => _selectedButton = btn.id.isEmpty ? null : btn);
+      },
+      onCancel: () => setState(() => _selectedButton = null),
+    );
+  }
+
+  /// "Limpar botão" apaga na hora, mas dá para desfazer.
+  void _clearWithUndo(DeckButton previous) {
+    widget.controller.updateButton(DeckButton(
+        id: '', row: previous.row, column: previous.column, label: '', backgroundColor: ''));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(tr('Botão removido.')),
+      duration: const Duration(seconds: 6),
+      action: SnackBarAction(
+        label: tr('Desfazer'),
+        onPressed: () => widget.controller.updateButton(previous),
+      ),
+    ));
+  }
+
+  /// Antes de trocar de botão ou de perfil: com mudanças não salvas, pergunta.
+  Future<void> _guardDirty(VoidCallback proceed) async {
+    if (_panelKey.currentState?.isDirty != true) {
+      proceed();
+      return;
+    }
+    final discard = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(tr('Descartar as alterações?')),
+        content: Text(tr('O botão tem mudanças que ainda não foram salvas.')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Continuar editando'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(tr('Descartar'))),
+        ],
+      ),
+    );
+    if (discard == true) proceed();
   }
 
   Widget _buildDeckGrid(DeckProfile profile) {
     // A grade é definida pelo celular (quantos botões cabem na tela) e reportada
-    // ao PC. Aqui só exibimos essa grade — não há seletor de tamanho.
+    // ao PC. Aqui só exibimos essa grade, do maior tamanho que couber.
     final lay = Injector.get<SignalRService>().deckLayout.watch(context);
     final cols = (lay['columns'] ?? 5);
     final rows = (lay['rows'] ?? 3);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        children: [
-          Text(
-            tr('Grade do celular: {cols} × {rows} (definida pelo aparelho)  ·  arraste para mover/trocar',
-                {'cols': cols, 'rows': rows}),
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12),
+    return LayoutBuilder(builder: (context, c) {
+      const spacing = 12.0;
+      const pad = 24.0;
+      final availW = c.maxWidth - pad * 2;
+      final availH = c.maxHeight - pad * 2 - 28; // legenda embaixo
+      final byW = (availW - spacing * (cols - 1)) / cols;
+      final byH = (availH - spacing * (rows - 1)) / rows;
+      final cell = (byW < byH ? byW : byH).clamp(48.0, 150.0);
+      final step = cell + spacing;
+      double size(int span) => span * cell + (span - 1) * spacing;
+      final layout = GridLayout.of(profile.buttons, rows, cols);
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(pad),
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                width: size(cols),
+                height: size(rows),
+                child: Stack(
+                  children: [
+                    for (var row = 0; row < rows; row++)
+                      for (var col = 0; col < cols; col++)
+                        if (layout.isFree(row, col))
+                          Positioned(
+                            left: col * step,
+                            top: row * step,
+                            width: cell,
+                            height: cell,
+                            child: _buildSlot(row, col, null),
+                          ),
+                    // Botões grandes ocupam várias casas.
+                    for (final p in layout.placements)
+                      Positioned(
+                        left: p.column * step,
+                        top: p.row * step,
+                        width: size(p.columnSpan),
+                        height: size(p.rowSpan),
+                        child: _buildSlot(p.row, p.column, p.button),
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                tr('Grade do celular: {cols} × {rows}. Arraste um botão para mover ou trocar.',
+                    {'cols': cols, 'rows': rows}),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Center(
-            child: SizedBox(
-              width: 800, // Constrain width for desktop
-              child: LayoutBuilder(builder: (context, c) {
-                const spacing = 16.0;
-                final cell = (c.maxWidth - spacing * (cols - 1)) / cols;
-                final step = cell + spacing;
-                double size(int span) => span * cell + (span - 1) * spacing;
-                final layout = GridLayout.of(profile.buttons, rows, cols);
-                return SizedBox(
-                  width: c.maxWidth,
-                  height: size(rows),
-                  child: Stack(
-                    children: [
-                      for (var row = 0; row < rows; row++)
-                        for (var col = 0; col < cols; col++)
-                          if (layout.isFree(row, col))
-                            Positioned(
-                              left: col * step,
-                              top: row * step,
-                              width: cell,
-                              height: cell,
-                              child: _buildSlot(row, col, null),
-                            ),
-                      // Botões grandes ocupam várias casas.
-                      for (final p in layout.placements)
-                        Positioned(
-                          left: p.column * step,
-                          top: p.row * step,
-                          width: size(p.columnSpan),
-                          height: size(p.rowSpan),
-                          child: _buildSlot(p.row, p.column, p.button),
-                        ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildSlot(int row, int col, DeckButton? existing) {
+    final scheme = Theme.of(context).colorScheme;
     final isSelectedPos =
         _selectedButton?.row == row && _selectedButton?.column == col;
 
-    void select(DeckButton b) => setState(() => _selectedButton = b);
+    void select(DeckButton b) {
+      if (_selectedButton?.row == b.row && _selectedButton?.column == b.column) return;
+      _guardDirty(() => setState(() => _selectedButton = b));
+    }
 
     return DragTarget<DeckButton>(
       onWillAcceptWithDetails: (d) => d.data.row != row || d.data.column != col,
@@ -337,21 +409,26 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
         final decoration = BoxDecoration(
           border: Border.all(
             color: highlight
-                ? Colors.greenAccent
-                : (isSelectedPos ? Theme.of(context).colorScheme.primary : Colors.transparent),
+                ? scheme.tertiary
+                : (isSelectedPos ? scheme.primary : Colors.transparent),
             width: 3,
           ),
           borderRadius: BorderRadius.circular(12),
         );
 
-        // Slot vazio: a própria célula (InkWell) seleciona/cria um botão novo.
+        // Slot vazio: a própria célula seleciona/cria um botão novo.
         if (existing == null) {
-          return InkWell(
-            onTap: () => select(
-                DeckButton(id: '', row: row, column: col, label: '', action: null)),
-            child: Container(
-              decoration: decoration,
-              child: const DeckEmptyTile(),
+          return Semantics(
+            button: true,
+            label: tr('Criar botão'),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => select(
+                  DeckButton(id: '', row: row, column: col, label: '', action: null)),
+              child: Container(
+                decoration: decoration,
+                child: const DeckEmptyTile(),
+              ),
             ),
           );
         }

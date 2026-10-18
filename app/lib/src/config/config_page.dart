@@ -132,7 +132,7 @@ class ConfigPageState extends State<ConfigPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('Erro: {error}', {'error': e}))),
+        SnackBar(content: Text(friendlyError(e))),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -237,7 +237,14 @@ class ConfigPageState extends State<ConfigPage> {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: const Icon(Icons.computer),
-      title: Text(Uri.base.host),
+      // Nome do PC (como no Windows), não o endereço.
+      title: FutureBuilder<dynamic>(
+        future: Injector.get<DroidDeckClient>().getJson('/api/system/info'),
+        builder: (context, snap) {
+          final name = (snap.data is Map) ? (snap.data as Map)['name'] as String? : null;
+          return Text(name ?? Uri.base.host);
+        },
+      ),
       subtitle: Text(tr('Este navegador está pareado com o PC.')),
       trailing: TextButton(
         onPressed: () async {

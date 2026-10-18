@@ -99,7 +99,7 @@ class MixerButtonRenderer extends ButtonRenderer {
         active: muted == true,
         icon: muted == null
             ? look.icon()
-            : Icon(muted ? Icons.volume_off : Icons.volume_up, size: 32),
+            : Icon(muted ? Icons.volume_off : Icons.volume_up),
         label: look.ownLabel,
       );
     }

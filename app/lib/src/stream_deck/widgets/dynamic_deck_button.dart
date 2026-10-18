@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../buttons/colors.dart';
 import 'info_deck_button.dart';
+import 'editor/info_section.dart';
 import 'slider_deck_button.dart';
 
 class DynamicDeckButton extends StatelessWidget {
@@ -20,8 +21,31 @@ class DynamicDeckButton extends StatelessWidget {
   });
 
 
+  /// O que o leitor de tela diz: o rótulo, ou o tipo do botão quando ele não tem rótulo.
+  String _semanticLabel() {
+    final label = button.label?.trim() ?? '';
+    if (label.isNotEmpty) return label;
+    final type = button.dynamicType;
+    if (type != null && InfoSection.labels[type] != null) return tr(InfoSection.labels[type]!);
+    return switch (type) {
+      'cpu_monitor' => tr('Uso da CPU'),
+      'memory_monitor' => tr('Uso da memória'),
+      'gpu_monitor' => tr('Uso da GPU'),
+      'network_monitor' => tr('Rede'),
+      _ => button.action?.type == 'open_profile' ? tr('Pasta') : tr('Botão'),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: _semanticLabel(),
+      child: _build(context),
+    );
+  }
+
+  Widget _build(BuildContext context) {
     // If no dynamic type, render standard button
     if (button.dynamicType == null ||
         button.dynamicType!.isEmpty ||
@@ -121,8 +145,11 @@ class DynamicDeckButton extends StatelessWidget {
   }
 
   Widget _buildNetworkMonitor(SystemStats stats) {
+    // FittedBox: com a unidade (KB/s) o texto não pode estourar num botão pequeno.
     return Center(
-      child: Column(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(Icons.swap_vert, size: 18),
@@ -131,7 +158,7 @@ class DynamicDeckButton extends StatelessWidget {
             style: const TextStyle(
               color: Colors.greenAccent,
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 11,
             ),
           ),
           Text(
@@ -139,21 +166,22 @@ class DynamicDeckButton extends StatelessWidget {
             style: const TextStyle(
               color: Colors.lightBlueAccent,
               fontWeight: FontWeight.bold,
-              fontSize: 12,
+              fontSize: 11,
             ),
           ),
           const Opacity(
             opacity: 0.7,
-            child: Text('NET', style: TextStyle(fontSize: 9)),
+            child: Text('NET', style: TextStyle(fontSize: 10)),
           ),
         ],
+        ),
       ),
     );
   }
 
   String _fmtRate(double kbps) {
-    if (kbps >= 1024) return '${(kbps / 1024).toStringAsFixed(1)}M';
-    return '${kbps.toStringAsFixed(0)}K';
+    if (kbps >= 1024) return '${(kbps / 1024).toStringAsFixed(1)} MB/s';
+    return '${kbps.toStringAsFixed(0)} KB/s';
   }
 
   Color _usageColor(double pct) {

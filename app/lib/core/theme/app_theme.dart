@@ -30,15 +30,19 @@ class ThemePreset {
   final DeckTileStyle tileStyle;
 }
 
+/// Amarelo do logo (e do site): o destaque padrão do DroidDeck.
+const kBrandYellow = Color(0xFFFDD400);
+
 const kThemePresets = <ThemePreset>[
   ThemePreset(
     id: 'classico',
     name: 'Clássico',
-    accent: Color(0xFF42A5F5),
-    background: Color(0xFF121212),
-    surface: Color(0xFF1E1E1E),
-    tile: Color(0xFF303030),
-    outline: Color(0xFFE0E0E0),
+    // O amarelo do logo, sobre o quase-preto do site.
+    accent: kBrandYellow,
+    background: Color(0xFF0D0D0F),
+    surface: Color(0xFF18181C),
+    tile: Color(0xFF2A2A30),
+    outline: Color(0xFFE4E4E7),
     tileStyle: DeckTileStyle.solid,
   ),
   ThemePreset(
@@ -85,6 +89,7 @@ const kThemePresets = <ThemePreset>[
 
 /// Cores oferecidas para trocar o destaque do tema.
 const kAccentChoices = <Color>[
+  kBrandYellow, // amarelo DroidDeck
   Color(0xFF42A5F5), // azul
   Color(0xFF4FC3F7), // ciano
   Color(0xFF26A69A), // verde-água
@@ -107,7 +112,7 @@ ThemePreset presetById(String? id) => kThemePresets.firstWhere(
 class ThemeSettings {
   const ThemeSettings({
     this.presetId = 'classico',
-    this.mode = ThemeMode.system,
+    this.mode = ThemeMode.dark,
     this.accent,
     this.tileStyle,
   });
@@ -145,10 +150,15 @@ ThemeData buildAppTheme(ThemeSettings s, Brightness brightness) {
   final style = s.effectiveTileStyle;
   final dark = brightness == Brightness.dark;
 
+  // No tema claro, um destaque muito claro (o amarelo) vira texto ilegível sobre branco:
+  // escurece até ter contraste, mantendo o tom.
+  final primary = !dark && accent.computeLuminance() > 0.4
+      ? HSLColor.fromColor(accent).withLightness(0.30).toColor()
+      : accent;
   var scheme = ColorScheme.fromSeed(
     seedColor: accent,
     brightness: brightness,
-  ).copyWith(primary: accent, onPrimary: _onColor(accent));
+  ).copyWith(primary: primary, onPrimary: _onColor(primary));
 
   DeckTheme deck;
   Color scaffold;
