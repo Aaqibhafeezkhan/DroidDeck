@@ -23,6 +23,10 @@
 | `tuya.json` | Código de usuário da Tuya, token de sessão e registro do app (`ClientId`, `Schema`). |
 | `homeassistant.json` | Endereço e token de acesso do Home Assistant. |
 | `spotify.json`, `twitch.json`, `youtube.json` | Client ID (e o Client Secret do YouTube) e os tokens da conta. |
+| `hue.json` | IP do Hue Bridge e o usuário que ele deu ao DroidDeck no pareamento. |
+| `mqtt.json` | Endereço, usuário e senha do broker MQTT. |
+| `streamerbot.json` | Endereço e senha do WebSocket Server do Streamer.bot. |
+| `vtubestudio.json` | Endereço da API do VTube Studio e o token do plugin. |
 
 **`%LocalAppData%\DroidDeck.log`** — o arquivo de log.
 
@@ -31,7 +35,8 @@ As atualizações substituem esta pasta; seus dados ficam nas pastas acima e sã
 
 !!! info "Os segredos são cifrados"
     `apikey` e os arquivos das integrações (`discord.json`, `obs.json`, `tuya.json`,
-    `homeassistant.json`, `spotify.json`, `twitch.json`, `youtube.json`) são cifrados com a DPAPI do Windows e só podem
+    `homeassistant.json`, `spotify.json`, `twitch.json`, `youtube.json`, `hue.json`, `mqtt.json`,
+    `streamerbot.json`, `vtubestudio.json`) são cifrados com a DPAPI do Windows e só podem
     ser lidos pela sua conta do Windows neste PC. Arquivos de versões antigas, em texto puro, são
     cifrados automaticamente na primeira leitura. Para editar um deles à mão (ex.: o `ClientId` da
     Tuya), salve-o como JSON puro; o DroidDeck cifra de novo na próxima inicialização.

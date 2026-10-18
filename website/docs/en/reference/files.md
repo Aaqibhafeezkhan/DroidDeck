@@ -23,6 +23,10 @@
 | `tuya.json` | Tuya user code, session token and app registration (`ClientId`, `Schema`). |
 | `homeassistant.json` | Home Assistant address and access token. |
 | `spotify.json`, `twitch.json`, `youtube.json` | Client ID (and YouTube's Client Secret) plus the account's tokens. |
+| `hue.json` | Hue Bridge IP and the user it gave DroidDeck when paired. |
+| `mqtt.json` | MQTT broker address, username and password. |
+| `streamerbot.json` | Streamer.bot WebSocket Server address and password. |
+| `vtubestudio.json` | VTube Studio API address and the plugin token. |
 
 **`%LocalAppData%\DroidDeck.log`** — the log file.
 
@@ -31,7 +35,8 @@ Updates replace this folder; your data lives in the folders above and is kept.
 
 !!! info "Secrets are encrypted"
     `apikey` and the integration files (`discord.json`, `obs.json`, `tuya.json`, `homeassistant.json`,
-    `spotify.json`, `twitch.json`, `youtube.json`) are encrypted with Windows DPAPI and can only
+    `spotify.json`, `twitch.json`, `youtube.json`, `hue.json`, `mqtt.json`, `streamerbot.json`,
+    `vtubestudio.json`) are encrypted with Windows DPAPI and can only
     be read by your Windows account on this PC. Files from older versions, saved in plain text, are
     encrypted automatically the first time they are read. To edit one by hand (e.g. a Tuya `ClientId`),
     save it as plain JSON; DroidDeck encrypts it again on the next start.

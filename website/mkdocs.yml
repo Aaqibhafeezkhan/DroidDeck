@@ -58,6 +58,13 @@ nav:
       - Spotify: integrations/spotify.md
       - Twitch: integrations/twitch.md
       - YouTube: integrations/youtube.md
+      - Streamer.bot: integrations/streamerbot.md
+      - VTube Studio: integrations/vtubestudio.md
+      - Voicemeeter: integrations/voicemeeter.md
+      - Philips Hue: integrations/hue.md
+      - Elgato Key Light: integrations/elgato.md
+      - Govee: integrations/govee.md
+      - MQTT: integrations/mqtt.md
       - Mixer & media: integrations/mixer-media.md
   - Troubleshooting: troubleshooting.md
   - Reference:

@@ -22,6 +22,13 @@ dele mudam de acordo com o tipo.
 | [Soundboard](../integrations/soundboard.md) | PC | Toca um som. |
 | [Tuya](../integrations/tuya.md) | PC | Controla dispositivos de casa inteligente. |
 | [Home Assistant](../integrations/homeassistant.md) | PC | Luzes, tomadas, cenas, scripts e sensores. |
+| [Streamer.bot](../integrations/streamerbot.md) | PC | Dispara uma ação do Streamer.bot, com argumentos. |
+| [VTube Studio](../integrations/vtubestudio.md) | PC | Dispara atalhos do modelo ou carrega um modelo. |
+| [Voicemeeter](../integrations/voicemeeter.md) | PC | Mudo e ganho de entradas e saídas, Macro Buttons, parâmetros. |
+| [Philips Hue](../integrations/hue.md) | PC | Luzes, salas e cenas pelo Hue Bridge. |
+| [Elgato Key Light](../integrations/elgato.md) | PC | Liga/desliga, brilho e temperatura das luzes Elgato. |
+| [Govee](../integrations/govee.md) | PC | Luzes Govee pela API LAN. |
+| [MQTT](../integrations/mqtt.md) | PC | Publica uma mensagem no seu broker. |
 | [Spotify](../integrations/spotify.md) | PC | Player, curtir, aleatório, playlists e a capa no botão. |
 | [Twitch](../integrations/twitch.md) | PC | Marcador, clipe, anúncio, chat, enquete e título. |
 | [YouTube](../integrations/youtube.md) | PC | Chat da live e espectadores. |
