@@ -21,7 +21,7 @@ namespace DroidDeck
 
         public frmPairing()
         {
-            Text = "DroidDeck — Parear dispositivo";
+            Text = L.Ui("DroidDeck — Parear dispositivo");
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -33,14 +33,14 @@ namespace DroidDeck
 
             _appMode = new RadioButton
             {
-                Text = "App Android",
+                Text = L.Ui("App Android"),
                 Location = new Point(40, 8),
                 Size = new Size(130, 24),
                 Checked = true,
             };
             var browserMode = new RadioButton
             {
-                Text = "Abrir no navegador",
+                Text = L.Ui("Abrir no navegador"),
                 Location = new Point(180, 8),
                 Size = new Size(150, 24),
             };
@@ -69,13 +69,13 @@ namespace DroidDeck
             };
             _url.LinkClicked += (_, _) =>
             {
-                try { Clipboard.SetText(PairingInfo.BuildBrowserUrl()); _url.Text = "Endereço copiado"; }
+                try { Clipboard.SetText(PairingInfo.BuildBrowserUrl()); _url.Text = L.Ui("Endereço copiado"); }
                 catch { }
             };
 
             var details = new TextBox
             {
-                Text = $"IP: {ip}:{PairingInfo.Port}    Chave: {key}",
+                Text = L.Ui("IP: {ip}    Chave: {key}", ("ip", $"{ip}:{PairingInfo.Port}"), ("key", key)),
                 Location = new Point(10, 432),
                 Size = new Size(340, 44),
                 Multiline = true,
@@ -87,7 +87,7 @@ namespace DroidDeck
 
             var close = new Button
             {
-                Text = "Fechar",
+                Text = L.Ui("Fechar"),
                 Location = new Point(140, 488),
                 Size = new Size(80, 30),
             };
@@ -110,14 +110,14 @@ namespace DroidDeck
         {
             if (_appMode.Checked)
             {
-                _info.Text = "No app DroidDeck, vá em Configurar → Parear (QR)\ne escaneie este código para conectar com segurança.";
+                _info.Text = L.Ui("No app DroidDeck, vá em Configurar → Parear (QR)\ne escaneie este código para conectar com segurança.");
                 _url.Visible = false;
                 SetQr(PairingInfo.BuildUri());
             }
             else
             {
-                _info.Text = "Aponte a câmera do iPhone, iPad ou tablet para este código:\no deck abre no navegador, sem instalar nada.";
-                _url.Text = "Copiar o endereço (para abrir em outro PC)";
+                _info.Text = L.Ui("Aponte a câmera do iPhone, iPad ou tablet para este código:\no deck abre no navegador, sem instalar nada.");
+                _url.Text = L.Ui("Copiar o endereço (para abrir em outro PC)");
                 _url.Visible = true;
                 SetQr(PairingInfo.BuildBrowserUrl());
             }

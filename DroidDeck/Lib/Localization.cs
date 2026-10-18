@@ -36,12 +36,29 @@ namespace DroidDeck.Lib
         /// <summary>A requisicao pediu outro idioma que nao o portugues (o schema e traduzido).</summary>
         public static bool Translating => Language != "pt";
 
-        public static string T(string pt) => Language switch
+        public static string T(string pt) => TFor(Language, pt);
+
+        private static string TFor(string language, string pt) => language switch
         {
             "en" => En.TryGetValue(pt, out var en) ? en : pt,
             "es" => Es.TryGetValue(pt, out var es) ? es : En.TryGetValue(pt, out var en) ? en : pt,
             _ => pt,
         };
+
+        /// <summary>
+        /// Texto da bandeja e das janelas do PC: segue o idioma do Windows (nao ha requisicao).
+        /// Portugues e o padrao; Windows em ingles ou espanhol ve a traducao.
+        /// </summary>
+        public static string Ui(string pt) =>
+            TFor(LanguageOf(System.Globalization.CultureInfo.CurrentUICulture.Name), pt);
+
+        public static string Ui(string pt, params (string key, object? value)[] args)
+        {
+            var text = Ui(pt);
+            foreach (var (key, value) in args)
+                text = text.Replace("{" + key + "}", value?.ToString() ?? "");
+            return text;
+        }
 
         /// <summary>Traduz e depois troca os {chave} pelos valores.</summary>
         public static string T(string pt, params (string key, object? value)[] args)
