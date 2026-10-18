@@ -11,7 +11,7 @@ DroidDeck itself — open it from the tray (**Open in browser**) or go to
 
 ## Layout
 
-<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
+![The configurator: profiles and tools on the left, the phone's button grid in the middle and the guide for the selected button on the right](../../assets/screenshots/configurator-en.png){ .dd-shot width="1440" height="820" loading="lazy" }
 
 The screen has three panels:
 

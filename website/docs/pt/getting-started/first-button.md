@@ -9,11 +9,9 @@ No PC, clique com o botão direito no ícone do DroidDeck na bandeja → **Abrir
 um clique duplo no ícone). O [configurador](configurator.md) abre em `http://localhost:4787/` e entra
 sozinho.
 
-<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
-<div class="dd-todo-shot" markdown>
+![O configurador: perfis e ferramentas à esquerda, a grade de botões do celular no meio e o guia do botão escolhido à direita](../../assets/screenshots/configurator-pt.png){ .dd-shot width="1440" height="820" loading="lazy" }
 O configurador tem três painéis: **Perfis** à esquerda, a **grade** de botões no meio e as
 **propriedades** do botão selecionado à direita.
-</div>
 
 ## 2. Crie o botão
 

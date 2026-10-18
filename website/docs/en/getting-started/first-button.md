@@ -8,11 +8,9 @@ PC. It takes about a minute and shows the whole loop: edit on the PC, tap on the
 On the PC, right-click the DroidDeck tray icon → **Open in browser** (or double-click the icon).
 The [configurator](configurator.md) opens at `http://localhost:4787/` and signs in by itself.
 
-<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
-<div class="dd-todo-shot" markdown>
+![The configurator: profiles and tools on the left, the phone's button grid in the middle and the guide for the selected button on the right](../../assets/screenshots/configurator-en.png){ .dd-shot width="1440" height="820" loading="lazy" }
 The configurator has three panels: **Profiles** on the left, the **grid** of buttons in the middle
 and the selected button's **properties** on the right.
-</div>
 
 ## 2. Add the button
 

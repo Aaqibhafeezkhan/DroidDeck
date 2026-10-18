@@ -10,7 +10,7 @@ DroidDeck — abra-o pela bandeja (**Abrir no navegador**) ou acesse **`http://l
 
 ## Layout
 
-<!-- configurator screenshot: added later (three panels: Profiles, Grid, Properties) -->
+![O configurador: perfis e ferramentas à esquerda, a grade de botões do celular no meio e o guia do botão escolhido à direita](../../assets/screenshots/configurator-pt.png){ .dd-shot width="1440" height="820" loading="lazy" }
 
 A tela tem três painéis:
 

@@ -136,15 +136,6 @@
   color: var(--md-default-fg-color--light);
   text-align: left;
 }
-.md-typeset .dd-todo-shot {
-  max-width: var(--dd-measure);
-  border: 1px dashed var(--md-default-fg-color--lighter);
-  border-radius: 10px;
-  padding: 1.2em 1em;
-  color: var(--md-default-fg-color--light);
-  font-size: 0.75rem;
-}
-
 /* ---------- Tables ---------- */
 /* Full-width tables so stacked reference tables line up; the wrapper still scrolls sideways. */
 .md-typeset__table { display: block; }
