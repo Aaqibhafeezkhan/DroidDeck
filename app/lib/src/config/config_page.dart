@@ -5,6 +5,7 @@ import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/core/core.dart';
 import 'package:droiddeck/src/stream_deck/backup/backup_buttons.dart';
 import 'package:droiddeck/src/config/integrations_page.dart';
+import 'package:droiddeck/src/config/triggers_page.dart';
 import 'package:droiddeck/src/config/pc_switcher.dart';
 import 'package:droiddeck/src/connection/pc_store.dart';
 import 'package:flutter/material.dart';
@@ -326,6 +327,16 @@ class ConfigPageState extends State<ConfigPage> {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const IntegrationsPage()),
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.bolt),
+              title: Text(tr('Automações')),
+              subtitle: Text(tr('Apertar um botão sozinho num horário, quando um app abrir…')),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const TriggersPage()),
               ),
             ),
           ],

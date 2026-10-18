@@ -78,4 +78,52 @@ final Map<String, String> enFeatures = {
       'No two-state buttons yet.',
   'Botão':
       'Button',
+  'Num horário':
+      'At a time',
+  'Quando um app abrir':
+      'When an app opens',
+  'Quando um app fechar':
+      'When an app closes',
+  'Quando o PC voltar da suspensão':
+      'When the PC wakes from sleep',
+  'Quando o DroidDeck iniciar':
+      'When DroidDeck starts',
+  'Não deu para salvar.':
+      'Could not save.',
+  '(botão apagado)':
+      '(button deleted)',
+  'sem rótulo':
+      'no label',
+  'Botão apertado.':
+      'Button pressed.',
+  'Salve a automação e confira se o botão ainda existe.':
+      'Save the automation and check that the button still exists.',
+  'Automações':
+      'Automations',
+  'Nova automação':
+      'New automation',
+  'Uma automação aperta um botão do deck sozinha quando algo acontece no PC. Crie antes o botão com a ação desejada.':
+      'An automation presses a deck button by itself when something happens on the PC. Create the button with the action you want first.',
+  'Nenhuma automação ainda.':
+      'No automations yet.',
+  'Testar agora':
+      'Test now',
+  'Excluir':
+      'Delete',
+  'Automação':
+      'Automation',
+  'Nome (opcional)':
+      'Name (optional)',
+  'Quando':
+      'When',
+  'Horário':
+      'Time',
+  'Dias (opcional)':
+      'Days (optional)',
+  '0 = domingo … 6 = sábado. Vazio = todo dia.':
+      '0 = Sunday … 6 = Saturday. Empty = every day.',
+  'Apertar o botão':
+      'Press the button',
+  'Apertar um botão sozinho num horário, quando um app abrir…':
+      'Press a button by itself at a time, when an app opens…',
 };

@@ -1,4 +1,5 @@
 import 'grid_placement.dart';
+import 'package:droiddeck/src/config/triggers_page.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/button_property_panel.dart';
 import 'package:droiddeck/src/stream_deck/widgets/dynamic_deck_button.dart';
@@ -104,6 +105,20 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
                     ),
                     icon: const Icon(Icons.extension_outlined, size: 18),
                     label: Text(tr('Integrações')),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 36),
+                      foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: TextButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const TriggersPage()),
+                    ),
+                    icon: const Icon(Icons.bolt, size: 18),
+                    label: Text(tr('Automações')),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(double.infinity, 36),
                       foregroundColor: Theme.of(context).colorScheme.onSurfaceVariant,

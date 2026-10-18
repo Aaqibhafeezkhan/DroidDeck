@@ -29,6 +29,7 @@ namespace DroidDeck
             services.AddHostedSingleton<InfoService>();
             services.AddHostedSingleton<ForegroundWatcher>();
             services.AddHostedSingleton<Lib.UsbBridge>();
+            services.AddHostedSingleton<TriggerService>();
             return services;
         }
 

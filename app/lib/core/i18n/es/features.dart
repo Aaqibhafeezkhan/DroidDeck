@@ -78,4 +78,52 @@ final Map<String, String> esFeatures = {
       'Todavía no hay botones de dos estados.',
   'Botão':
       'Botón',
+  'Num horário':
+      'A una hora',
+  'Quando um app abrir':
+      'Cuando se abra una aplicación',
+  'Quando um app fechar':
+      'Cuando se cierre una aplicación',
+  'Quando o PC voltar da suspensão':
+      'Cuando el PC salga de la suspensión',
+  'Quando o DroidDeck iniciar':
+      'Cuando DroidDeck se inicie',
+  'Não deu para salvar.':
+      'No se pudo guardar.',
+  '(botão apagado)':
+      '(botón eliminado)',
+  'sem rótulo':
+      'sin etiqueta',
+  'Botão apertado.':
+      'Botón pulsado.',
+  'Salve a automação e confira se o botão ainda existe.':
+      'Guarda la automatización y comprueba que el botón todavía existe.',
+  'Automações':
+      'Automatizaciones',
+  'Nova automação':
+      'Nueva automatización',
+  'Uma automação aperta um botão do deck sozinha quando algo acontece no PC. Crie antes o botão com a ação desejada.':
+      'Una automatización pulsa un botón del deck por sí sola cuando algo pasa en el PC. Crea antes el botón con la acción deseada.',
+  'Nenhuma automação ainda.':
+      'Todavía no hay automatizaciones.',
+  'Testar agora':
+      'Probar ahora',
+  'Excluir':
+      'Eliminar',
+  'Automação':
+      'Automatización',
+  'Nome (opcional)':
+      'Nombre (opcional)',
+  'Quando':
+      'Cuándo',
+  'Horário':
+      'Hora',
+  'Dias (opcional)':
+      'Días (opcional)',
+  '0 = domingo … 6 = sábado. Vazio = todo dia.':
+      '0 = domingo … 6 = sábado. Vacío = todos los días.',
+  'Apertar o botão':
+      'Pulsar el botón',
+  'Apertar um botão sozinho num horário, quando um app abrir…':
+      'Pulsar un botón solo a una hora, cuando se abra una aplicación…',
 };

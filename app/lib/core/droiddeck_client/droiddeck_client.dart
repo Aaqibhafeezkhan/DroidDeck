@@ -407,6 +407,11 @@ class DroidDeckClient {
     return response.data;
   }
 
+  Future<dynamic> putJson(String path, [Object? body]) async {
+    final response = await _dio.put(path, data: body);
+    return response.data;
+  }
+
   Future<dynamic> deleteJson(String path) async {
     final response = await _dio.delete(path);
     return response.data;
