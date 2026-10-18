@@ -126,4 +126,12 @@ final Map<String, String> enFeatures = {
       'Press the button',
   'Apertar um botão sozinho num horário, quando um app abrir…':
       'Press a button by itself at a time, when an app opens…',
+  'Notificações do Windows':
+      'Windows notifications',
+  'Só do app (opcional)':
+      'Only from app (optional)',
+  'Parte do nome como aparece nas notificações do Windows. Vazio = todas.':
+      'Part of the name as shown in Windows notifications. Empty = all.',
+  'Notificações':
+      'Notifications',
 };

@@ -6,7 +6,7 @@ import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:flutter/material.dart';
 
 /// Tipos de botão de informação (dynamicType) desenhados por [InfoDeckButton].
-const infoTypes = {'clock', 'weather', 'now_playing', 'command', 'url'};
+const infoTypes = {'clock', 'weather', 'now_playing', 'command', 'url', 'notifications'};
 
 /// Botão que mostra uma informação ao vivo: relógio, clima, o que está tocando, a saída
 /// de um comando ou um valor de uma URL. O relógio é calculado aqui; o resto vem do PC
@@ -151,6 +151,23 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
           Icon(weatherIcon(v['code'] as int?, v['isDay'] != false), size: 26),
           _big(text),
           _small(_label ?? sub ?? ''),
+        ],
+      );
+    }
+    if (_type == 'notifications' && !error) {
+      final count = int.tryParse(text) ?? 0;
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Badge(
+            isLabelVisible: count > 0,
+            label: Text(count > 99 ? '99+' : '$count'),
+            child: Icon(
+                count > 0 ? Icons.notifications_active : Icons.notifications_none,
+                size: 28),
+          ),
+          const SizedBox(height: 4),
+          _small(_label ?? sub ?? tr('Notificações')),
         ],
       );
     }

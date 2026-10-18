@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using DroidDeck.Hubs;
+using DroidDeck.Lib;
 using DroidDeck.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
@@ -32,6 +33,7 @@ namespace DroidDeck.Services
         public const string TypeCommand = "command";
         public const string TypeUrl = "url";
         public const string TypeNowPlaying = "now_playing";
+        public const string TypeNotifications = "notifications";
 
         private static readonly TimeSpan WeatherEvery = TimeSpan.FromMinutes(15);
         private const int MaxText = 200;
@@ -100,7 +102,7 @@ namespace DroidDeck.Services
                         .ToList();
 
                     // Botoes apagados ou que mudaram de tipo saem do estado.
-                    var ids = buttons.Where(b => b.DynamicType is TypeWeather or TypeCommand or TypeUrl)
+                    var ids = buttons.Where(b => b.DynamicType is TypeWeather or TypeCommand or TypeUrl or TypeNotifications)
                         .Select(b => b.Id).ToHashSet();
                     var removed = false;
                     foreach (var id in _values.Keys.Where(k => !ids.Contains(k)).ToList())
@@ -110,7 +112,7 @@ namespace DroidDeck.Services
                     var now = DateTime.UtcNow;
                     foreach (var b in buttons)
                     {
-                        if (b.DynamicType is not (TypeWeather or TypeCommand or TypeUrl)) continue;
+                        if (b.DynamicType is not (TypeWeather or TypeCommand or TypeUrl or TypeNotifications)) continue;
                         var key = b.Id + "|" + Signature(b);
                         if (_nextRun.TryGetValue(key, out var next) && next > now) continue;
                         if (!_running.TryAdd(b.Id, true)) continue;
@@ -141,6 +143,7 @@ namespace DroidDeck.Services
         public static TimeSpan Interval(DeckButton b)
         {
             if (b.DynamicType == TypeWeather) return WeatherEvery;
+            if (b.DynamicType == TypeNotifications) return TimeSpan.FromSeconds(3);
             var secs = int.TryParse(Param(b, "interval"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var s) ? s : 60;
             return TimeSpan.FromSeconds(Math.Clamp(secs, 5, 24 * 3600));
         }
@@ -154,6 +157,7 @@ namespace DroidDeck.Services
                     TypeWeather => await WeatherAsync(Param(b, "city"), Param(b, "units", "c")),
                     TypeCommand => Format(b, await RunCommandAsync(Param(b, "command"))),
                     TypeUrl => Format(b, await FetchUrlAsync(Param(b, "url"), Param(b, "path"))),
+                    TypeNotifications => await NotificationsAsync(Param(b, "app")),
                     _ => null,
                 };
                 if (value == null) return;
@@ -186,6 +190,31 @@ namespace DroidDeck.Services
         }
 
         private static string Short(string s, int max) => s.Length <= max ? s : s[..max];
+
+        // ---- Notificacoes do Windows ----
+
+        /// <summary>
+        /// Quantas notificacoes estao na central do Windows (de um app, se "app" vier: parte do
+        /// nome como aparece no Windows, ex.: "Discord", "WhatsApp"). O Windows pede permissao
+        /// uma vez (Configuracoes > Privacidade > Notificacoes).
+        /// </summary>
+        private static async Task<InfoValue> NotificationsAsync(string app)
+        {
+            var listener = Windows.UI.Notifications.Management.UserNotificationListener.Current;
+            var access = await listener.RequestAccessAsync();
+            if (access != Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus.Allowed)
+                return new InfoValue { Text = "—", Sub = L.T("Sem permissão"), Error = true };
+            var list = await listener.GetNotificationsAsync(Windows.UI.Notifications.NotificationKinds.Toast);
+            var count = 0;
+            foreach (var n in list)
+            {
+                string name;
+                try { name = n.AppInfo?.DisplayInfo?.DisplayName ?? ""; }
+                catch { name = ""; }
+                if (app.Length == 0 || name.Contains(app, StringComparison.OrdinalIgnoreCase)) count++;
+            }
+            return new InfoValue { Text = count.ToString(CultureInfo.InvariantCulture), Sub = app.Length > 0 ? app : null };
+        }
 
         // ---- Comando ----
 

@@ -35,6 +35,7 @@ class InfoSection extends StatelessWidget {
     'command': 'Saída de um comando (PC)',
     'url': 'Valor de uma URL (PC)',
     'volume_slider': 'Controle deslizante de volume',
+    'notifications': 'Notificações do Windows',
   };
 
   /// Comando e URL rodam no PC: como os atalhos, só mudam no configurador.
@@ -170,6 +171,12 @@ class InfoSection extends StatelessWidget {
               hint: 'data.items[0].name', help: tr('Vazio = a resposta inteira.')),
           _field('format', tr('Modelo'), hint: '{value}', help: tr('{value} é o valor lido.')),
           _field('interval', tr('Atualizar a cada (segundos)'), hint: '60', number: true),
+        ];
+      case 'notifications':
+        return [
+          _field('app', tr('Só do app (opcional)'),
+              hint: 'Discord',
+              help: tr('Parte do nome como aparece nas notificações do Windows. Vazio = todas.')),
         ];
       case 'volume_slider':
         final target = _p('target', 'output');

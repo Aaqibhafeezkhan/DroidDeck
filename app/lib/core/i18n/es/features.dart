@@ -126,4 +126,12 @@ final Map<String, String> esFeatures = {
       'Pulsar el botón',
   'Apertar um botão sozinho num horário, quando um app abrir…':
       'Pulsar un botón solo a una hora, cuando se abra una aplicación…',
+  'Notificações do Windows':
+      'Notificaciones de Windows',
+  'Só do app (opcional)':
+      'Solo de la aplicación (opcional)',
+  'Parte do nome como aparece nas notificações do Windows. Vazio = todas.':
+      'Parte del nombre tal como aparece en las notificaciones de Windows. Vacío = todas.',
+  'Notificações':
+      'Notificaciones',
 };
