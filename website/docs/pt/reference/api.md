@@ -19,7 +19,7 @@ Falhas de integração retornam `502` com `{error}`.
 
 ## Ações privilegiadas
 
-**Atalho de teclado**, **abrir app** e **ativar janela** executam código no PC, e a **requisição HTTP**
+**Atalho de teclado**, **abrir app**, **ativar janela** e **script** executam código no PC, e a **requisição HTTP**
 sai com o acesso de rede do PC, então ficam protegidas até de quem tem a chave. Requisições que não vêm do próprio PC (loopback) não podem:
 
 - executá-las pelo `execute` — use o `press` com um botão salvo no PC;
@@ -28,6 +28,9 @@ sai com o acesso de rede do PC, então ficam protegidas até de quem tem a chave
 
 Uma multi-ação conta como privilegiada se qualquer passo dela for. Requisições recusadas retornam
 `403` com `{error}`.
+
+Conexões de um celular pelo [cabo USB](../getting-started/browser-usb.md#usb) chegam pelo loopback,
+através do `adb`; o servidor as reconhece e as trata como remotas, não como o PC.
 
 ## Exemplos
 
@@ -73,7 +76,7 @@ Todos os valores de parâmetros são strings.
 | `activatewindow` | `windowName` (título exato da janela) |
 | `media` | `command`: `playpause`·`play`·`pause`·`next`·`previous`·`stop`; `sessionId`? |
 | `mixer` | `operation`: `toggleMute`·`mute`·`unmute`·`setVolume`·`volumeUp`·`volumeDown`; `processName` **ou** `deviceId` (`default` ou o id de um endpoint); `deviceKind`: `output`·`input`; `volume` (0–100); `step` (1–50) |
-| `multi` | `steps`: string com um array JSON `[{"type","parameters","delayMs"}]` |
+| `multi` | `steps`: string com um array JSON `[{"type","parameters","delayMs","if"}]`; `if` é opcional: `{check, value, negate}`, com `check` entre `obs_streaming`·`obs_recording`·`discord_mute`·`discord_deaf`·`toggle_on` (`value` = id do botão)·`app_running`·`app_focused` (`value` = processo)·`time_between` (`value` = `08:00-18:00`)·`weekday` (`value` = `1-5`, 0 = domingo) |
 | `discord` | `operation`: `toggleMute`·`mute`·`unmute`·`toggleDeafen`·`joinChannel` (`channelId`)·`disconnect`·`inputVolumeUp/Down`·`outputVolumeUp/Down` (`delta`)·`setInputVolume`·`setOutputVolume` (`value`)·`toggleVoiceMode`·`setVoiceMode` (`mode`: `VOICE_ACTIVITY`·`PUSH_TO_TALK`)·`userMute` (`userId`)·`userVolume` (`userId`, `value` 0–200) |
 | `obs` | `operation`: `setScene` (`scene`)·`toggleRecord`·`startRecord`·`stopRecord`·`toggleStream`·`toggleVirtualCam`·`toggleReplayBuffer`·`saveReplay`·`toggleInputMute` (`inputName`) |
 | `soundboard` | `operation`: `play`·`stop`; `source`: `myinstants` (`id`, `url`, `title`) ou `discord` (`soundId`, `guildId`) |
@@ -89,6 +92,7 @@ Todos os valores de parâmetros são strings.
 | `keylight` | `host` (IP ou IP:porta); `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`brightness_step` (`step`)·`temperature` (`kelvin`)·`temperature_step` (`kelvinStep`) |
 | `govee` | `ip`; `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`color` (`color` #RRGGBB)·`temperature` (`kelvin`) |
 | `mqtt` | `topic`, `payload`, `qos` (0–2), `retain` (`true`/`false`) |
+| `script` | `source`: `inline` (`language`: `powershell`·`python`·`cmd`; `code`) ou `file` (`path`); `arguments` |
 
 `open_profile` e `back` existem só no celular.
 
@@ -110,8 +114,15 @@ privilegiadas vale para os três.
 Botões de dois estados acrescentam `toggle` (bool), `activeAction` (roda no toque que desliga),
 `activeLabel`, `activeIconName` e `activeIconBase64`. Botões de informação usam `dynamicType`
 (`cpu_monitor`, `memory_monitor`, `gpu_monitor`, `network_monitor`, `clock`, `weather`, `now_playing`,
-`command`, `url`) com `dynamicParameters` (`city`, `units`, `command`, `url`, `path`, `format`,
-`interval`…); `command` e `url` seguem a regra das ações privilegiadas.
+`command`, `url`, `notifications`, `volume_slider`) com `dynamicParameters` (`city`, `units`,
+`command`, `url`, `path`, `format`, `interval`, `app`, `target`…); `command` e `url` seguem a regra das
+ações privilegiadas. Botões grandes acrescentam `columnSpan` e `rowSpan` (padrão 1; `row`/`column` é a
+casa do canto superior esquerdo).
+
+| Método | Caminho | Descrição |
+|---|---|---|
+| GET | `/api/slider?target=output\|input\|app&app=` | Controle deslizante: `{volume, mute, label}` atual da saída padrão, da entrada padrão ou de um app (nome do processo sem `.exe`). `404` quando o alvo não existe no momento (ex.: o app não tem sessão de áudio). |
+| PUT | `/api/slider` | `{target, app, volume}` (0–100). Devolve o estado novo. |
 
 ## Biblioteca — backup, Steam, apps
 
@@ -125,6 +136,23 @@ Botões de dois estados acrescentam `toggle` (bool), `activeAction` (roda no toq
 | GET | `/api/system/info` | `{name, version}` — o nome do PC no Windows, usado para identificar os PCs pareados. |
 | GET | `/api/info` | Valores atuais dos botões de informação, o que está tocando e os botões de dois estados ligados. |
 | GET / POST | `/api/macro`, `/api/macro/start`, `/api/macro/stop` | Gravação de macro pelo teclado. Só do próprio PC (senão `403`); `stop` devolve `{steps}` no formato da multiação. |
+| POST | `/api/import/streamdeck` | Importa um `.streamDeckProfile` (corpo = o arquivo, até 50 MB) como perfis novos. Devolve `{profiles, buttons, unsupported, stripped, firstProfileId}`; de fora do PC, botões privilegiados entram sem a ação e `stripped` conta quantos. `400` com `{error}` se não for um perfil do Stream Deck. |
+| GET | `/api/share/{profileId}` | `{data, url, qr, images}` — o perfil comprimido num link (`url` é a página de compartilhamento do site com `#data`); `qr` diz se cabe num QR code; `images`, se imagens próprias ficaram de fora. |
+| GET | `/api/share/{profileId}/qr` | O link de compartilhamento como QR code em PNG. |
+| POST | `/api/share/import` | `{data}` de um link compartilhado → salvo como perfil novo. Devolve `{profileId, name, buttons, stripped}`; mesma regra das ações privilegiadas da importação do Stream Deck. |
+
+## Automações — `/api/triggers`
+
+| Método | Caminho | Descrição |
+|---|---|---|
+| GET | `/api/triggers` | A lista de automações. |
+| PUT | `/api/triggers` | Troca a lista inteira. Devolve a lista salva. |
+| POST | `/api/triggers/{id}/run` | Aperta o botão da automação agora. `404` se a automação ou o botão não existir. |
+
+Uma automação é `{id, name, enabled, event, time, days, app, profileId, buttonId, if}`. `event` é
+`schedule` (`time` `HH:mm`, `days` como `1-5`), `app_start` / `app_exit` (`app`), `resume` ou
+`startup`; `if` é uma condição opcional no formato da multiação. Como as automações só apertam botões
+salvos, elas seguem as regras com que esses botões foram criados.
 
 ## Tipos de ação — `/api/actions`
 

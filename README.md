@@ -49,7 +49,7 @@ talks to it over your local network.
 
 | | |
 |---|---|
-| ⌨️ **Shortcuts & apps** | Send key combinations, open programs, files and URLs, chain steps in a multi-action, call webhooks and APIs. |
+| ⌨️ **Shortcuts & apps** | Send key combinations, open programs, files and URLs, run PowerShell/Python/`.bat` scripts, chain steps in a multi-action (with conditions), call webhooks and APIs. |
 | 🪟 **Windows** | Switch the default audio device (headphones ↔ speakers), lock, sleep, turn the screen off. |
 | ⏱️ **Timers** | Countdown, stopwatch, pomodoro and counters with a live clock on the button. |
 | 🎮 **Steam** | Pick an installed game and the button gets its cover; tap to launch it. |
@@ -63,8 +63,12 @@ talks to it over your local network.
 | 💡 **Smart home** | Home Assistant, and Tuya / Smart Life lights, plugs and switches — toggles, dimmers and colours, with real state. |
 | 🎧 **Spotify** | Player, like, shuffle, playlists and the album cover on the button (Premium). |
 | 📡 **Twitch & YouTube** | Markers, clips, ads, polls and chat; live status and viewers. |
-| 🔁 **Two states & info** | Toggle buttons with their own icon and label; clock, weather, now playing, command output and URL values on a button; record macros from the keyboard. |
+| 🔁 **Two states & info** | Toggle buttons with their own icon and label; clock, weather, now playing, Windows notifications, command output and URL values on a button; record macros from the keyboard. |
+| 🎚️ **Sliders & big buttons** | Volume sliders for the PC, the mic or one app; buttons that span several cells; animated GIF icons. |
+| 🤖 **Automations** | Press a button by itself at a set time, when an app opens or closes, or when the PC wakes up. |
+| 📥 **Import & share** | Import Elgato Stream Deck profiles, share a profile by link or QR, start from the [profile gallery](https://me.gf2.in/DroidDeck/gallery/). |
 | 🖥️ **Several PCs** | Pair one phone with more than one PC and switch from the deck's top bar. |
+| 📱 **iPhone, iPad & USB** | Use the deck in any browser (iPhone, iPad, another PC) through a QR code, or connect an Android phone over a USB cable, no Wi-Fi needed. |
 | 🎨 **Themes** | Ready-made themes, light/dark mode, accent colour and three button styles. A "deck only" mode opens straight into a full-screen deck, and buttons can vibrate on tap. |
 
 ## 📸 Screenshots
@@ -81,9 +85,10 @@ talks to it over your local network.
 ## 🚀 Getting started
 
 **You need both parts:** the Windows app (it does the work) and the Android app (the buttons). The
-phone app alone does nothing.
+phone app alone does nothing. On an iPhone or iPad, use the
+[deck in the browser](https://me.gf2.in/DroidDeck/docs/getting-started/browser-usb/) instead of the app.
 
-**Requirements:** Windows 10 1809+ (64-bit) · Android 7.0+ · phone and PC on the same local network.
+**Requirements:** Windows 10 1809+ (64-bit) · Android 7.0+ (or any browser, for iPhone and iPad) · phone and PC on the same local network, or an Android phone on a USB cable.
 
 1. **Windows** — download and run `DroidDeck-Setup.exe` from the [latest release](https://github.com/ggfto/DroidDeck/releases/latest).
    It lives in the system tray and updates itself. (Prefer no installer? Use `DroidDeck-win-x64.zip`,
@@ -112,6 +117,13 @@ Having trouble (SmartScreen, firewall, phone not finding the PC)? See
 | Spotify (your own Spotify app, Premium) | [Spotify](https://me.gf2.in/DroidDeck/docs/integrations/spotify/) |
 | Twitch (your own Twitch app) | [Twitch](https://me.gf2.in/DroidDeck/docs/integrations/twitch/) |
 | YouTube (your own Google OAuth client) | [YouTube](https://me.gf2.in/DroidDeck/docs/integrations/youtube/) |
+| Streamer.bot (WebSocket Server) | [Streamer.bot](https://me.gf2.in/DroidDeck/docs/integrations/streamerbot/) |
+| VTube Studio (plugin API) | [VTube Studio](https://me.gf2.in/DroidDeck/docs/integrations/vtubestudio/) |
+| Voicemeeter (Standard, Banana, Potato) | [Voicemeeter](https://me.gf2.in/DroidDeck/docs/integrations/voicemeeter/) |
+| Philips Hue (Hue Bridge) | [Philips Hue](https://me.gf2.in/DroidDeck/docs/integrations/hue/) |
+| Elgato Key Light | [Elgato Key Light](https://me.gf2.in/DroidDeck/docs/integrations/elgato/) |
+| Govee (LAN API) | [Govee](https://me.gf2.in/DroidDeck/docs/integrations/govee/) |
+| MQTT (your broker) | [MQTT](https://me.gf2.in/DroidDeck/docs/integrations/mqtt/) |
 | Per-app mixer & media | [Mixer & media](https://me.gf2.in/DroidDeck/docs/integrations/mixer-media/) |
 
 ## 🧩 How it works

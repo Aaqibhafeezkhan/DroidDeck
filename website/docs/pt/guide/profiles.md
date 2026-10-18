@@ -31,6 +31,9 @@ Importar adiciona os perfis do arquivo. Um perfil que já existe (o mesmo perfil
 anterior) é substituído pela versão do arquivo; os outros ficam como estão. Os botões **Abrir perfil**
 continuam apontando para as pastas certas.
 
+Para compartilhar um perfil só, ou trazer um do Stream Deck da Elgato, veja
+[Importar e compartilhar](import-share.md).
+
 !!! info "Backups com ações privilegiadas"
     Um backup com botões de atalho de teclado, abrir programa ou requisição HTTP só pode ser
     importado pelo configurador no PC, pela mesma regra de segurança dos botões.

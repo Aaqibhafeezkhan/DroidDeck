@@ -49,7 +49,7 @@ app na bandeja do sistema; o celular conversa com ele pela rede local.
 
 | | |
 |---|---|
-| ⌨️ **Atalhos e apps** | Envie combinações de teclas, abra programas, arquivos e URLs, encadeie passos em uma multiação, chame webhooks e APIs. |
+| ⌨️ **Atalhos e apps** | Envie combinações de teclas, abra programas, arquivos e URLs, rode scripts do PowerShell/Python/`.bat`, encadeie passos em uma multiação (com condições), chame webhooks e APIs. |
 | 🪟 **Windows** | Troque o dispositivo de áudio padrão (fone ↔ caixa de som), trave, suspenda ou desligue a tela. |
 | ⏱️ **Timers** | Timer, cronômetro, pomodoro e contadores com o relógio ao vivo no botão. |
 | 🎮 **Steam** | Escolha um jogo instalado e o botão ganha a capa dele; um toque abre o jogo. |
@@ -63,8 +63,12 @@ app na bandeja do sistema; o celular conversa com ele pela rede local.
 | 💡 **Casa inteligente** | Home Assistant, e lâmpadas, tomadas e interruptores Tuya / Smart Life — liga/desliga, brilho e cores, com estado real. |
 | 🎧 **Spotify** | Player, curtir, aleatório, playlists e a capa do álbum no botão (Premium). |
 | 📡 **Twitch e YouTube** | Marcadores, clipes, anúncios, enquetes e chat; ao vivo e espectadores. |
-| 🔁 **Dois estados e informação** | Botões liga/desliga com ícone e rótulo próprios; relógio, clima, tocando agora, saída de comando e valores de URL no botão; macros gravadas pelo teclado. |
+| 🔁 **Dois estados e informação** | Botões liga/desliga com ícone e rótulo próprios; relógio, clima, tocando agora, notificações do Windows, saída de comando e valores de URL no botão; macros gravadas pelo teclado. |
+| 🎚️ **Controles deslizantes e botões grandes** | Controles de volume do PC, do microfone ou de um app; botões que ocupam várias casas; ícones em GIF animado. |
+| 🤖 **Automações** | Um botão apertado sozinho num horário, quando um app abre ou fecha, ou quando o PC volta da suspensão. |
+| 📥 **Importar e compartilhar** | Importe perfis do Stream Deck da Elgato, compartilhe um perfil por link ou QR, comece pela [galeria de perfis](https://me.gf2.in/DroidDeck/gallery/). |
 | 🖥️ **Vários PCs** | Um celular pareado com mais de um PC, trocando pela barra do deck. |
+| 📱 **iPhone, iPad e USB** | Use o deck em qualquer navegador (iPhone, iPad, outro PC) por um QR code, ou conecte um celular Android pelo cabo USB, sem precisar de Wi-Fi. |
 | 🎨 **Temas** | Temas prontos, modo claro/escuro, cor de destaque e três estilos de botão. O modo "só o deck" abre direto no deck em tela cheia, e os botões podem vibrar ao tocar. |
 
 ## 📸 Capturas de tela
@@ -81,9 +85,10 @@ app na bandeja do sistema; o celular conversa com ele pela rede local.
 ## 🚀 Começando
 
 **Você precisa das duas partes:** o app do Windows (que executa as ações) e o app Android (os
-botões). Só o app do celular não faz nada.
+botões). Só o app do celular não faz nada. Num iPhone ou iPad, use o
+[deck no navegador](https://me.gf2.in/DroidDeck/docs/pt/getting-started/browser-usb/) no lugar do app.
 
-**Requisitos:** Windows 10 1809+ (64 bits) · Android 7.0+ · celular e PC na mesma rede local.
+**Requisitos:** Windows 10 1809+ (64 bits) · Android 7.0+ (ou qualquer navegador, para iPhone e iPad) · celular e PC na mesma rede local, ou um celular Android no cabo USB.
 
 1. **Windows** — baixe e rode o `DroidDeck-Setup.exe` da [versão mais recente](https://github.com/ggfto/DroidDeck/releases/latest).
    Ele fica na bandeja do sistema e se atualiza sozinho. (Prefere sem instalar? Use o `DroidDeck-win-x64.zip`,
@@ -108,6 +113,13 @@ Algum problema (SmartScreen, firewall, celular não encontra o PC)? Veja
 | Spotify (seu próprio app do Spotify, Premium) | [Spotify](https://me.gf2.in/DroidDeck/docs/pt/integrations/spotify/) |
 | Twitch (seu próprio app da Twitch) | [Twitch](https://me.gf2.in/DroidDeck/docs/pt/integrations/twitch/) |
 | YouTube (seu próprio cliente OAuth do Google) | [YouTube](https://me.gf2.in/DroidDeck/docs/pt/integrations/youtube/) |
+| Streamer.bot (WebSocket Server) | [Streamer.bot](https://me.gf2.in/DroidDeck/docs/pt/integrations/streamerbot/) |
+| VTube Studio (API de plugins) | [VTube Studio](https://me.gf2.in/DroidDeck/docs/pt/integrations/vtubestudio/) |
+| Voicemeeter (Standard, Banana, Potato) | [Voicemeeter](https://me.gf2.in/DroidDeck/docs/pt/integrations/voicemeeter/) |
+| Philips Hue (Hue Bridge) | [Philips Hue](https://me.gf2.in/DroidDeck/docs/pt/integrations/hue/) |
+| Elgato Key Light | [Elgato Key Light](https://me.gf2.in/DroidDeck/docs/pt/integrations/elgato/) |
+| Govee (API LAN) | [Govee](https://me.gf2.in/DroidDeck/docs/pt/integrations/govee/) |
+| MQTT (seu broker) | [MQTT](https://me.gf2.in/DroidDeck/docs/pt/integrations/mqtt/) |
 | Mixer por app e mídia | [Mixer e mídia](https://me.gf2.in/DroidDeck/docs/pt/integrations/mixer-media/) |
 
 ## 🧩 Como funciona

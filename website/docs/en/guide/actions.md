@@ -3,9 +3,9 @@
 Each button runs one **action**. Pick the action type in the properties panel; the fields below it
 change according to the type.
 
-!!! info "Hotkey, Launch app and HTTP request are created on the PC"
-    For security, buttons that send keys, open programs or make HTTP requests (including multi-actions
-    with those steps) can only be created or changed in the [configurator](../getting-started/configurator.md)
+!!! info "Hotkey, Launch app, Script and HTTP request are created on the PC"
+    For security, buttons that send keys, open programs, run scripts or make HTTP requests (including
+    multi-actions with those steps) can only be created or changed in the [configurator](../getting-started/configurator.md)
     on the PC. The phone runs them normally.
 
 | Action type | Runs on | Summary |
@@ -35,11 +35,13 @@ change according to the type.
 | [Timer, pomodoro & counter](#timer) | PC | A live clock on the button. |
 | [Windows](#windows) | PC | Switches the default audio device, locks, sleeps or turns the screen off. |
 | [HTTP request](#http) | PC | Calls a webhook or any API. |
+| [Script](#script) | PC | Runs a PowerShell or Python script or a `.bat` file, with arguments. |
 | [Steam game](#steam) | PC | Opens an installed game, with its cover on the button. |
 
 Each button can also have a [long-press and a double-tap](#gestures) action, be a
-[two-state button](#two-states) and [show information](monitors.md) (clock, weather, what's
-playing...).
+[two-state button](#two-states), [show information](monitors.md) (clock, weather, what's
+playing, a volume slider...), take [more than one cell](#size) and be pressed by an
+[automation](automations.md).
 
 ## Hotkey
 
@@ -115,6 +117,33 @@ runs. The editor offers three step kinds:
 
 Example — "Start meeting": open the meeting app, wait 3000 ms, send `^+m`.
 
+Steps of other types (Discord, OBS, scripts... — for example from a
+[Stream Deck import](import-share.md#stream-deck)) are kept and run, even though the editor only
+creates these three kinds.
+
+### Conditions { #conditions }
+
+Each step has an **Only if** field. With a condition, the step only runs when it's met; otherwise it is
+skipped and the multi-action moves on. **Not** inverts it: the step runs when the condition is *not*
+met. The default, **Always**, runs the step every time.
+
+| Only if… | Value |
+|---|---|
+| **The OBS stream is live** | — |
+| **OBS is recording** | — |
+| **The Discord mic is muted** | — |
+| **Discord audio is deafened** | — |
+| **A two-state button is on** | The [two-state](#two-states) button, picked from a list. |
+| **An app is open** | Process name without `.exe`, e.g. `Spotify`. |
+| **An app is focused** | Process name of the window in focus. |
+| **It is between two times** | `08:00-18:00`. A range that crosses midnight works: `22:00-06:00`. |
+| **It is one of these weekdays** | `0` = Sunday … `6` = Saturday, with ranges and commas: `1-5`, `0,6`. |
+
+- The condition is checked when the step's turn comes, after its delay. The delay is waited even if the
+  step is then skipped.
+- Example — one "Go live" button: start streaming, then *only if* `obs64` is **not** focused, switch
+  to the stream scene; and *only if* it's between `18:00-23:59`, turn the desk light on.
+
 ### Record from the keyboard { #record }
 
 In the PC configurator, **Record from keyboard** records what you type on the PC's keyboard and turns
@@ -159,11 +188,43 @@ Calls a URL from the PC: n8n, Home Assistant or IFTTT webhooks, or any API. Pick
 **URL**, the **headers** (one per line, `Name: value`) and, for POST/PUT/PATCH, the **body** and its
 format (JSON, form or text). The request has 10 seconds to answer; the result goes to DroidDeck's log.
 
+## Script { #script }
+
+Runs a script on the PC, with no window. **Script** picks where it comes from:
+
+- **Written here** — pick the **Language** (PowerShell, Python or Command Prompt `.bat`) and type the
+  **Code** in the button. DroidDeck saves it to `%LocalAppData%\DroidDeck\scripts\` and runs it from
+  there.
+- **A file on the PC** — the **File** path of a `.ps1`, `.py`, `.bat` or `.cmd`.
+
+**Arguments (optional)** are separated by spaces; use quotes for an argument with spaces
+(`"my game" 2`). They arrive in `$args` (PowerShell), `sys.argv` (Python) or `%1`, `%2`… (`.bat`), so one
+script file can serve several buttons, each with its own arguments.
+
+- PowerShell runs with `-NoProfile -ExecutionPolicy Bypass`. Python uses the `py` launcher from the
+  official installer, or `python` from the `PATH`. The working folder is the script's folder.
+- A script that runs for more than **5 minutes** is stopped.
+- Output isn't shown on the button. Errors (non-zero exit code) go to DroidDeck's log. To show a value on
+  a button, use the [Command output](monitors.md#information) info instead.
+
+!!! warning "Created on the PC only"
+    A script can do anything your Windows account can, so — like hotkeys — script buttons can only be
+    created or changed in the configurator on the PC. The phone and browser decks run them normally.
+
 ## Steam game { #steam }
 
 Lists the games installed in the PC's Steam (every library). Picking one gives the button the game's
 name and cover; tapping it launches the game through Steam. The cover comes from Steam's cache: if a
 game shows no image, open your Steam library once so it downloads the covers.
+
+## Size { #size }
+
+Under **Size** in the editor, **Width (cells)** and **Height (cells)** make a button span up to 4 × 4
+cells — a big mute button, a tall [volume slider](monitors.md#volume-slider), a wide clock. The
+button's position is its top-left cell.
+
+A large button never covers other buttons: it stops where another button is, and it's cut at the edge
+of the grid. To make room, move the neighbours first.
 
 ## Long press and double tap { #gestures }
 

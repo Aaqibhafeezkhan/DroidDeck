@@ -16,6 +16,10 @@ The phone saves the address, port and key, and connects. The status dot turns gr
     `droiddeck://pair?ip=<LAN IP>&port=4787&key=<api key>` — the PC's LAN address, the port and the
     API key. Treat it like a password: anyone who scans it can control your PC through DroidDeck.
 
+!!! tip "iPhone, iPad or no Wi-Fi?"
+    The same window has an **Abrir no navegador** (Open in browser) QR code that opens the deck in any
+    browser, and an Android phone can also connect over a USB cable. See [Browser & USB](browser-usb.md).
+
 ## Find the server automatically
 
 **Search for server** broadcasts on the local network (UDP 7573) and fills in

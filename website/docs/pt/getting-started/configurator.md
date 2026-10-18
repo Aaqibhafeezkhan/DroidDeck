@@ -5,7 +5,8 @@ DroidDeck — abra-o pela bandeja (**Abrir no navegador**) ou acesse **`http://l
 
 !!! note "Use no próprio PC"
     O configurador só entra automaticamente a partir da mesma máquina (`localhost`). Aberto de outro
-    computador da rede, as requisições são recusadas com *401 Unauthorized*.
+    aparelho da rede, o mesmo endereço mostra o [deck no navegador](browser-usb.md#browser), que precisa
+    de pareamento.
 
 ## Layout
 
@@ -17,7 +18,8 @@ A tela tem três painéis:
 
 - **Arraste e solte** um botão para movê-lo. Soltar em uma célula ocupada troca os dois de lugar.
 - O ícone de lápis renomeia o perfil.
-- Atalhos na barra lateral abrem as configurações de **Discord**, **OBS** e **Soundboard**.
+- A barra lateral também abre as **Integrações** e as [Automações](../guide/automations.md), e tem
+  **Exportar backup**, **Importar backup** e [Importar do Stream Deck](../guide/import-share.md#stream-deck).
 
 Cada alteração salva é enviada ao celular na hora.
 
@@ -53,12 +55,13 @@ Você também pode editar no próprio celular:
 | Propriedade | Descrição |
 |---|---|
 | **Rótulo** | Texto exibido no botão. Botões de mídia e de soundboard o preenchem sozinhos quando vazio. |
-| **Ícone** | Um dos ícones embutidos, ou uma imagem personalizada da sua galeria (até 512×512, guardada no perfil). |
+| **Ícone** | Um dos ícones embutidos, ou uma imagem personalizada da sua galeria (reduzida para 512×512, guardada no perfil). Um GIF animado vai como está e anima no botão; até 2 MB. |
 | **Background Color** | Cor do botão. |
 | **Cor ativa** | Cor usada quando o estado do botão está "ligado" (microfone silenciado, lâmpada acesa…). Disponível para ações com estado ao vivo e para botões de dois estados. |
 | **Action Type** | O que o botão faz — veja [Botões e ações](../guide/actions.md). |
 | **Mostrar no botão** | Mostra um monitor ao vivo ou uma informação (relógio, clima…) — veja [Monitores e informação](../guide/monitors.md). |
 | **Dois estados** | Alternar a cada toque, e o rótulo e o ícone quando ativo — veja [Dois estados](../guide/actions.md#two-states). |
+| **Tamanho** | Quantas casas o botão ocupa (largura × altura, até 4 × 4) — veja [Tamanho](../guide/actions.md#size). |
 
 ## Backup
 

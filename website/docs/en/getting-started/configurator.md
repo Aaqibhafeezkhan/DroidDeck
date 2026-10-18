@@ -6,7 +6,8 @@ DroidDeck itself — open it from the tray (**Abrir no navegador**) or go to
 
 !!! note "Use it on the PC itself"
     The configurator signs in automatically only from the same machine (`localhost`). Opened from
-    another computer on the network, its requests are rejected with *401 Unauthorized*.
+    another device on the network, the same address shows the [deck in the browser](browser-usb.md#browser)
+    instead, which needs pairing.
 
 ## Layout
 
@@ -18,7 +19,8 @@ The screen has three panels:
 
 - **Drag and drop** a button to move it. Dropping it on an occupied cell swaps the two.
 - The pencil icon renames the profile.
-- Shortcuts in the sidebar open the **Discord**, **OBS** and **Soundboard** settings.
+- The sidebar also opens **Integrations** and [Automations](../guide/automations.md), and has
+  **Export backup**, **Import backup** and [Import from Stream Deck](../guide/import-share.md#stream-deck).
 
 Every save is pushed to the phone immediately.
 
@@ -54,12 +56,13 @@ You can also edit on the phone itself:
 | Property | Description |
 |---|---|
 | **Label** | Text shown on the button. Media and soundboard buttons fill it automatically when empty. |
-| **Icon** | One of the built-in icons, or a custom image from your gallery (up to 512×512, stored in the profile). |
+| **Icon** | One of the built-in icons, or a custom image from your gallery (reduced to 512×512, stored in the profile). An animated GIF is kept as is and plays on the button; up to 2 MB. |
 | **Background colour** | Button colour. |
 | **Active colour** | Colour used when the button's state is "on" (muted mic, light on…). Available for actions with live state and for two-state buttons. |
 | **Action type** | What the button does — see [Buttons & actions](../guide/actions.md). |
 | **Show on button** | Shows a live monitor or information (clock, weather…) — see [Monitors & info](../guide/monitors.md). |
 | **Two states** | Toggle on each tap, and the label and icon while active — see [Two states](../guide/actions.md#two-states). |
+| **Size** | How many cells the button takes (width × height, up to 4 × 4) — see [Size](../guide/actions.md#size). |
 
 ## Backup
 

@@ -10,6 +10,7 @@
 | `layout.json` | Grid size reported by the phone (`rows`, `columns`). |
 | `counters.json` | Values of the counter buttons, so they survive a restart. |
 | `toggles.json` | Two-state buttons that are on. |
+| `triggers.json` | [Automations](../guide/automations.md). |
 
 **`%LocalAppData%\DroidDeck\`** — keys and integrations:
 
@@ -27,6 +28,9 @@
 | `mqtt.json` | MQTT broker address, username and password. |
 | `streamerbot.json` | Streamer.bot WebSocket Server address and password. |
 | `vtubestudio.json` | VTube Studio API address and the plugin token. |
+| `usb.json` | Whether the [USB connection](../getting-started/browser-usb.md#usb) is on (`Enabled`). Without the file, it's on only when an Android SDK `adb` is found. |
+| `platform-tools\` | Google's platform-tools (`adb`), when DroidDeck downloaded them for the USB connection. Safe to delete with DroidDeck closed; turning the USB connection on again downloads them. |
+| `scripts\` | [Scripts](../guide/actions.md#script) written in a button, saved as files to run (one per content). Safe to delete; they are recreated. |
 
 **`%LocalAppData%\DroidDeck.log`** — the log file.
 

@@ -13,6 +13,17 @@
    manually in **Server IP**.
 5. **"Server not found"** during search: discovery uses broadcast, which some routers block.
    Type the IP manually.
+6. **Still nothing?** Connect with a [USB cable](getting-started/browser-usb.md#usb): it doesn't depend
+   on the network or the firewall.
+
+## The USB connection doesn't connect
+
+- The tray item must be checked and say *aguardando celular* (waiting for a phone) or *celular
+  conectado* (phone connected).
+- **USB debugging** must be on, and the phone must have accepted the **Allow USB debugging?** prompt.
+  If you dismissed it, unplug and plug the cable back in. Some cables only charge: try another one.
+- The phone must be paired with this PC first, with the QR code; the cable doesn't carry the key.
+- If downloading `adb` failed, check the internet connection and click the tray item again.
 
 ## "Authentication failed… Pair again"
 

@@ -3,9 +3,9 @@
 Cada botão executa uma **ação**. Escolha o tipo de ação no painel de propriedades; os campos abaixo
 dele mudam de acordo com o tipo.
 
-!!! info "Atalho de teclado, Abrir app e Requisição HTTP são criados no PC"
-    Por segurança, botões que enviam teclas, abrem programas ou fazem requisições HTTP (inclusive
-    multi-ações com esses passos) só podem ser criados ou alterados no
+!!! info "Atalho de teclado, Abrir app, Script e Requisição HTTP são criados no PC"
+    Por segurança, botões que enviam teclas, abrem programas, rodam scripts ou fazem requisições HTTP
+    (inclusive multi-ações com esses passos) só podem ser criados ou alterados no
     [configurador](../getting-started/configurator.md), no PC. O celular executa esses botões normalmente.
 
 | Tipo de ação | Roda no | Resumo |
@@ -35,11 +35,13 @@ dele mudam de acordo com o tipo.
 | [Timer, pomodoro e contador](#timer) | PC | Relógio ao vivo no botão. |
 | [Windows](#windows) | PC | Troca o áudio padrão, trava, suspende ou desliga a tela. |
 | [Requisição HTTP](#http) | PC | Chama um webhook ou qualquer API. |
+| [Script](#script) | PC | Roda um script do PowerShell, do Python ou um `.bat`, com argumentos. |
 | [Jogo da Steam](#steam) | PC | Abre um jogo instalado, com a capa no botão. |
 
 Cada botão também pode ter uma ação de [toque longo e de toque duplo](#gestures), ser um
-[botão de dois estados](#two-states) e [mostrar uma informação](monitors.md) (relógio, clima, o que
-está tocando...).
+[botão de dois estados](#two-states), [mostrar uma informação](monitors.md) (relógio, clima, o que
+está tocando, um controle deslizante de volume...), ocupar [mais de uma casa](#size) e ser apertado por
+uma [automação](automations.md).
 
 ## Atalho de teclado { #hotkey }
 
@@ -114,6 +116,33 @@ de ele rodar (**Esperar antes (ms)**). O editor oferece três tipos de passo:
 
 Exemplo — "Iniciar reunião": abrir o app de reunião, esperar 3000 ms, enviar `^+m`.
 
+Passos de outros tipos (Discord, OBS, scripts... — vindos de uma
+[importação do Stream Deck](import-share.md#stream-deck), por exemplo) são mantidos e executados, mesmo o
+editor só criando esses três tipos.
+
+### Condições { #conditions }
+
+Cada passo tem um campo **Só se**. Com uma condição, o passo só roda quando ela vale; senão ele é pulado
+e a multiação segue. **Não** inverte: o passo roda quando a condição *não* vale. O padrão, **Sempre**,
+roda o passo toda vez.
+
+| Só se… | Valor |
+|---|---|
+| **A live do OBS estiver no ar** | — |
+| **O OBS estiver gravando** | — |
+| **O microfone do Discord estiver mudo** | — |
+| **O áudio do Discord estiver desativado** | — |
+| **Um botão de dois estados estiver ligado** | O botão de [dois estados](#two-states), escolhido numa lista. |
+| **Um app estiver aberto** | Nome do processo sem `.exe`, ex.: `Spotify`. |
+| **Um app estiver em foco** | Nome do processo da janela em foco. |
+| **For entre dois horários** | `08:00-18:00`. Um intervalo que passa da meia-noite funciona: `22:00-06:00`. |
+| **For um destes dias da semana** | `0` = domingo … `6` = sábado, com intervalos e vírgulas: `1-5`, `0,6`. |
+
+- A condição é conferida na vez do passo, depois da espera dele. A espera acontece mesmo que o passo
+  acabe pulado.
+- Exemplo — um botão "Entrar ao vivo": iniciar a transmissão; depois, *só se* o `obs64` **não**
+  estiver em foco, trocar para a cena da live; e *só se* for entre `18:00-23:59`, acender a luz da mesa.
+
 ### Gravar do teclado { #record }
 
 No configurador do PC, **Gravar do teclado** grava o que você digitar no teclado do PC e transforma
@@ -157,11 +186,43 @@ Escolha o **método**, a **URL**, os **cabeçalhos** (um por linha, `Nome: valor
 o **corpo** e o formato dele (JSON, formulário ou texto). A requisição tem 10 segundos para
 responder, e o resultado fica no log do DroidDeck.
 
+## Script { #script }
+
+Roda um script no PC, sem janela. **Script** escolhe de onde ele vem:
+
+- **Escrito aqui** — escolha a **Linguagem** (PowerShell, Python ou Prompt de comando `.bat`) e digite
+  o **Código** no botão. O DroidDeck o salva em `%LocalAppData%\DroidDeck\scripts\` e roda de lá.
+- **Um arquivo do PC** — o caminho (**Arquivo**) de um `.ps1`, `.py`, `.bat` ou `.cmd`.
+
+Os **Argumentos (opcional)** são separados por espaço; use aspas para um argumento com espaços
+(`"meu jogo" 2`). Eles chegam em `$args` (PowerShell), `sys.argv` (Python) ou `%1`, `%2`… (`.bat`), então
+um mesmo arquivo de script serve para vários botões, cada um com os seus argumentos.
+
+- O PowerShell roda com `-NoProfile -ExecutionPolicy Bypass`. O Python usa o `py` do instalador oficial,
+  ou o `python` do `PATH`. A pasta de trabalho é a pasta do script.
+- Um script que passa de **5 minutos** é encerrado.
+- A saída não aparece no botão. Erros (código de saída diferente de zero) vão para o log do DroidDeck.
+  Para mostrar um valor num botão, use a informação [Saída de um comando](monitors.md#informacao).
+
+!!! warning "Só é criado no PC"
+    Um script pode fazer tudo o que a sua conta do Windows faz, então — como os atalhos — botões de script
+    só podem ser criados ou alterados no configurador do PC. O celular e o deck no navegador executam
+    esses botões normalmente.
+
 ## Jogo da Steam { #steam }
 
 Lista os jogos instalados na Steam do PC (todas as bibliotecas). Ao escolher um, o botão ganha o nome
 e a capa do jogo; tocar abre o jogo pela Steam. A capa vem do cache da Steam: se um jogo aparecer sem
 imagem, abra a biblioteca da Steam uma vez para ela baixar as capas.
+
+## Tamanho { #size }
+
+Em **Tamanho**, no editor, **Largura (casas)** e **Altura (casas)** fazem um botão ocupar até 4 × 4
+casas — um botão de mudo grande, um [controle deslizante de volume](monitors.md#volume-slider) alto, um
+relógio largo. A posição do botão é a casa do canto superior esquerdo.
+
+Um botão grande nunca cobre outros botões: ele para onde houver outro botão e é cortado na borda da
+grade. Para abrir espaço, mova os vizinhos antes.
 
 ## Toque longo e toque duplo { #gestures }
 

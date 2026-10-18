@@ -13,6 +13,16 @@
    manualmente em **IP do Servidor**.
 5. **"Servidor não encontrado"** na pesquisa: a descoberta usa broadcast, que alguns roteadores
    bloqueiam. Digite o IP manualmente.
+6. **Ainda nada?** Conecte pelo [cabo USB](getting-started/browser-usb.md#usb): ele não depende da rede
+   nem do firewall.
+
+## A conexão USB não conecta
+
+- O item da bandeja precisa estar marcado e dizer *aguardando celular* ou *celular conectado*.
+- A **Depuração USB** precisa estar ligada, e o celular precisa ter aceitado o aviso **Permitir depuração
+  USB?**. Se você fechou o aviso, tire e ligue o cabo de novo. Alguns cabos só carregam: tente outro.
+- O celular precisa estar pareado com este PC antes, pelo QR code; o cabo não leva a chave.
+- Se o download do `adb` falhou, confira a internet e clique de novo no item da bandeja.
 
 ## "Falha de autenticação… Refaça o pareamento"
 

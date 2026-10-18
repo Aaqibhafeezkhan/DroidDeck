@@ -17,7 +17,7 @@ bandeja do sistema; o celular conversa com ele pela rede local.
 
 | | |
 |---|---|
-| :material-keyboard: **Atalhos e apps** | Envie combinações de teclas, abra programas, arquivos e URLs, chame webhooks, encadeie passos em uma multiação. |
+| :material-keyboard: **Atalhos e apps** | Envie combinações de teclas, abra programas, arquivos e URLs, rode scripts do PowerShell/Python/`.bat`, chame webhooks, encadeie passos em uma multiação com condições. |
 | :material-microsoft-windows: **Windows** | Troque o dispositivo de áudio padrão, trave o PC, suspenda, desligue a tela. |
 | :material-volume-high: **Mixer de áudio** | Silencie apps, ajuste o volume de dispositivos, ligue e desligue o microfone. O celular também tem um mixer completo por app. |
 | :material-play-pause: **Mídia** | Tocar/pausar, próxima e anterior para o que estiver tocando no Windows (Spotify, navegador, players). |
@@ -31,7 +31,12 @@ bandeja do sistema; o celular conversa com ele pela rede local.
 | :material-lightbulb-on: **Casa inteligente** | Home Assistant, e lâmpadas, tomadas e interruptores Tuya / Smart Life — liga/desliga, dimmer e cores, com estado real. |
 | :simple-spotify: **Spotify** | Player, curtir, aleatório, playlists e a capa do álbum no botão (Premium). |
 | :simple-twitch: **Twitch e YouTube** | Marcadores, clipes, anúncios, enquetes e chat; ao vivo e espectadores. |
-| :material-toggle-switch: **Dois estados e informação** | Botões liga/desliga com ícone e rótulo próprios, e relógio, clima, tocando agora, saída de comando e valores de URL. |
+| :material-toggle-switch: **Dois estados e informação** | Botões liga/desliga com ícone e rótulo próprios, e relógio, clima, tocando agora, notificações do Windows, saída de comando e valores de URL. |
+| :material-tune-vertical: **Controles deslizantes e botões grandes** | Controles de volume do PC, do microfone ou de um app; botões que ocupam várias casas; ícones em GIF animado. |
+| :material-puzzle: **Mais integrações** | [Streamer.bot](integrations/streamerbot.md), [VTube Studio](integrations/vtubestudio.md), [Voicemeeter](integrations/voicemeeter.md), [Philips Hue](integrations/hue.md), [Elgato Key Light](integrations/elgato.md), [Govee](integrations/govee.md) e [MQTT](integrations/mqtt.md), na sua rede local. |
+| :material-robot: **Automações** | Um botão apertado sozinho num horário, quando um app abre ou fecha, ou quando o PC volta da suspensão. |
+| :material-import: **Importar e compartilhar** | Importe perfis do Stream Deck da Elgato, compartilhe um perfil por link ou QR, comece pela galeria de perfis. |
+| :material-cellphone-link: **Qualquer aparelho** | Use o deck no navegador de um iPhone, iPad ou outro PC, ou conecte um celular Android pelo USB, sem Wi-Fi. |
 
 ## Como funciona
 
@@ -51,8 +56,9 @@ flowchart LR
 ## Requisitos
 
 - Windows 10 versão 1809 ou mais recente (64 bits). Não precisa instalar o .NET.
-- Android 7.0 ou mais recente.
-- Celular e PC na mesma rede local.
+- Android 7.0 ou mais recente — ou, pelo [navegador](getting-started/browser-usb.md#browser), um iPhone,
+  iPad ou qualquer aparelho com um navegador moderno.
+- Celular e PC na mesma rede local, ou um celular Android num [cabo USB](getting-started/browser-usb.md#usb).
 
 !!! note "Idioma"
     O app segue o idioma do celular (português, inglês ou espanhol); dá para trocar em **Configuração →

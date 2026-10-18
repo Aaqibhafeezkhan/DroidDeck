@@ -16,6 +16,10 @@ O celular salva o endereço, a porta e a chave, e se conecta. O indicador de sta
     `droiddeck://pair?ip=<LAN IP>&port=4787&key=<api key>` — o endereço do PC na rede local, a porta
     e a chave de API. Trate-o como uma senha: quem ler esse código consegue controlar seu PC pelo DroidDeck.
 
+!!! tip "iPhone, iPad ou sem Wi-Fi?"
+    A mesma janela tem um QR code **Abrir no navegador**, que abre o deck em qualquer navegador, e um
+    celular Android também pode se conectar por cabo USB. Veja [Navegador e USB](browser-usb.md).
+
 ## Encontrar o servidor automaticamente
 
 **Pesquisar Servidor** faz um broadcast na rede local (UDP 7573) e preenche o IP do PC. A descoberta

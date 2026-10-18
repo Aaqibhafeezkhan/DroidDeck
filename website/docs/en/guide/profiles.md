@@ -32,6 +32,9 @@ Importing adds the file's profiles. A profile that already exists (the same prof
 backup) is replaced by the file's version; the others stay as they are. **Open profile** buttons keep
 pointing to the right folders.
 
+To share a single profile, or bring one in from an Elgato Stream Deck, see
+[Import & share](import-share.md).
+
 !!! info "Backups with privileged actions"
     A backup with hotkey, launch-app or HTTP-request buttons can only be imported from the configurator
     on the PC, under the same security rule as the buttons themselves.

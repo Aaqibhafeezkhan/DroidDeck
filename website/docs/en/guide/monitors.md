@@ -29,6 +29,7 @@ Gauges change colour with load: **green** up to 60 %, **orange** above 60 %, **r
 | **Now playing** | Cover, track and artist of what's playing in Windows (Spotify, browser, players). | — |
 | **Command output (PC)** | What a `cmd` command prints. | Command, template, interval. |
 | **URL value (PC)** | An address's response, or one field of its JSON. | URL, JSON field, template, interval. |
+| **Windows notifications** | A bell with the number of notifications in the Windows notification center. Updates every 3 s. | Only from app (optional). |
 
 - **Template**: `{value}` is replaced by the value. E.g. `Day {value}`, `{value} ★`.
 - **Interval**: how often, in seconds, the PC fetches it again (minimum 5, default 60).
@@ -42,3 +43,32 @@ Gauges change colour with load: **green** up to 60 %, **orange** above 60 %, **r
 !!! info "Command and URL are created on the PC"
     Like hotkeys, buttons that run a command or read a URL on the PC can only be created or changed in
     the [configurator](../getting-started/configurator.md).
+
+### Windows notifications { #notifications }
+
+Counts the notifications waiting in the Windows notification center. **Only from app (optional)** limits
+it to one app: type part of its name as Windows shows it in the notifications (`Discord`, `WhatsApp`,
+`Outlook`). Empty = all apps.
+
+Windows asks for permission to read notifications the first time. If the button shows **No
+permission**, allow it under Windows **Settings → Privacy & security → Notifications** and wait a few
+seconds. Clearing notifications on the PC lowers the number.
+
+## Volume slider { #volume-slider }
+
+**Volume slider** turns the button into a fader: drag your finger on it to change the volume.
+
+| Controls | What moves |
+|---|---|
+| **PC sound (default output)** | The volume of Windows' default output device. |
+| **Microphone (default input)** | The level of the default input device. |
+| **An app** | One app's volume (**App process**: the process name without `.exe`, e.g. `Spotify`, `chrome`, `Discord`). Every audio stream of the app changes together. |
+
+- The slider is **vertical** when the button is taller than wide and **horizontal** otherwise. Give it
+  more cells under [Size](actions.md#size) (1 × 3 or 3 × 1, for example) for more precision.
+- It always follows the *current* default device, so it keeps working after you switch headphones.
+- The level also changes from outside (the PC's keys, another button); the slider catches up within a
+  few seconds. The fill dims while the target is muted.
+- An app slider only finds the app while it shows up in Windows' volume mixer, on the default output.
+- A tap still runs the button's action, if it has one; holding opens the editor. In the PC
+  configurator the slider only shows the level, so you can drag the button around.

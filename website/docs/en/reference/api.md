@@ -19,7 +19,7 @@ Integration failures return `502` with `{error}`.
 
 ## Privileged actions
 
-**Hotkey**, **launch app** and **activate window** run code on the PC, and an **HTTP request** goes
+**Hotkey**, **launch app**, **activate window** and **script** run code on the PC, and an **HTTP request** goes
 out with the PC's network access, so they are protected even from clients that have the key. Requests that don't come from the PC itself (loopback) cannot:
 
 - run them through `execute` — use `press` with a button that was saved on the PC;
@@ -28,6 +28,9 @@ out with the PC's network access, so they are protected even from clients that h
 
 A multi-action counts as privileged when any of its steps is. Refused requests return `403` with
 `{error}`.
+
+Connections from a phone over the [USB cable](../getting-started/browser-usb.md#usb) arrive on loopback
+through `adb`; the server recognises them and treats them as remote, not as the PC.
 
 ## Examples
 
@@ -73,7 +76,7 @@ All parameter values are strings.
 | `activatewindow` | `windowName` (exact window title) |
 | `media` | `command`: `playpause`·`play`·`pause`·`next`·`previous`·`stop`; `sessionId`? |
 | `mixer` | `operation`: `toggleMute`·`mute`·`unmute`·`setVolume`·`volumeUp`·`volumeDown`; `processName` **or** `deviceId` (`default` or an endpoint id); `deviceKind`: `output`·`input`; `volume` (0–100); `step` (1–50) |
-| `multi` | `steps`: JSON array string `[{"type","parameters","delayMs"}]` |
+| `multi` | `steps`: JSON array string `[{"type","parameters","delayMs","if"}]`; `if` is optional: `{check, value, negate}` with `check` one of `obs_streaming`·`obs_recording`·`discord_mute`·`discord_deaf`·`toggle_on` (`value` = button id)·`app_running`·`app_focused` (`value` = process)·`time_between` (`value` = `08:00-18:00`)·`weekday` (`value` = `1-5`, 0 = Sunday) |
 | `discord` | `operation`: `toggleMute`·`mute`·`unmute`·`toggleDeafen`·`joinChannel` (`channelId`)·`disconnect`·`inputVolumeUp/Down`·`outputVolumeUp/Down` (`delta`)·`setInputVolume`·`setOutputVolume` (`value`)·`toggleVoiceMode`·`setVoiceMode` (`mode`: `VOICE_ACTIVITY`·`PUSH_TO_TALK`)·`userMute` (`userId`)·`userVolume` (`userId`, `value` 0–200) |
 | `obs` | `operation`: `setScene` (`scene`)·`toggleRecord`·`startRecord`·`stopRecord`·`toggleStream`·`toggleVirtualCam`·`toggleReplayBuffer`·`saveReplay`·`toggleInputMute` (`inputName`) |
 | `soundboard` | `operation`: `play`·`stop`; `source`: `myinstants` (`id`, `url`, `title`) or `discord` (`soundId`, `guildId`) |
@@ -89,6 +92,7 @@ All parameter values are strings.
 | `keylight` | `host` (IP or IP:port); `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`brightness_step` (`step`)·`temperature` (`kelvin`)·`temperature_step` (`kelvinStep`) |
 | `govee` | `ip`; `operation`: `toggle`·`on`·`off`·`brightness` (`brightness`)·`color` (`color` #RRGGBB)·`temperature` (`kelvin`) |
 | `mqtt` | `topic`, `payload`, `qos` (0–2), `retain` (`true`/`false`) |
+| `script` | `source`: `inline` (`language`: `powershell`·`python`·`cmd`; `code`) or `file` (`path`); `arguments` |
 
 `open_profile` and `back` exist only on the phone.
 
@@ -110,8 +114,14 @@ rule applies to all three.
 Two-state buttons add `toggle` (bool), `activeAction` (run on the tap that turns it off),
 `activeLabel`, `activeIconName` and `activeIconBase64`. Info buttons use `dynamicType` (`cpu_monitor`,
 `memory_monitor`, `gpu_monitor`, `network_monitor`, `clock`, `weather`, `now_playing`, `command`,
-`url`) with `dynamicParameters` (`city`, `units`, `command`, `url`, `path`, `format`, `interval`…);
-`command` and `url` follow the privileged-action rule.
+`url`, `notifications`, `volume_slider`) with `dynamicParameters` (`city`, `units`, `command`, `url`,
+`path`, `format`, `interval`, `app`, `target`…); `command` and `url` follow the privileged-action rule.
+Large buttons add `columnSpan` and `rowSpan` (default 1; `row`/`column` is the top-left cell).
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/slider?target=output\|input\|app&app=` | Volume slider: current `{volume, mute, label}` of the default output, the default input, or an app (process name without `.exe`). `404` when the target doesn't exist right now (e.g. the app has no audio session). |
+| PUT | `/api/slider` | `{target, app, volume}` (0–100). Returns the new state. |
 
 ## Library — backup, Steam, apps
 
@@ -125,6 +135,23 @@ Two-state buttons add `toggle` (bool), `activeAction` (run on the tap that turns
 | GET | `/api/system/info` | `{name, version}` — the PC's Windows name, used to label paired PCs. |
 | GET | `/api/info` | Current values of the info buttons, what's playing and the two-state buttons that are on. |
 | GET / POST | `/api/macro`, `/api/macro/start`, `/api/macro/stop` | Keyboard macro recording. Only from the PC itself (`403` otherwise); `stop` returns `{steps}` in the multi-action format. |
+| POST | `/api/import/streamdeck` | Imports a `.streamDeckProfile` (request body = the file, up to 50 MB) as new profiles. Returns `{profiles, buttons, unsupported, stripped, firstProfileId}`; from outside the PC, privileged buttons come in without their action and `stripped` counts them. `400` with `{error}` if it isn't a Stream Deck profile. |
+| GET | `/api/share/{profileId}` | `{data, url, qr, images}` — the profile compressed into a link (`url` is the site's share page with `#data`); `qr` says whether it fits in a QR code; `images` whether custom images were left out. |
+| GET | `/api/share/{profileId}/qr` | The share link as a PNG QR code. |
+| POST | `/api/share/import` | `{data}` from a share link → saved as a new profile. Returns `{profileId, name, buttons, stripped}`; same privileged-action rule as the Stream Deck import. |
+
+## Automations — `/api/triggers`
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/triggers` | The list of automations. |
+| PUT | `/api/triggers` | Replaces the whole list. Returns the saved list. |
+| POST | `/api/triggers/{id}/run` | Presses the automation's button now. `404` if the automation or the button doesn't exist. |
+
+An automation is `{id, name, enabled, event, time, days, app, profileId, buttonId, if}`. `event` is
+`schedule` (`time` `HH:mm`, `days` like `1-5`), `app_start` / `app_exit` (`app`), `resume` or
+`startup`; `if` is an optional condition in the multi-action format. Since automations only press saved
+buttons, they follow the rules those buttons were created under.
 
 ## Action types — `/api/actions`
 

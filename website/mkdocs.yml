@@ -43,11 +43,14 @@ nav:
   - Getting started:
       - Installation: getting-started/installation.md
       - Pairing: getting-started/pairing.md
+      - Browser & USB: getting-started/browser-usb.md
       - Configurator: getting-started/configurator.md
   - Buttons & actions:
       - Buttons & actions: guide/actions.md
       - Monitors & info: guide/monitors.md
       - Profiles: guide/profiles.md
+      - Automations: guide/automations.md
+      - Import & share: guide/import-share.md
       - Appearance: guide/appearance.md
   - Integrations:
       - Discord: integrations/discord.md
@@ -113,6 +116,9 @@ plugins:
             Profiles: Perfis
             Mixer & media: Mixer e mídia
             Smart home (Tuya): Casa inteligente (Tuya)
+            Browser & USB: Navegador e USB
+            Automations: Automações
+            Import & share: Importar e compartilhar
 
 extra:
   homepage: https://me.gf2.in/DroidDeck/
