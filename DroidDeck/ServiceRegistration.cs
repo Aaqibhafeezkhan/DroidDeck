@@ -27,6 +27,7 @@ namespace DroidDeck
             services.AddHostedSingleton<TimerService>();
             services.AddHostedSingleton<InfoService>();
             services.AddHostedSingleton<ForegroundWatcher>();
+            services.AddHostedSingleton<Lib.UsbBridge>();
             return services;
         }
 

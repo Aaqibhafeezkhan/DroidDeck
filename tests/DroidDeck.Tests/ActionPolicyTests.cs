@@ -108,7 +108,7 @@ namespace DroidDeck.Tests
             Assert.True(ActionPolicy.IsLocal(IPAddress.IPv6Loopback));
             Assert.True(ActionPolicy.IsLocal(IPAddress.Loopback.MapToIPv6()));
             Assert.False(ActionPolicy.IsLocal(IPAddress.Parse("192.168.0.20")));
-            Assert.False(ActionPolicy.IsLocal(null));
+            Assert.False(ActionPolicy.IsLocal((IPAddress?)null));
         }
     }
 

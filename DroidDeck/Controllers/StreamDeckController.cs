@@ -117,7 +117,7 @@ namespace DroidDeck.Controllers
             return Ok();
         }
 
-        private bool IsLocalRequest => ActionPolicy.IsLocal(HttpContext.Connection.RemoteIpAddress);
+        private bool IsLocalRequest => ActionPolicy.IsLocal(HttpContext.Connection);
 
         private ObjectResult PrivilegedOnlyOnPc(string? label) => StatusCode(403, new
         {

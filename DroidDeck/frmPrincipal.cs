@@ -18,6 +18,8 @@ namespace DroidDeck
 
         private ToolStripMenuItem _autoStartItem = null!;
         private ToolStripMenuItem _firewallItem = null!;
+        private ToolStripMenuItem _usbItem = null!;
+        private bool _usbHooked;
         private ToolStripMenuItem _updateItem = null!;
 
         public frmPrincipal()
@@ -81,6 +83,56 @@ namespace DroidDeck
             _firewallItem.Checked = Lib.FirewallSetup.RulesExist();
         }
 
+        /// <summary>Liga/desliga a conexao pelo cabo USB (baixa o adb do Google se faltar).</summary>
+        private async void ToggleUsb()
+        {
+            if (Lib.UsbBridge.Enabled)
+            {
+                Lib.UsbBridge.Enabled = false;
+                UpdateUsbItem();
+                return;
+            }
+            if (Lib.UsbBridge.FindAdb() == null)
+            {
+                var answer = MessageBox.Show(
+                    "Para conectar pelo cabo, o DroidDeck usa o adb, a ferramenta oficial do Google " +
+                    "para falar com celulares Android (uns 7 MB).\n\nBaixar agora do site do Google?\n\n" +
+                    "No celular, ligue a \"Depuração USB\" nas opções do desenvolvedor.",
+                    "DroidDeck — Conexão USB", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (answer != DialogResult.Yes) return;
+                _usbItem.Enabled = false;
+                _usbItem.Text = "Baixando o adb…";
+                try
+                {
+                    await Lib.UsbBridge.DownloadAdbAsync();
+                }
+                catch (Exception ex)
+                {
+                    Lib.Log.Error($"Falha ao baixar o adb: {ex.Message}");
+                    ntiTray.ShowBalloonTip(5000, "DroidDeck", "Não foi possível baixar o adb. Tente de novo mais tarde.", ToolTipIcon.Warning);
+                    _usbItem.Enabled = true;
+                    UpdateUsbItem();
+                    return;
+                }
+                _usbItem.Enabled = true;
+            }
+            Lib.UsbBridge.Enabled = true;
+            UpdateUsbItem();
+            ntiTray.ShowBalloonTip(5000, "DroidDeck",
+                "Conexão USB ligada. Ligue a depuração USB no celular e aceite o aviso que aparecer nele.", ToolTipIcon.Info);
+        }
+
+        private void UpdateUsbItem()
+        {
+            if (InvokeRequired) { BeginInvoke(UpdateUsbItem); return; }
+            var count = Lib.UsbBridge.Instance?.Devices.Count ?? 0;
+            _usbItem.Checked = Lib.UsbBridge.Enabled;
+            _usbItem.Text = !Lib.UsbBridge.Enabled ? "Conexão USB (cabo)"
+                : count == 0 ? "Conexão USB (cabo): aguardando celular"
+                : count == 1 ? "Conexão USB (cabo): 1 celular conectado"
+                : $"Conexão USB (cabo): {count} celulares conectados";
+        }
+
         private void OnUpdateReady(string version)
         {
             _updateItem.Text = $"Reiniciar para atualizar (v{version})";
@@ -142,6 +194,19 @@ namespace DroidDeck
             };
             _firewallItem.Click += (_, _) => AllowFirewall();
 
+            _usbItem = new ToolStripMenuItem("Conexão USB (cabo)");
+            _usbItem.Click += (_, _) => ToggleUsb();
+            // O servico sobe junto com o servidor web, as vezes depois da bandeja.
+            menu.Opening += (_, _) =>
+            {
+                if (Lib.UsbBridge.Instance is { } usb && !_usbHooked)
+                {
+                    usb.Changed += UpdateUsbItem;
+                    _usbHooked = true;
+                }
+                UpdateUsbItem();
+            };
+
             // Copia instalada: procura e aplica atualizacoes. Zip/dev: abre a pagina da release.
             var version = Program.Updater.CurrentVersion;
             var versionItem = new ToolStripMenuItem(version != null ? $"DroidDeck v{version}" : "DroidDeck (sem instalador)")
@@ -158,6 +223,7 @@ namespace DroidDeck
             menu.Items.Add(pairItem);
             menu.Items.Add(_autoStartItem);
             menu.Items.Add(_firewallItem);
+            menu.Items.Add(_usbItem);
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(versionItem);
             menu.Items.Add(_updateItem);

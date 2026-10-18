@@ -38,6 +38,14 @@ namespace DroidDeck.Services
             return IPAddress.IsLoopback(ip);
         }
 
+        /// <summary>
+        /// Requisicao do proprio PC: loopback que nao veio de um celular pelo cabo USB (o
+        /// adb reverse tambem chega como loopback; ver Lib/UsbBridge.cs).
+        /// </summary>
+        public static bool IsLocal(Microsoft.AspNetCore.Http.ConnectionInfo connection) =>
+            IsLocal(connection.RemoteIpAddress) &&
+            !Lib.UsbBridge.IsForwarded(connection.RemoteIpAddress, connection.RemotePort);
+
         /// <summary>A acao executa codigo no PC? Multi-acao herda dos passos.</summary>
         public static bool IsPrivileged(DeckAction? action)
         {

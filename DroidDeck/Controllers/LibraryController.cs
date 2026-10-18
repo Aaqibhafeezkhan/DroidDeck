@@ -79,7 +79,7 @@ namespace DroidDeck.Controllers
             try { profiles = BackupService.Read(ms); }
             catch (InvalidDataException ex) { return BadRequest(new { error = L.T(ex.Message) }); }
 
-            if (!ActionPolicy.IsLocal(HttpContext.Connection.RemoteIpAddress))
+            if (!ActionPolicy.IsLocal(HttpContext.Connection))
             {
                 foreach (var p in profiles)
                 {

@@ -21,7 +21,7 @@ namespace DroidDeck.Controllers
 
         public MacroController(MacroRecorder recorder) => _recorder = recorder;
 
-        private bool Local => ActionPolicy.IsLocal(HttpContext.Connection.RemoteIpAddress);
+        private bool Local => ActionPolicy.IsLocal(HttpContext.Connection);
 
         private ObjectResult OnlyOnPc() =>
             StatusCode(403, new { error = L.T("Gravar macro só funciona no configurador do PC (http://localhost:4787).") });

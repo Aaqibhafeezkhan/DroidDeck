@@ -255,8 +255,9 @@ namespace DroidDeck
                             // Deixa o configurador web (servido pelo PC) autenticar sem QR.
                             endpoints.MapGet("/api/pairing/local-key", (Microsoft.AspNetCore.Http.HttpContext ctx) =>
                             {
-                                var ip = ctx.Connection.RemoteIpAddress;
-                                if (ip == null || !System.Net.IPAddress.IsLoopback(ip))
+                                // Loopback que vem do adb e um celular pelo USB: qualquer app dele
+                                // alcanca o 127.0.0.1:4787 enquanto o encaminhamento existe.
+                                if (!DroidDeck.Services.ActionPolicy.IsLocal(ctx.Connection))
                                     return Microsoft.AspNetCore.Http.Results.StatusCode(403);
 
                                 // SEGURANÇA: bloqueia leitura por site cross-site (o navegador da

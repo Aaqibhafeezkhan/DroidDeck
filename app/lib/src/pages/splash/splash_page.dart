@@ -1,5 +1,6 @@
 import 'package:droiddeck/src/connection/browser_url.dart';
 import 'package:droiddeck/src/connection/pc_store.dart';
+import 'package:droiddeck/src/connection/usb_route.dart';
 import 'package:droiddeck/src/connection/constants.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/core/core.dart';
@@ -72,7 +73,9 @@ class SplashPageState extends State<SplashPage> {
     final apiKey = sp.getString(Constants.apiKeyKey);
 
     if (ip != null && ip.isNotEmpty && mounted) {
-      final baseUrl = 'http://$ip:$port';
+      // Pelo cabo USB quando o PC responde nele; senão pela rede.
+      final baseUrl = await UsbRoute.pick('http://$ip:$port', apiKey: apiKey);
+      if (!mounted) return;
 
       final client = Injector.get<DroidDeckClient>();
       client.setBaseUrl(baseUrl);

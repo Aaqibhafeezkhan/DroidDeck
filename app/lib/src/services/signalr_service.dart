@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:droiddeck/core/core.dart';
+import 'package:droiddeck/src/connection/usb_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:signalr_netcore/iretry_policy.dart';
@@ -200,7 +201,10 @@ class SignalRService {
       } catch (_) {
         // Conexao ja estava quebrada; nada a fazer.
       }
-      await init(url, apiKey: _lastApiKey);
+      // O cabo USB pode ter entrado ou saído: escolhe o caminho de novo e leva o REST junto.
+      final route = await UsbRoute.pick(url, apiKey: _lastApiKey);
+      if (route != url) Injector.get<DroidDeckClient>().setBaseUrl(route);
+      await init(route, apiKey: _lastApiKey);
     });
   }
 
