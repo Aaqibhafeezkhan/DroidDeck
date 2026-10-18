@@ -5,7 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DroidDeck Profile Gallery</title>
 <meta name="description" content="Ready-made DroidDeck profiles for streaming, meetings, music, productivity and gaming. Import into DroidDeck on your PC with one click.">
+<meta property="og:title" content="DroidDeck Profile Gallery">
+<meta property="og:description" content="Ready-made decks for streaming, meetings, music, productivity and gaming. Import into DroidDeck on your PC with one click.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://me.gf2.in/DroidDeck/gallery/">
+<meta property="og:image" content="https://me.gf2.in/DroidDeck/og.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DroidDeck Profile Gallery">
+<meta name="twitter:image" content="https://me.gf2.in/DroidDeck/og.png">
 <meta name="theme-color" content="#0d0d0f">
+<noscript><style>.lang{display:none!important}</style></noscript>
 <link rel="icon" href="../logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,162 +27,70 @@
 <header>
   <div class="wrap">
     <a class="brand" href="../"><img src="../logo.svg" alt="">DroidDeck</a>
-    <nav><a href="../docs/" data-t="docs">Docs</a><a href="https://github.com/ggfto/DroidDeck">GitHub</a></nav>
+    <nav>
+      <a href="../docs/guide/import-share/" data-docs data-t="docs" class="hide-xs">Docs</a>
+      <a href="https://github.com/ggfto/DroidDeck" class="hide-xs">GitHub</a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="pt" aria-pressed="false">PT</button>
+        <button type="button" data-lang="es" aria-pressed="false">ES</button>
+      </div>
+    </nav>
   </div>
 </header>
 <main class="wrap">
   <h1 data-t="title">Profile gallery</h1>
-  <p class="lead" data-t="lead">Ready-made decks to start from. "Import" opens DroidDeck on this PC and adds the profile as a new one; then adjust names, scenes and shortcuts to your setup.</p>
+  <p class="lead" data-t="lead">Ready-made decks to start from. Each one comes into DroidDeck on your PC as a new profile, so nothing you built is touched; then adjust names, scenes and shortcuts to your setup.</p>
+  <p class="hint" id="phone-hint" data-t="phone" hidden></p>
   <p class="hint" data-t="share">Made a good one? In DroidDeck, open the profile settings → Share, and send the link in Discussions on GitHub.</p>
   <div id="cards" class="cards"></div>
+  <noscript><p class="hint noscript">The gallery needs JavaScript to draw the decks and build the import links.</p></noscript>
 </main>
+<script src="../lang.js"></script>
 <script src="../share/share.js"></script>
+<script src="profiles.js"></script>
 <script>
-const G = "#37474F", RED = "#B71C1C", GREEN = "#1B5E20", BLUE = "#0D47A1", PURPLE = "#4A148C";
-const act = (type, parameters) => ({ type, parameters });
-const btn = (row, column, label, iconName, action, extra = {}) =>
-  ({ id: `${row}-${column}`, row, column, label, iconName, backgroundColor: G, action, ...extra });
-const micMute = act("mixer", { operation: "toggleMute", deviceId: "default", deviceKind: "input" });
-
-// Perfis em 3×5 (cabem em qualquer celular deitado). Nomes de ícone do app (button_icons.dart).
-const PROFILES = [
-  {
-    key: "streamer",
-    profile: { name: "Streamer", buttons: [
-      btn(0, 0, "Live", "smart_display", act("obs", { operation: "toggleStream" }), { backgroundColor: RED }),
-      btn(0, 1, "REC", "videocam", act("obs", { operation: "toggleRecord" }), { backgroundColor: RED }),
-      btn(0, 2, "Clip", "save", act("obs", { operation: "saveReplay" })),
-      btn(0, 3, "Marker", "flag", act("obs", { operation: "createChapter" })),
-      btn(0, 4, "Cam", "camera", act("obs", { operation: "toggleVirtualCam" })),
-      btn(1, 0, "Mic", "mic", act("discord", { operation: "toggleMute" }), { backgroundColor: PURPLE, activeLabel: "Muted", activeIconName: "mic_off" }),
-      btn(1, 1, "Deafen", "headphones", act("discord", { operation: "toggleDeafen" }), { backgroundColor: PURPLE }),
-      btn(1, 2, "Break", "timer", act("timer", { mode: "countdown", durationMin: "5", operation: "toggle" })),
-      btn(1, 3, "Deaths", "sports_esports", act("timer", { mode: "counter", operation: "increment", step: "1" })),
-      btn(1, 4, "CPU", null, null, { dynamicType: "cpu_monitor" }),
-      btn(2, 0, "Prev", "arrow_back", act("media", { command: "previous" })),
-      btn(2, 1, "Play", "play", act("media", { command: "playpause" }), { backgroundColor: GREEN }),
-      btn(2, 2, "Music", null, null, { dynamicType: "now_playing", columnSpan: 2 }),
-      btn(2, 4, "Volume", null, null, { dynamicType: "volume_slider", dynamicParameters: { target: "output" } }),
-    ]},
-  },
-  {
-    key: "meetings",
-    profile: { name: "Meetings", buttons: [
-      btn(0, 0, "Mic", "mic", micMute, { backgroundColor: RED, toggle: false }),
-      btn(0, 1, "Teams mic", "mic_off", act("hotkey", { keys: "^+m" })),
-      btn(0, 2, "Teams cam", "videocam_off", act("hotkey", { keys: "^+o" })),
-      btn(0, 3, "Hand", "flag", act("hotkey", { keys: "^+k" })),
-      btn(0, 4, "Leave", "call_end", act("hotkey", { keys: "^+h" }), { backgroundColor: RED }),
-      btn(1, 0, "Zoom mic", "mic_off", act("hotkey", { keys: "%a" }), { backgroundColor: BLUE }),
-      btn(1, 1, "Zoom cam", "videocam_off", act("hotkey", { keys: "%v" }), { backgroundColor: BLUE }),
-      btn(1, 2, "Meet mic", "mic_off", act("hotkey", { keys: "^d" }), { backgroundColor: GREEN }),
-      btn(1, 3, "Meet cam", "videocam_off", act("hotkey", { keys: "^e" }), { backgroundColor: GREEN }),
-      btn(1, 4, "Clock", null, null, { dynamicType: "clock" }),
-      btn(2, 0, "Vol -", "volume_off", act("mixer", { operation: "volumeDown", deviceId: "default" })),
-      btn(2, 1, "Vol +", "volume_up", act("mixer", { operation: "volumeUp", deviceId: "default" })),
-      btn(2, 2, "Notifications", null, null, { dynamicType: "notifications" }),
-      btn(2, 3, "Lock", "lock", act("windows", { operation: "lock" })),
-      btn(2, 4, "Focus", "notifications_off", act("hotkey", { keys: "#n" })),
-    ]},
-  },
-  {
-    key: "music",
-    profile: { name: "Music", buttons: [
-      btn(0, 0, "", null, null, { dynamicType: "now_playing", columnSpan: 2, rowSpan: 2 }),
-      btn(0, 2, "Prev", "arrow_back", act("media", { command: "previous" })),
-      btn(0, 3, "Play", "play", act("media", { command: "playpause" }), { backgroundColor: GREEN }),
-      btn(0, 4, "Volume", null, null, { dynamicType: "volume_slider", dynamicParameters: { target: "output" }, rowSpan: 3 }),
-      btn(1, 2, "Next", "playlist_play", act("media", { command: "next" })),
-      btn(1, 3, "Mute", "volume_off", act("mixer", { operation: "toggleMute", deviceId: "default" })),
-      btn(2, 0, "Spotify", null, null, { dynamicType: "volume_slider", dynamicParameters: { target: "app", app: "Spotify" }, columnSpan: 4 }),
-    ]},
-  },
-  {
-    key: "productivity",
-    profile: { name: "Productivity", buttons: [
-      btn(0, 0, "Desktop", "computer", act("hotkey", { keys: "#d" })),
-      btn(0, 1, "Files", "folder", act("hotkey", { keys: "#e" })),
-      btn(0, 2, "Clipboard", "web_asset", act("hotkey", { keys: "#v" })),
-      btn(0, 3, "Snip", "camera", act("hotkey", { keys: "#+s" })),
-      btn(0, 4, "Tasks", "tune", act("hotkey", { keys: "^+{ESC}" })),
-      btn(1, 0, "Copy", "keyboard", act("hotkey", { keys: "^c" })),
-      btn(1, 1, "Paste", "keyboard", act("hotkey", { keys: "^v" })),
-      btn(1, 2, "Undo", "keyboard", act("hotkey", { keys: "^z" })),
-      btn(1, 3, "Pomodoro", "timer", act("timer", { mode: "pomodoro", workMin: "25", breakMin: "5", operation: "toggle" }), { columnSpan: 2 }),
-      btn(2, 0, "Clock", null, null, { dynamicType: "clock" }),
-      btn(2, 1, "CPU", null, null, { dynamicType: "cpu_monitor" }),
-      btn(2, 2, "RAM", null, null, { dynamicType: "memory_monitor" }),
-      btn(2, 3, "Lock", "lock", act("windows", { operation: "lock" })),
-      btn(2, 4, "Sleep", "power_off", act("windows", { operation: "sleep" }), { backgroundColor: RED }),
-    ]},
-  },
-  {
-    key: "gaming",
-    profile: { name: "Gaming", buttons: [
-      btn(0, 0, "CPU", null, null, { dynamicType: "cpu_monitor" }),
-      btn(0, 1, "GPU", null, null, { dynamicType: "gpu_monitor" }),
-      btn(0, 2, "RAM", null, null, { dynamicType: "memory_monitor" }),
-      btn(0, 3, "Net", null, null, { dynamicType: "network_monitor" }),
-      btn(0, 4, "Game", null, null, { dynamicType: "volume_slider", dynamicParameters: { target: "output" }, rowSpan: 3 }),
-      btn(1, 0, "Mic", "mic", act("discord", { operation: "toggleMute" }), { backgroundColor: PURPLE }),
-      btn(1, 1, "Deafen", "headphones", act("discord", { operation: "toggleDeafen" }), { backgroundColor: PURPLE }),
-      btn(1, 2, "Clip", "save", act("obs", { operation: "saveReplay" }), { backgroundColor: RED }),
-      btn(1, 3, "Screenshot", "camera", act("hotkey", { keys: "#%{PRTSC}" })),
-      btn(2, 0, "Discord", null, null, { dynamicType: "volume_slider", dynamicParameters: { target: "app", app: "Discord" }, columnSpan: 2 }),
-      btn(2, 2, "Play", "play", act("media", { command: "playpause" }), { backgroundColor: GREEN }),
-      btn(2, 3, "Next", "playlist_play", act("media", { command: "next" })),
-    ]},
-  },
-];
-
 const T = {
-  en: { import: "Import", view: "Open link",
-    streamer: "OBS live and recording, Discord mic, break timer, a counter, music and volume.",
-    meetings: "Mute and camera for Teams, Zoom and Meet, your PC mic, notifications and lock.",
-    music: "Now playing, media keys and volume sliders for the PC and Spotify.",
-    productivity: "Windows shortcuts, copy and paste, a pomodoro, clock and PC monitors.",
-    gaming: "Live CPU/GPU/RAM, Discord, instant replay, screenshot and volume sliders." },
-  pt: { title: "Galeria de perfis", docs: "Documentação", import: "Importar", view: "Abrir link",
-    lead: "Decks prontos para começar. \"Importar\" abre o DroidDeck deste PC e adiciona o perfil como um novo; depois ajuste nomes, cenas e atalhos ao seu jeito.",
+  en: { title: "Profile gallery", docs: "Docs",
+    lead: "Ready-made decks to start from. Each one comes into DroidDeck on your PC as a new profile, so nothing you built is touched; then adjust names, scenes and shortcuts to your setup.",
+    share: "Made a good one? In DroidDeck, open the profile settings → Share, and send the link in Discussions on GitHub.",
+    phone: "On a phone? Importing happens on the Windows PC: “Send to my PC” shares the link so you can open it there." },
+  pt: { title: "Galeria de perfis", docs: "Documentação",
+    lead: "Decks prontos para começar. Cada um entra no DroidDeck do seu PC como um perfil novo, sem mexer no que você já montou; depois ajuste nomes, cenas e atalhos ao seu jeito.",
     share: "Montou um bom? No DroidDeck, abra as opções do perfil → Compartilhar e mande o link nas Discussions do GitHub.",
-    streamer: "Live e gravação do OBS, microfone do Discord, timer de pausa, contador, música e volume.",
-    meetings: "Mudo e câmera do Teams, Zoom e Meet, microfone do PC, notificações e travar.",
-    music: "Tocando agora, teclas de mídia e controles de volume do PC e do Spotify.",
-    productivity: "Atalhos do Windows, copiar e colar, pomodoro, relógio e monitores do PC.",
-    gaming: "CPU/GPU/RAM ao vivo, Discord, replay instantâneo, captura de tela e volumes." },
-  es: { title: "Galería de perfiles", docs: "Documentación", import: "Importar", view: "Abrir enlace",
-    lead: "Decks listos para empezar. \"Importar\" abre DroidDeck de este PC y añade el perfil como uno nuevo; luego ajusta nombres, escenas y atajos a tu gusto.",
+    phone: "Está no celular? A importação acontece no PC com Windows: “Mandar para o meu PC” compartilha o link para você abrir lá." },
+  es: { title: "Galería de perfiles", docs: "Documentación (en inglés)",
+    lead: "Decks listos para empezar. Cada uno entra en DroidDeck de tu PC como un perfil nuevo, sin tocar lo que ya armaste; luego ajusta nombres, escenas y atajos a tu gusto.",
     share: "¿Armaste uno bueno? En DroidDeck, abre las opciones del perfil → Compartir y envía el enlace en Discussions de GitHub.",
-    streamer: "Directo y grabación de OBS, micrófono de Discord, temporizador de pausa, contador, música y volumen.",
-    meetings: "Silencio y cámara de Teams, Zoom y Meet, micrófono del PC, notificaciones y bloqueo.",
-    music: "Reproduciendo ahora, teclas multimedia y controles de volumen del PC y de Spotify.",
-    productivity: "Atajos de Windows, copiar y pegar, pomodoro, reloj y monitores del PC.",
-    gaming: "CPU/GPU/RAM en vivo, Discord, repetición instantánea, captura de pantalla y volúmenes." },
+    phone: "¿Estás en el teléfono? La importación se hace en el PC con Windows: “Enviar a mi PC” comparte el enlace para que lo abras allí." },
 };
-const lang = (navigator.language || "en").slice(0, 2);
-const t = { ...T.en, ...(T[lang] || {}) };
-if (lang !== "en" && T[lang]) {
-  document.documentElement.lang = lang === "pt" ? "pt-BR" : lang;
-  document.querySelectorAll("[data-t]").forEach(el => { if (t[el.dataset.t]) el.textContent = t[el.dataset.t]; });
-}
 
 const cards = document.getElementById("cards");
-for (const { key, profile } of PROFILES) {
-  const card = document.createElement("article");
-  card.className = "card";
-  card.innerHTML = `<h2></h2><p></p><div class="deck"></div>
-    <div class="actions"><a class="btn btn-primary imp"></a><a class="btn btn-ghost view"></a></div>`;
-  card.querySelector("h2").textContent = profile.name;
-  card.querySelector("p").textContent = t[key];
-  DDShare.render(profile, card.querySelector(".deck"));
-  card.querySelector(".imp").textContent = t.import;
-  card.querySelector(".view").textContent = t.view;
-  DDShare.encode(profile).then(data => {
-    card.querySelector(".imp").href = DDShare.importUrl(data);
-    card.querySelector(".view").href = `../share/#${data}`;
-  });
-  cards.append(card);
+function draw(lang) {
+  const t = T[lang];
+  DDLang.apply(lang);
+  document.title = `${t.title} — DroidDeck`;
+  document.querySelectorAll("[data-t]").forEach(el => { if (t[el.dataset.t]) el.textContent = t[el.dataset.t]; });
+  document.getElementById("phone-hint").hidden = DDShare.onWindows;
+  cards.textContent = "";
+  for (const { key, desc, profile } of DDProfiles.build(lang)) {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.id = key;
+    card.innerHTML = `<div class="deck"></div><h2></h2><p></p><div class="act"></div>`;
+    card.querySelector("h2").textContent = profile.name;
+    card.querySelector("p").textContent = desc;
+    DDShare.render(profile, card.querySelector(".deck"));
+    DDShare.mountActions(card.querySelector(".act"), {
+      lang, title: `${profile.name} — DroidDeck`, data: DDShare.encode(profile),
+      shareHref: d => `../share/#${d}`, viewHref: d => `../share/#${d}`,
+    });
+    cards.append(card);
+  }
 }
+draw(DDLang.pick());
+if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+DDLang.wire(draw);
 </script>
 </body>
 </html>
