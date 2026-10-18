@@ -64,13 +64,14 @@ header.scrolled{border-color:var(--line)}
 .lang button{background:none;border:0;color:var(--muted);font:600 13px Inter;padding:6px 10px;cursor:pointer}
 .lang button[aria-pressed=true]{background:var(--amber);color:#111}
 @media (max-width:760px){.nav-links .hide-sm{display:none}.nav-links{gap:14px}}
+@media (max-width:440px){.nav-links [data-docs]{display:none}.lang button{padding:6px 8px}}
 
 /* hero */
 .hero{position:relative;padding:72px 0 96px}
 .hero::before{content:"";position:absolute;inset:-200px 0 auto;height:700px;background:radial-gradient(600px 380px at 75% 40%,rgba(253,212,0,.13),transparent 70%);pointer-events:none}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
 .hero-grid>*,.split>*{min-width:0}
-.badge{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:22px}
+.badge{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:22px;flex-wrap:wrap;row-gap:0;white-space:nowrap}
 .badge b{color:var(--amber);font-weight:600}
 .hero h1{font-size:clamp(40px,6vw,66px);margin-bottom:20px}
 .hero h1 em{font-style:normal;color:var(--amber)}
