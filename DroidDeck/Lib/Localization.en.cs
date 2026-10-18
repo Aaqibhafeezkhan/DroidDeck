@@ -205,6 +205,7 @@ namespace DroidDeck.Lib
             ["Backup de uma versão mais nova do DroidDeck. Atualize o DroidDeck no PC."] = "Backup from a newer DroidDeck version. Update DroidDeck on the PC.",
             ["Arquivo de backup corrompido."] = "Corrupted backup file.",
             ["O arquivo não parece um perfil do Stream Deck."] = "This file does not look like a Stream Deck profile.",
+            ["Link de perfil inválido."] = "Invalid profile link.",
             ["Sem permissão"] = "No permission",
             ["Roda um script do PowerShell, do Python ou um .bat, com argumentos."] = "Runs a PowerShell or Python script or a .bat file, with arguments.",
             ["Escrito aqui"] = "Written here",

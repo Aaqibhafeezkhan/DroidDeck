@@ -134,4 +134,30 @@ final Map<String, String> enFeatures = {
       'Part of the name as shown in Windows notifications. Empty = all.',
   'Notificações':
       'Notifications',
+  'Compartilhar "{name}"':
+      'Share "{name}"',
+  'Quem abrir o link vê os botões e importa o perfil no próprio PC com um clique.':
+      'Whoever opens the link sees the buttons and imports the profile on their own PC with one click.',
+  'Imagens próprias não vão no link (ficam os ícones). Para levar tudo, use o backup.':
+      'Custom images are not included in the link (icons are). To take everything, use the backup.',
+  'Fechar':
+      'Close',
+  'Meu perfil do DroidDeck: {url}':
+      'My DroidDeck profile: {url}',
+  'Enviar':
+      'Send',
+  'Link copiado.':
+      'Link copied.',
+  'Copiar link':
+      'Copy link',
+  'Compartilhar':
+      'Share',
+  'Importar perfil compartilhado?':
+      'Import shared profile?',
+  'O perfil do link entra como um perfil novo; nada do seu deck é apagado.':
+      'The profile from the link is added as a new profile; nothing in your deck is deleted.',
+  'Importar':
+      'Import',
+  'Perfil "{name}" importado.':
+      'Profile "{name}" imported.',
 };

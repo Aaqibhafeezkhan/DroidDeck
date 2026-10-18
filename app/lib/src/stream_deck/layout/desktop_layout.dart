@@ -1,4 +1,5 @@
 import 'grid_placement.dart';
+import '../widgets/share_profile_dialog.dart';
 import 'package:droiddeck/src/config/triggers_page.dart';
 import 'package:droiddeck/src/stream_deck/stream_deck_controller.dart';
 import 'package:droiddeck/src/stream_deck/widgets/button_property_panel.dart';
@@ -29,6 +30,19 @@ class SteamDeckDesktopLayout extends StatefulWidget {
 
 class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
   DeckButton? _selectedButton;
+
+  @override
+  void initState() {
+    super.initState();
+    // Aberto pelo link de um perfil compartilhado (site → localhost:4787/?import=...).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      importSharedProfileFromUrl(context, (id) async {
+        await widget.controller.loadProfiles();
+        final p = widget.controller.profiles.value.where((p) => p.id == id).firstOrNull;
+        if (p != null) widget.controller.currentProfile.value = p;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

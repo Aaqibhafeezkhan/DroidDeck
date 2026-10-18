@@ -1,0 +1,37 @@
+:root{
+  --bg:#0d0d0f; --bg2:#141417; --card:#18181c; --line:#26262c;
+  --fg:#f4f4f5; --muted:#a1a1aa; --amber:#FDD400;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.15;letter-spacing:-.02em}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font:700 18px "Space Grotesk",sans-serif;text-decoration:none}
+.brand img{width:26px;height:26px}
+header nav a{color:var(--muted);text-decoration:none;font-size:15px;margin-left:18px}
+header nav a:hover{color:var(--fg)}
+main.wrap{padding-top:40px;padding-bottom:64px}
+.lead{color:var(--muted);margin:10px 0 24px;max-width:640px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;font-weight:600;text-decoration:none;border:0;cursor:pointer;font-size:15px}
+.btn-primary{background:var(--amber);color:#111}
+.btn-ghost{border:1px solid var(--line);color:var(--fg);background:none}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 10px}
+.hint{color:var(--muted);font-size:14px}
+.deck{display:grid;gap:8px;background:#060607;border:1px solid var(--line);border-radius:22px;padding:14px;max-width:720px}
+.key{min-height:74px;border-radius:12px;background:#2a2a30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center;min-width:0}
+.key .ms{font-family:"Material Symbols Rounded";font-size:28px;line-height:1;color:#fff}
+.key .lbl{font-size:12px;color:#fff;opacity:.9;overflow:hidden;text-overflow:ellipsis;max-width:100%;white-space:nowrap}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.card h2{font-size:20px}
+.card p{color:var(--muted);font-size:14px}
+.card .deck{padding:8px;gap:5px;border-radius:14px}
+.card .key{min-height:46px;border-radius:8px}
+.card .key .ms{font-size:20px}
+.card .key .lbl{font-size:9px}
+.card .actions{margin:auto 0 0}
+.error{color:#fca5a5}
+@media (max-width:560px){.key{min-height:56px}.key .ms{font-size:22px}.key .lbl{font-size:10px}}

@@ -1,6 +1,8 @@
 import 'package:droiddeck/core/core.dart';
 import 'package:flutter/material.dart';
 
+import 'share_profile_dialog.dart';
+
 /// Nome do perfil e os apps que o trazem para a frente quando ganham o foco no PC.
 class ProfileSettingsDialog extends StatefulWidget {
   final DeckProfile profile;
@@ -176,6 +178,13 @@ class _ProfileSettingsDialogState extends State<ProfileSettingsDialog> {
         ),
       ),
       actions: [
+        // Perfil novo ainda não está no PC: não há o que compartilhar.
+        if (widget.profile.id.isNotEmpty)
+          TextButton.icon(
+            onPressed: () => ShareProfileDialog.show(context, widget.profile),
+            icon: const Icon(Icons.share, size: 18),
+            label: Text(tr('Compartilhar')),
+          ),
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(tr('Cancelar')),

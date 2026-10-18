@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DroidDeck — shared profile</title>
+<meta name="description" content="A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC with one click.">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=block" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="../"><img src="../logo.svg" alt="">DroidDeck</a>
+    <nav><a href="../gallery/" data-t="gallery">Gallery</a><a href="../docs/" data-t="docs">Docs</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <h1 id="name">…</h1>
+  <p class="lead" data-t="lead">A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC with one click: it comes in as a new profile, and nothing in your deck is deleted.</p>
+  <div id="deck" class="deck"></div>
+  <div class="actions">
+    <a id="import" class="btn btn-primary" href="#" data-t="import">Import into DroidDeck on this PC</a>
+    <a class="btn btn-ghost" href="../#download" data-t="get">Don't have DroidDeck yet?</a>
+  </div>
+  <p class="hint" data-t="hint">The import button opens DroidDeck on this computer (localhost:4787), so it must be running. Buttons that open programs or send shortcuts only come in on the PC itself.</p>
+</main>
+<script src="share.js"></script>
+<script>
+const T = {
+  pt: {gallery:"Galeria", docs:"Documentação", lead:"Um perfil do DroidDeck que alguém compartilhou com você. Importe no DroidDeck do seu PC com um clique: ele entra como um perfil novo, e nada do seu deck é apagado.", import:"Importar no DroidDeck deste PC", get:"Ainda não tem o DroidDeck?", hint:"O botão de importar abre o DroidDeck deste computador (localhost:4787), então ele precisa estar aberto. Botões que abrem programas ou enviam atalhos só entram pelo próprio PC.", bad:"Este link de perfil está incompleto ou corrompido.", buttons:"botões"},
+  es: {gallery:"Galería", docs:"Documentación", lead:"Un perfil de DroidDeck que alguien compartió contigo. Impórtalo en DroidDeck de tu PC con un clic: entra como un perfil nuevo y no se borra nada de tu deck.", import:"Importar en DroidDeck de este PC", get:"¿Todavía no tienes DroidDeck?", hint:"El botón de importar abre DroidDeck de este equipo (localhost:4787), así que debe estar abierto. Los botones que abren programas o envían atajos solo entran desde el propio PC.", bad:"Este enlace de perfil está incompleto o dañado.", buttons:"botones"},
+  en: {bad:"This profile link is incomplete or corrupted.", buttons:"buttons"},
+};
+const lang = (navigator.language || "en").slice(0, 2);
+const t = T[lang] || T.en;
+if (T[lang] && lang !== "en") {
+  document.documentElement.lang = lang === "pt" ? "pt-BR" : lang;
+  document.querySelectorAll("[data-t]").forEach(el => { if (t[el.dataset.t]) el.textContent = t[el.dataset.t]; });
+}
+const data = location.hash.slice(1);
+DDShare.decode(data).then(profile => {
+  document.getElementById("name").textContent = profile.name || "DroidDeck";
+  document.title = `${profile.name} — DroidDeck`;
+  DDShare.render(profile, document.getElementById("deck"));
+  document.getElementById("import").href = DDShare.importUrl(data);
+}).catch(() => {
+  document.getElementById("name").textContent = "DroidDeck";
+  document.getElementById("deck").outerHTML = `<p class="error">${t.bad}</p>`;
+  document.getElementById("import").remove();
+});
+</script>
+</body>
+</html>

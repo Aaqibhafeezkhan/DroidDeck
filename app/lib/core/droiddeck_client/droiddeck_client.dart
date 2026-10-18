@@ -407,6 +407,12 @@ class DroidDeckClient {
     return response.data;
   }
 
+  Future<List<int>> getBytes(String path) async {
+    final response = await _dio.get<List<int>>(path,
+        options: Options(responseType: ResponseType.bytes));
+    return response.data ?? const [];
+  }
+
   Future<dynamic> putJson(String path, [Object? body]) async {
     final response = await _dio.put(path, data: body);
     return response.data;
