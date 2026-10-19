@@ -623,6 +623,21 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                       return _buildButtonGrid(profiles[pageIndex], profiles, g);
                     },
                   ),
+                  // Acabou de parear e o deck está vazio: diz os dois caminhos para o
+                  // primeiro botão em vez de deixar só uma grade de "+".
+                  if (error == null &&
+                      currentProfile != null &&
+                      currentProfile.buttons.isEmpty &&
+                      profiles.every((p) => p.buttons.isEmpty))
+                    Positioned(
+                      bottom: 16,
+                      left: 16,
+                      right: 16,
+                      child: _EmptyDeckHint(
+                        onEdit: () => setState(() => _editMode = true),
+                        editing: _editMode,
+                      ),
+                    ),
                   if (error != null)
                     Positioned(
                       bottom: 16,
@@ -725,4 +740,57 @@ class _GridFit {
     required this.cell,
     required this.spacing,
   });
+}
+
+/// Primeiro uso: o deck ainda não tem nenhum botão em nenhum perfil.
+class _EmptyDeckHint extends StatelessWidget {
+  final VoidCallback onEdit;
+  final bool editing;
+
+  const _EmptyDeckHint({required this.onEdit, required this.editing});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: Card(
+          color: scheme.surfaceContainerHigh,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tr('Conectado! Agora, o primeiro botão'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 6),
+                Text(
+                  tr('Toque num + para criar um botão aqui. Para atalhos e programas, monte '
+                      'no PC: clique no ícone do DroidDeck perto do relógio → "Abrir no '
+                      'navegador". O que você criar lá aparece aqui na hora.'),
+                  style: TextStyle(color: scheme.onSurfaceVariant, height: 1.35),
+                ),
+                if (!editing) ...[
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FilledButton.icon(
+                      onPressed: onEdit,
+                      icon: const Icon(Icons.edit, size: 18),
+                      label: Text(tr('Criar aqui no celular')),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

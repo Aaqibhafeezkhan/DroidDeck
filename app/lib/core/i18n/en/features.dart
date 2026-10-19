@@ -278,4 +278,10 @@ final Map<String, String> enFeatures = {
       'Run DroidDeck-Setup.exe. If Windows warns that the app isn\'t recognized, click "More info" → "Run anyway". It doesn\'t open a window: it sits as an icon in the tray, near the clock. On Windows 11 the icon may be hidden under the ^ arrow next to it.',
   'Clique com o botão direito no ícone do DroidDeck → "Parear dispositivo (QR)" e escaneie o código aqui no app. Celular e PC precisam estar na mesma rede Wi-Fi (ou ligados pelo cabo USB).':
       'Right-click the DroidDeck icon → "Pair device (QR)" and scan the code here in the app. Phone and PC must be on the same Wi-Fi network (or connected by USB cable).',
+  'Conectado! Agora, o primeiro botão':
+      'Connected! Now, your first button',
+  'Toque num + para criar um botão aqui. Para atalhos e programas, monte no PC: clique no ícone do DroidDeck perto do relógio → "Abrir no navegador". O que você criar lá aparece aqui na hora.':
+      'Tap a + to create a button here. For shortcuts and programs, build it on the PC: click the DroidDeck icon near the clock → "Open in browser". Whatever you create there shows up here right away.',
+  'Criar aqui no celular':
+      'Create it here on the phone',
 };

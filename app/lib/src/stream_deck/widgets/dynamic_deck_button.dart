@@ -206,9 +206,12 @@ class DynamicDeckButton extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(6),
+            // Sempre um círculo: o anel segue o lado menor do botão, mesmo quando a
+            // área não é quadrada (botão grande, celular deitado).
+            Center(
+              child: SizedBox.square(
+                dimension: ((c.maxWidth < c.maxHeight ? c.maxWidth : c.maxHeight) - 12)
+                    .clamp(0.0, double.infinity),
                 child: CircularProgressIndicator(
                   value: p,
                   strokeWidth: small ? 4 : 6,
