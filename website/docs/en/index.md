@@ -5,8 +5,11 @@ on your phone that fire shortcuts, open apps, control audio and media, drive Dis
 sounds and switch your smart lights. The PC side is a small tray app; the phone talks to it over your
 local network.
 
-[Download the latest release :material-download:](https://github.com/ggfto/DroidDeck/releases/latest){ .md-button .md-button--primary }
-[Get started](getting-started/installation.md){ .md-button }
+You need both parts:
+
+[:material-microsoft-windows: 1. Windows app](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe){ .md-button .md-button--primary }
+[:material-android: 2. Android app](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk){ .md-button .md-button--primary }
+[Installation guide](getting-started/installation.md){ .md-button }
 
 <figure class="dd-figure dd-figure--wide" markdown>
 ![A DroidDeck grid of 40 buttons updating live: clock, weather, CPU and GPU gauges, a pomodoro timer, a muted mic, OBS live and scene buttons, smart lamps turning on and Spotify like and shuffle](../assets/demo.gif){ .dd-shot width="960" height="410" }

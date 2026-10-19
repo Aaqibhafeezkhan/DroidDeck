@@ -5,8 +5,11 @@ grade de botões no celular que disparam atalhos, abrem apps, controlam áudio e
 Discord e o OBS, tocam sons e acendem suas lâmpadas inteligentes. No PC roda um pequeno app na
 bandeja do sistema; o celular conversa com ele pela rede local.
 
-[Baixar a versão mais recente :material-download:](https://github.com/ggfto/DroidDeck/releases/latest){ .md-button .md-button--primary }
-[Começar](getting-started/installation.md){ .md-button }
+Você precisa das duas partes:
+
+[:material-microsoft-windows: 1. App para Windows](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe){ .md-button .md-button--primary }
+[:material-android: 2. App para Android](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk){ .md-button .md-button--primary }
+[Guia de instalação](getting-started/installation.md){ .md-button }
 
 <figure class="dd-figure dd-figure--wide" markdown>
 ![Uma grade de 40 botões do DroidDeck atualizando ao vivo: relógio, clima, medidores de CPU e GPU, um pomodoro, o microfone mudo, botões de live e cena do OBS, lâmpadas acendendo e curtir e aleatório do Spotify](../assets/demo.gif){ .dd-shot width="960" height="410" }

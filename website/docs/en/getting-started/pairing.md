@@ -4,19 +4,27 @@ Pairing gives the phone the PC's address and a secret **API key**. You only do i
 
 ## Pair with a QR code (recommended)
 
-1. On the PC, right-click the tray icon → **Pair device (QR)…**. The pairing window opens with
-   **Android app** selected.
+1. On the PC, right-click the tray icon and choose **Pair device (QR)…**: the pairing window opens
+   with **Android app** selected.
 2. On the phone, open DroidDeck. On first launch the **settings** screen opens; otherwise tap the
    gear on the **Audio** tab.
 3. Tap **Pair (QR)** and scan the code.
 
 <figure class="dd-figure" markdown>
-![The "DroidDeck — Pair device" window: Android app and Open in browser options, a QR code, and the line "IP: 192.168.0.10:4787  Key: a1b2c3d4…" above a Close button](../../assets/screenshots/pairing-app-en.png){ .dd-shot width="402" height="602" loading="lazy" }
-<figcaption>The pairing window. The address and key here are examples; yours are shown under the code.</figcaption>
+<figcaption>Example only: the code is blurred on purpose. Your window shows a sharp code, with your
+PC's address and key under it.</figcaption>
+![The "DroidDeck — Pair device" window: Android app and Open in browser options, a blurred QR code marked EXAMPLE, and the line "IP: 192.168.0.10:4787  Key: a1b2c3d4…" above a Close button](../../assets/screenshots/pairing-app-en.png){ .dd-shot width="402" height="602" loading="lazy" }
 </figure>
 
-**You're connected when the status dot turns green (*Connected*).** The phone saves the address, port
-and key, and reconnects by itself from now on.
+### You're connected
+
+The status chip in the deck's top bar turns green and reads:
+
+<p class="dd-chip-demo" markdown="span"><span class="dd-chip" role="img" aria-label="Status chip: Connected to GAMING-PC">:material-link-variant: Connected to GAMING-PC</span></p>
+
+with your PC's name instead of *GAMING-PC* (over a USB cable the icon is a plug). The phone saves the
+address, port and key, and reconnects by itself from now on. If it says **Reconnecting…** or
+**PC offline** instead, see [If the phone doesn't connect](#if-the-phone-doesnt-connect).
 
 Next: [make your first button](first-button.md).
 
@@ -57,5 +65,5 @@ must pair again.
 
 ??? note "Connection behaviour"
     The phone reconnects by itself if the PC restarts or the Wi-Fi drops. It retries quickly at first
-    (0, 2, 5, 10, 20 s) and then every 30 s, indefinitely. Tap the status dot to see the connection
-    URL (with the key masked) and the last data received.
+    (0, 2, 5, 10, 20 s) and then every 30 s, indefinitely. Tap the status chip to see what to do and,
+    under **Technical details**, the connection URL (with the key masked) and the last data received.

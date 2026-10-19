@@ -13,8 +13,8 @@ can use it from the browser, without installing anything.
 3. Point the device's camera at the code and open the link.
 
 <figure class="dd-figure" markdown>
-![The pairing window with Open in browser selected: a QR code for the camera, the link "Copy the address (to open on another PC)" and the line "IP: 192.168.0.10:4787  Key: a1b2c3d4…"](../../assets/screenshots/pairing-browser-en.png){ .dd-shot width="402" height="602" loading="lazy" }
-<figcaption>Open in browser mode. The address and key are examples.</figcaption>
+![The pairing window with Open in browser selected: a blurred QR code marked EXAMPLE, the link "Copy the address (to open on another PC)" and the line "IP: 192.168.0.10:4787  Key: a1b2c3d4…"](../../assets/screenshots/pairing-browser-en.png){ .dd-shot width="402" height="602" loading="lazy" }
+<figcaption>Open in browser mode. An example: the code is blurred, and the address and key are made up.</figcaption>
 </figure>
 
 The deck opens with your buttons. The link carries the API key: the page saves it in the browser and

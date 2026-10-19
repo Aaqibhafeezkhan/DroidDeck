@@ -227,3 +227,60 @@ html { scrollbar-color: var(--dd-scroll) transparent; }
 
 /* Mermaid diagrams pick up the palette. */
 .md-typeset .mermaid { --md-mermaid-edge-color: var(--md-default-fg-color--light); --md-mermaid-node-bg-color: var(--md-accent-fg-color--transparent); --md-mermaid-node-fg-color: var(--md-default-fg-color); }
+
+/* ---------- Onboarding: "You need both parts" rows ---------- */
+.md-typeset .dd-parts {
+  max-width: var(--dd-measure);
+  margin: 1em 0 1.2em;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+.md-typeset .dd-part {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em 1.5em;
+  padding: 0.9em 0;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+.md-typeset .dd-part > p { margin: 0; }
+.md-typeset .dd-part__text { flex: 1 1 20em; }
+.md-typeset .dd-part .md-button { white-space: nowrap; }
+.md-typeset .md-button .twemoji { margin-right: 0.15em; }
+
+/* A caption placed above its image (pairing example). */
+.md-typeset figure.dd-figure figcaption:first-child { margin: 0 0 0.7em; }
+.md-typeset figure.dd-figure > a { display: block; }
+
+/* ---------- Connection chip, as the app draws it ---------- */
+:root { --dd-signal: #4ade80; }
+[data-md-color-scheme="default"] { --dd-signal: #15803d; }  /* 5:1 on white */
+.md-typeset .dd-chip-demo { margin: 0.6em 0 0.8em; }
+.md-typeset .dd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--dd-signal) 45%, transparent);
+  background-color: color-mix(in srgb, var(--dd-signal) 12%, transparent);
+  color: var(--md-default-fg-color);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.md-typeset .dd-chip .twemoji { color: var(--dd-signal); }
+
+/* ---------- Header logo stays on small screens and leads to the landing ---------- */
+@media screen and (max-width: 76.2344em) {
+  .md-header__button.md-logo { display: inline-block; order: 1; margin-left: 0; }
+  .md-header__button.md-logo img,
+  .md-header__button.md-logo svg { height: 1.6rem; width: auto; }
+  .md-header__inner > label.md-header__button[for="__drawer"] { order: 0; }
+  .md-header__inner > .md-header__title { order: 2; }
+  .md-header__inner > :not(.md-header__button.md-logo):not(label[for="__drawer"]):not(.md-header__title) { order: 3; }
+}
+.md-typeset figure.dd-figure--wide figcaption { max-width: var(--dd-measure); }
+/* Callouts nested in a step keep the same measure as top-level ones. */
+.md-typeset li > .admonition,
+.md-typeset li > details { max-width: var(--dd-measure); }

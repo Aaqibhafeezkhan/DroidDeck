@@ -1,22 +1,45 @@
 # Installation
 
-DroidDeck has two parts: the **Windows app** (server) and the **Android app** (your deck). Both are
-attached to every [GitHub release](https://github.com/ggfto/DroidDeck/releases/latest).
+## You need both parts
+
+<div class="dd-parts" markdown>
+
+<div class="dd-part" markdown>
+<p class="dd-part__text"><strong>1. DroidDeck for Windows</strong> runs the actions on your PC. It lives in the system tray.</p>
+
+[:material-microsoft-windows: Windows app](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe){ .md-button .md-button--primary }
+</div>
+
+<div class="dd-part" markdown>
+<p class="dd-part__text"><strong>2. DroidDeck for Android</strong> is the deck: the buttons you tap. Download it on the phone.</p>
+
+[:material-android: Android app](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk){ .md-button .md-button--primary }
+</div>
+
+</div>
+
+Both files are also attached to every [GitHub release](https://github.com/ggfto/DroidDeck/releases/latest).
+No iPhone app? The deck also runs in [any browser](browser-usb.md#browser).
 
 ## Windows
 
-!!! warning "Windows SmartScreen"
-    The installer is not code-signed yet, so when you run it Windows may show *"Windows protected
-    your PC"*. Click **More info → Run anyway**.
+1. Download **`DroidDeck-Setup.exe`**.
 
-1. Download **`DroidDeck-Setup.exe`** from the latest release.
+    [:material-download: Download DroidDeck-Setup.exe](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe){ .md-button .md-button--primary }
+
 2. Run it. It installs for the current user (no administrator needed) and adds desktop and Start
    menu shortcuts.
+
+    !!! note "Windows protected your PC?"
+        It's safe to run: the installer isn't code-signed yet, so Windows SmartScreen may show
+        *"Windows protected your PC"*. Click **More info → Run anyway**.
+
 3. On first run, DroidDeck turns on **Start with Windows** and offers to open the
    [firewall](#firewall) for your local network. Say yes, so the phone can reach the PC.
 
-The app has no window. It lives in the **system tray**; a notification confirms it is running at
-`http://localhost:4787/`. The build is self-contained, so you don't need to install .NET.
+The app has no window. It lives in the **system tray** (it may be behind the **^** arrow), and a
+notification confirms it is running at `http://localhost:4787/`. The build is self-contained, so you
+don't need to install .NET.
 
 The installed DroidDeck **updates itself**: it checks the GitHub releases, downloads new versions in
 the background and applies them the next time it starts. To update right away, use **Check for
@@ -27,7 +50,20 @@ updates** in the tray menu. To uninstall, use Windows *Settings → Apps*.
     `DroidDeck.exe`. That copy doesn't update itself: the tray item **Download the latest version…**
     opens the release page.
 
-### Tray menu
+## Android
+
+1. On the phone, download **`DroidDeck.apk`**.
+
+    [:material-download: Download DroidDeck.apk](https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk){ .md-button .md-button--primary }
+
+2. Open it and allow installing from unknown sources when Android asks.
+3. Open **DroidDeck** and continue with [Pairing](pairing.md).
+
+Android 7.0 or later is required. The app needs the camera only to scan pairing QR codes.
+
+**Next: [pair the phone with the PC](pairing.md).**
+
+## Tray menu
 
 Right-click the DroidDeck icon in the system tray (it may be behind the **^** arrow):
 
@@ -36,34 +72,29 @@ Right-click the DroidDeck icon in the system tray (it may be behind the **^** ar
 <figcaption>The tray menu. Ticks show the options that are on.</figcaption>
 </figure>
 
-| Item | What it does |
-|---|---|
-| **Open in browser** | Opens the configurator at `http://localhost:4787/` (double-clicking the icon does the same). |
-| **Pair device (QR)…** | Shows the pairing QR code for the phone. |
-| **Start with Windows** | Starts DroidDeck when you sign in to Windows. |
-| **Allow through firewall (local network)** | Adds the [firewall](#firewall) rules. Ticked when they already exist. |
-| **USB connection (cable)** | Connects an Android phone over a [USB cable](browser-usb.md#usb). |
-| **Check for updates** | Checks for a new version; once one is downloaded it becomes **Restart to update**. |
-| **Exit** | Quits DroidDeck. |
+??? note "What each tray item does"
 
-### Firewall
+    | Item | What it does |
+    |---|---|
+    | **Open in browser** | Opens the configurator at `http://localhost:4787/` (double-clicking the icon does the same). |
+    | **Pair device (QR)…** | Shows the pairing QR code for the phone. |
+    | **Start with Windows** | Starts DroidDeck when you sign in to Windows. |
+    | **Allow through firewall (local network)** | Adds the [firewall](#firewall) rules. Ticked when they already exist. |
+    | **USB connection (cable)** | Connects an Android phone over a [USB cable](browser-usb.md#usb). |
+    | **Check for updates** | Checks for a new version; once one is downloaded it becomes **Restart to update**. |
+    | **Exit** | Quits DroidDeck. |
+
+## Firewall
 
 The phone connects to the PC on **TCP 4787**, and automatic server discovery uses **UDP 7573**.
-The easiest way is the tray item **Allow through firewall (local network)** (the installer offers it
-on first run). Windows asks for administrator permission, and the rules only accept devices on your
-local subnet, even if the Wi-Fi is marked as a Public network.
+The installer offers to open both on first run. If you skipped it, use the tray item
+**Allow through firewall (local network)**. Windows asks for administrator permission, and the rules
+only accept devices on your local subnet, even if the Wi-Fi is marked as a Public network.
 
-To add the same rules by hand, use an elevated PowerShell:
+??? note "Add the rules by hand"
+    In an elevated PowerShell:
 
-```powershell
-New-NetFirewallRule -DisplayName "DroidDeck (TCP 4787)" -Direction Inbound -Protocol TCP -LocalPort 4787 -RemoteAddress LocalSubnet -Action Allow
-New-NetFirewallRule -DisplayName "DroidDeck discovery (UDP 7573)" -Direction Inbound -Protocol UDP -LocalPort 7573 -RemoteAddress LocalSubnet -Action Allow
-```
-
-## Android
-
-1. On the phone, download **`DroidDeck.apk`** from the latest release.
-2. Open it and allow installing from unknown sources when Android asks.
-3. Open **DroidDeck** and continue with [Pairing](pairing.md).
-
-Android 7.0 or later is required. The app needs the camera only to scan pairing QR codes.
+    ```powershell
+    New-NetFirewallRule -DisplayName "DroidDeck (TCP 4787)" -Direction Inbound -Protocol TCP -LocalPort 4787 -RemoteAddress LocalSubnet -Action Allow
+    New-NetFirewallRule -DisplayName "DroidDeck discovery (UDP 7573)" -Direction Inbound -Protocol UDP -LocalPort 7573 -RemoteAddress LocalSubnet -Action Allow
+    ```

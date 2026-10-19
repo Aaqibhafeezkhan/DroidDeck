@@ -4,19 +4,27 @@ O pareamento passa ao celular o endereço do PC e uma **chave de API** secreta. 
 
 ## Parear com QR code (recomendado)
 
-1. No PC, clique com o botão direito no ícone da bandeja → **Parear dispositivo (QR)…**. A janela de
-   pareamento abre com **App Android** selecionado.
+1. No PC, clique com o botão direito no ícone da bandeja e escolha **Parear dispositivo (QR)…**: a
+   janela de pareamento abre com **App Android** selecionado.
 2. No celular, abra o DroidDeck. Na primeira vez, a tela de **configurações** abre sozinha; nas
    outras, toque na engrenagem da aba **Áudio**.
 3. Toque em **Parear (QR)** e leia o código.
 
 <figure class="dd-figure" markdown>
-![Janela "DroidDeck — Parear dispositivo": opções App Android e Abrir no navegador, um QR code e a linha "IP: 192.168.0.10:4787  Chave: a1b2c3d4…" acima do botão Fechar](../../assets/screenshots/pairing-app-pt.png){ .dd-shot width="402" height="602" loading="lazy" }
-<figcaption>A janela de pareamento. O endereço e a chave aqui são exemplos; os seus aparecem embaixo do código.</figcaption>
+<figcaption>Só um exemplo: o código está borrado de propósito. A sua janela mostra um código nítido,
+com o endereço e a chave do seu PC embaixo.</figcaption>
+![Janela "DroidDeck — Parear dispositivo": opções App Android e Abrir no navegador, um QR code borrado com a marca EXEMPLO e a linha "IP: 192.168.0.10:4787  Chave: a1b2c3d4…" acima do botão Fechar](../../assets/screenshots/pairing-app-pt.png){ .dd-shot width="402" height="602" loading="lazy" }
 </figure>
 
-**Pronto quando o indicador de status fica verde (*Conectado*).** O celular salva o endereço, a porta e
-a chave, e daqui em diante se reconecta sozinho.
+### Conectado { #youre-connected }
+
+O selo de status na barra do topo do deck fica verde e mostra:
+
+<p class="dd-chip-demo" markdown="span"><span class="dd-chip" role="img" aria-label="Selo de status: Conectado a PC-GAMER">:material-link-variant: Conectado a PC-GAMER</span></p>
+
+com o nome do seu PC no lugar de *PC-GAMER* (pelo cabo USB, o ícone vira um plugue). O celular salva o
+endereço, a porta e a chave, e daqui em diante se reconecta sozinho. Se aparecer **Reconectando…** ou
+**PC desligado**, veja [Se o celular não conectar](#se-o-celular-nao-conectar).
 
 Próximo passo: [crie o seu primeiro botão](first-button.md).
 
@@ -57,5 +65,5 @@ e todos os celulares precisam parear outra vez.
 
 ??? note "Comportamento da conexão"
     O celular se reconecta sozinho se o PC reiniciar ou o Wi-Fi cair. No começo ele tenta de novo
-    rapidamente (0, 2, 5, 10, 20 s) e depois a cada 30 s, indefinidamente. Toque no indicador de status
-    para ver a URL de conexão (com a chave mascarada) e os últimos dados recebidos.
+    rapidamente (0, 2, 5, 10, 20 s) e depois a cada 30 s, indefinidamente. Toque no selo de status
+    para ver o que fazer e, em **Detalhes técnicos**, a URL de conexão (com a chave mascarada) e os últimos dados recebidos.

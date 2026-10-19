@@ -13,8 +13,8 @@ usá-lo pelo navegador, sem instalar nada.
 3. Aponte a câmera do aparelho para o código e abra o link.
 
 <figure class="dd-figure" markdown>
-![A janela de pareamento com Abrir no navegador selecionado: um QR code para a câmera, o link "Copiar o endereço (para abrir em outro PC)" e a linha "IP: 192.168.0.10:4787  Chave: a1b2c3d4…"](../../assets/screenshots/pairing-browser-pt.png){ .dd-shot width="402" height="602" loading="lazy" }
-<figcaption>Modo Abrir no navegador. O endereço e a chave são exemplos.</figcaption>
+![A janela de pareamento com Abrir no navegador selecionado: um QR code borrado com a marca EXEMPLO, o link "Copiar o endereço (para abrir em outro PC)" e a linha "IP: 192.168.0.10:4787  Chave: a1b2c3d4…"](../../assets/screenshots/pairing-browser-pt.png){ .dd-shot width="402" height="602" loading="lazy" }
+<figcaption>Modo Abrir no navegador. Um exemplo: o código está borrado, e o endereço e a chave são inventados.</figcaption>
 </figure>
 
 O deck abre com os seus botões. O link leva a chave de API: a página a guarda no navegador e a tira da
