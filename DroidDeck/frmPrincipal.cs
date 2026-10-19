@@ -29,6 +29,8 @@ namespace DroidDeck
 
             // Nunca aparece na barra de tarefas nem como janela; só o ícone de bandeja.
             ShowInTaskbar = false;
+            ntiTray.Icon = AppIcon.Small;
+            Icon = AppIcon.Large;
             BuildTrayMenu();
             ntiTray.Visible = true;
         }

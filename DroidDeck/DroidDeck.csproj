@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>volume-_2_.ico</ApplicationIcon>
+    <ApplicationIcon>droiddeck.ico</ApplicationIcon>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
@@ -24,6 +24,11 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Bandeja e janelas carregam o tamanho exato daqui (ver AppIcon.cs). -->
+    <EmbeddedResource Include="droiddeck.ico" LogicalName="DroidDeck.droiddeck.ico" />
   </ItemGroup>
 
   <ItemGroup>

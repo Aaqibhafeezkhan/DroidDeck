@@ -26,6 +26,7 @@ namespace DroidDeck
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterScreen;
+            Icon = AppIcon.Small;
             ClientSize = new Size(360, 528);
 
             var ip = NetworkInfo.GetLanIp();
