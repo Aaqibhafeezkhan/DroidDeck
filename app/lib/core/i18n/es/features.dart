@@ -284,4 +284,22 @@ final Map<String, String> esFeatures = {
       'Toca un + para crear un botón aquí. Para atajos y programas, ármalo en el PC: haz clic en el icono de DroidDeck junto al reloj → "Abrir en el navegador". Lo que crees allí aparece aquí al instante.',
   'Criar aqui no celular':
       'Crearlo aquí en el teléfono',
+  'Conectando…':
+      'Conectando…',
+  'Sem conexão':
+      'Sin conexión',
+  'Procurando o PC. Leva alguns segundos.':
+      'Buscando el PC. Tarda unos segundos.',
+  'Para editar, toque em "Editar agora".':
+      'Para editar, toca "Editar ahora".',
+  'Editar perfil':
+      'Editar perfil',
+  'O texto depois de "Chave:" na janela de pareamento do PC.':
+      'El texto después de "Clave:" en la ventana de vinculación del PC.',
+  'O PC não aceitou essa chave. Confira se copiou ela inteira, sem espaços.':
+      'El PC no aceptó esa clave. Comprueba que la copiaste completa, sin espacios.',
+  'Esse QR não é de pareamento do DroidDeck. Use o da janela "Parear dispositivo (QR)" do PC.':
+      'Ese QR no es de vinculación de DroidDeck. Usa el de la ventana "Vincular dispositivo (QR)" del PC.',
+  'O PC não reconheceu este aparelho (a chave mudou ou é de outro PC).\nPareie de novo pelo QR.':
+      'El PC no reconoció este dispositivo (la clave cambió o es de otro PC).\nVuelve a vincularlo con el QR.',
 };

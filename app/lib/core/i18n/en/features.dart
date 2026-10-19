@@ -284,4 +284,22 @@ final Map<String, String> enFeatures = {
       'Tap a + to create a button here. For shortcuts and programs, build it on the PC: click the DroidDeck icon near the clock → "Open in browser". Whatever you create there shows up here right away.',
   'Criar aqui no celular':
       'Create it here on the phone',
+  'Conectando…':
+      'Connecting…',
+  'Sem conexão':
+      'Not connected',
+  'Procurando o PC. Leva alguns segundos.':
+      'Looking for the PC. It takes a few seconds.',
+  'Para editar, toque em "Editar agora".':
+      'To edit, tap "Edit now".',
+  'Editar perfil':
+      'Edit profile',
+  'O texto depois de "Chave:" na janela de pareamento do PC.':
+      'The text after "Key:" in the PC\'s pairing window.',
+  'O PC não aceitou essa chave. Confira se copiou ela inteira, sem espaços.':
+      'The PC didn\'t accept that key. Check that you copied all of it, without spaces.',
+  'Esse QR não é de pareamento do DroidDeck. Use o da janela "Parear dispositivo (QR)" do PC.':
+      'That QR isn\'t a DroidDeck pairing code. Use the one in the PC\'s "Pair device (QR)" window.',
+  'O PC não reconheceu este aparelho (a chave mudou ou é de outro PC).\nPareie de novo pelo QR.':
+      'The PC didn\'t recognize this device (the key changed or it\'s from another PC).\nPair again with the QR.',
 };

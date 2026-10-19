@@ -3,7 +3,7 @@ import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:flutter/material.dart';
 
 /// Estado da conexão com o PC, com texto e ícone (não só cor): "Conectado ao PC-SALA",
-/// "Reconectando…" ou "PC desligado". O toque explica o que fazer; os dados técnicos
+/// "Conectando…", "Reconectando…" ou "Sem conexão". O toque explica o que fazer; os dados técnicos
 /// ficam recolhidos para quem precisar.
 class ConnectionChip extends StatefulWidget {
   /// Só o ícone e uma palavra (barra estreita do celular).
@@ -15,7 +15,7 @@ class ConnectionChip extends StatefulWidget {
   State<ConnectionChip> createState() => _ConnectionChipState();
 }
 
-enum _Link { connected, connecting, offline }
+enum _Link { connected, connecting, reconnecting, offline }
 
 class _ConnectionChipState extends State<ConnectionChip> {
   static String? _pcName;
@@ -36,9 +36,10 @@ class _ConnectionChipState extends State<ConnectionChip> {
 
   static _Link _linkOf(String status) {
     if (status == 'Connected') return _Link.connected;
-    if (status.startsWith('Connecting') || status.startsWith('Reconnecting')) {
-      return _Link.connecting;
-    }
+    if (status.startsWith('Connecting')) return _Link.connecting;
+    // "Reconnecting..." é a reconexão automática em andamento; "Reconnecting in Ns" é a
+    // espera entre tentativas, quando o PC não está respondendo.
+    if (status == 'Reconnecting...') return _Link.reconnecting;
     return _Link.offline;
   }
 
@@ -61,8 +62,9 @@ class _ConnectionChipState extends State<ConnectionChip> {
                   ? tr('Conectado a {pc}', {'pc': _pcName})
                   : tr('Conectado')),
         ),
-      _Link.connecting => (Icons.sync, const Color(0xFFFBBF24), tr('Reconectando…')),
-      _Link.offline => (Icons.link_off, scheme.error, tr('PC desligado')),
+      _Link.connecting => (Icons.sync, const Color(0xFFFBBF24), tr('Conectando…')),
+      _Link.reconnecting => (Icons.sync, const Color(0xFFFBBF24), tr('Reconectando…')),
+      _Link.offline => (Icons.link_off, scheme.error, tr('Sem conexão')),
     };
 
     return Semantics(
@@ -108,7 +110,8 @@ class _ConnectionChipState extends State<ConnectionChip> {
       _Link.connected => viaUsb
           ? tr('Tudo certo: este aparelho fala com o PC pelo cabo USB.')
           : tr('Tudo certo: os botões e os dados ao vivo estão chegando do PC.'),
-      _Link.connecting =>
+      _Link.connecting => tr('Procurando o PC. Leva alguns segundos.'),
+      _Link.reconnecting =>
         tr('A conexão caiu e está voltando sozinha. Se demorar, confira se o PC está ligado e na mesma rede.'),
       _Link.offline => tr(
           'O PC não está respondendo. Confira se o DroidDeck está aberto nele (ícone perto do relógio) '

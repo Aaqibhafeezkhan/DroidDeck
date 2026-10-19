@@ -228,7 +228,7 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
             TextButton.icon(
               onPressed: () => _renameProfile(currentProfile),
               icon: const Icon(Icons.tune, size: 18),
-              label: Text(tr('Opções do perfil')),
+              label: Text(tr('Editar perfil')),
             ),
           const SizedBox(width: 8),
           const ConnectionChip(),

@@ -84,7 +84,7 @@ class HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     isAuthError
-                        ? tr('Falha de autenticação (chave inválida ou expirada).\nRefaça o pareamento.')
+                        ? tr('O PC não reconheceu este aparelho (a chave mudou ou é de outro PC).\nPareie de novo pelo QR.')
                         : tr('O PC não respondeu. Confira se o DroidDeck está aberto nele e se os dois estão na mesma rede.'),
                     textAlign: TextAlign.center,
                   ),

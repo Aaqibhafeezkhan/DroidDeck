@@ -3,7 +3,7 @@
 ## The phone can't find or connect to the PC
 
 The status chip at the top of the deck shows the connection: **Connected to** your PC (green),
-**Reconnecting…** or **PC offline**. Tap it for what to do next. If it doesn't turn green:
+**Reconnecting…** or **Not connected**. Tap it for what to do next. If it doesn't turn green:
 
 1. **Same network**: phone and PC must be on the same local network. Guest Wi-Fi networks and
    "AP isolation" block devices from seeing each other.

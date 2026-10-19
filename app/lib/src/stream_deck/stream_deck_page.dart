@@ -467,7 +467,10 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(
-        content: Text(tr('Para editar, toque no lápis da barra de cima.')),
+        // Em tela cheia a barra de cima (com o lápis) está escondida.
+        content: Text(widget.isFullscreen
+            ? tr('Para editar, toque em "Editar agora".')
+            : tr('Para editar, toque no lápis da barra de cima.')),
         action: SnackBarAction(
           label: tr('Editar agora'),
           onPressed: () => setState(() => _editMode = true),

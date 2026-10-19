@@ -204,7 +204,7 @@ class ConfigPageState extends State<ConfigPage> {
         key == null ||
         key.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(tr('QR de pareamento inválido'))),
+        SnackBar(content: Text(tr('Esse QR não é de pareamento do DroidDeck. Use o da janela "Parear dispositivo (QR)" do PC.'))),
       );
       return;
     }

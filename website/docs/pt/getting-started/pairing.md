@@ -24,7 +24,7 @@ O selo de status na barra do topo do deck fica verde e mostra:
 
 com o nome do seu PC no lugar de *PC-GAMER* (pelo cabo USB, o ícone vira um plugue). O celular salva o
 endereço, a porta e a chave, e daqui em diante se reconecta sozinho. Se aparecer **Reconectando…** ou
-**PC desligado**, veja [Se o celular não conectar](#se-o-celular-nao-conectar).
+**Sem conexão**, veja [Se o celular não conectar](#se-o-celular-nao-conectar).
 
 Próximo passo: [crie o seu primeiro botão](first-button.md).
 

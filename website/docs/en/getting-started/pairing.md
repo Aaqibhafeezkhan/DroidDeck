@@ -24,7 +24,7 @@ The status chip in the deck's top bar turns green and reads:
 
 with your PC's name instead of *GAMING-PC* (over a USB cable the icon is a plug). The phone saves the
 address, port and key, and reconnects by itself from now on. If it says **Reconnecting…** or
-**PC offline** instead, see [If the phone doesn't connect](#if-the-phone-doesnt-connect).
+**Not connected** instead, see [If the phone doesn't connect](#if-the-phone-doesnt-connect).
 
 Next: [make your first button](first-button.md).
 

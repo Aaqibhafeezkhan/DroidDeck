@@ -47,7 +47,7 @@ class _BrowserPairPageState extends State<BrowserPairPage> {
       if (mounted) {
         setState(() {
           _busy = false;
-          _error = tr('Chave inválida.');
+          _error = tr('O PC não aceitou essa chave. Confira se copiou ela inteira, sem espaços.');
         });
       }
       return;
@@ -107,6 +107,8 @@ class _BrowserPairPageState extends State<BrowserPairPage> {
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       labelText: tr('Chave'),
+                      helperText: tr('O texto depois de "Chave:" na janela de pareamento do PC.'),
+                      helperMaxLines: 2,
                     ),
                     onSubmitted: (_) => _useKey(),
                   ),

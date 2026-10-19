@@ -3,7 +3,7 @@
 ## O celular não encontra o PC ou não conecta
 
 O selo de status no topo do deck mostra a conexão: **Conectado a** e o nome do seu PC (verde),
-**Reconectando…** ou **PC desligado**. Toque nele para ver o que fazer. Se ele não ficar verde:
+**Reconectando…** ou **Sem conexão**. Toque nele para ver o que fazer. Se ele não ficar verde:
 
 1. **Mesma rede**: celular e PC precisam estar na mesma rede local. Redes Wi-Fi de convidados e o
    "isolamento de AP" impedem que os dispositivos se enxerguem.
