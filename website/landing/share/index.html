@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DroidDeck — shared profile</title>
-<meta name="description" content="A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC with one click.">
+<meta name="description" content="A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC as a new profile.">
 <meta name="theme-color" content="#0d0d0f">
 <noscript><style>.lang{display:none!important}</style></noscript>
 <meta name="robots" content="noindex">
@@ -31,7 +31,7 @@
 </header>
 <main class="wrap">
   <h1 id="name">DroidDeck</h1>
-  <p class="lead" id="lead" data-t="lead">A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC with one click: it comes in as a new profile, and nothing in your deck is deleted.</p>
+  <p class="lead" id="lead" data-t="lead">A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC: it comes in as a new profile, and nothing in your deck is deleted.</p>
   <div id="deck" class="deck"></div>
   <div id="act"></div>
   <div class="actions" id="more">
@@ -40,7 +40,7 @@
   <p class="hint" id="hint" data-t="hint">Buttons that open programs or send shortcuts only come in when you import on the PC itself.</p>
   <div class="empty" id="bad" hidden>
     <p class="error" id="bad-msg" data-t="bad">This profile link is incomplete or corrupted.</p>
-    <p class="hint" data-t="badHelp">Ask for the link again, or start from one of the ready-made decks.</p>
+    <p class="hint" id="bad-help" data-t="badHelp">Ask for the link again, or start from one of the ready-made decks.</p>
     <a class="btn btn-primary" href="../gallery/" data-t="browse">Browse the gallery</a>
   </div>
   <noscript><p class="hint noscript">This page needs JavaScript to read the shared profile.</p></noscript>
@@ -50,40 +50,52 @@
 <script>
 const T = {
   en: { gallery: "Gallery", docs: "Docs",
-    lead: "A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC with one click: it comes in as a new profile, and nothing in your deck is deleted.",
+    lead: "A DroidDeck profile someone shared with you. Import it into DroidDeck on your PC: it comes in as a new profile, and nothing in your deck is deleted.",
     get: "Don't have DroidDeck yet?",
     hint: "Buttons that open programs or send shortcuts only come in when you import on the PC itself.",
     bad: "This profile link is incomplete or corrupted.", badHelp: "Ask for the link again, or start from one of the ready-made decks.",
+    empty: "No profile in this link.", emptyHelp: "Ask whoever sent it for the full link, or start from one of the ready-made decks.",
+    broken: "This page didn't load completely.", brokenHelp: "Reload to try again, or start from one of the ready-made decks.",
     browse: "Browse the gallery", shared: "Shared profile" },
   pt: { gallery: "Galeria", docs: "Documentação",
-    lead: "Um perfil do DroidDeck que alguém compartilhou com você. Importe no DroidDeck do seu PC com um clique: ele entra como um perfil novo, e nada do seu deck é apagado.",
+    lead: "Um perfil do DroidDeck que alguém compartilhou com você. Importe no DroidDeck do seu PC: ele entra como um perfil novo, e nada do seu deck é apagado.",
     get: "Ainda não tem o DroidDeck?",
     hint: "Botões que abrem programas ou enviam atalhos só entram quando você importa no próprio PC.",
     bad: "Este link de perfil está incompleto ou corrompido.", badHelp: "Peça o link de novo ou comece por um dos decks prontos.",
+    empty: "Não tem nenhum perfil neste link.", emptyHelp: "Peça o link completo para quem mandou ou comece por um dos decks prontos.",
+    broken: "A página não carregou por completo.", brokenHelp: "Recarregue para tentar de novo ou comece por um dos decks prontos.",
     browse: "Ver a galeria", shared: "Perfil compartilhado" },
   es: { gallery: "Galería", docs: "Documentación (en inglés)",
-    lead: "Un perfil de DroidDeck que alguien compartió contigo. Impórtalo en DroidDeck de tu PC con un clic: entra como un perfil nuevo y no se borra nada de tu deck.",
+    lead: "Un perfil de DroidDeck que alguien compartió contigo. Impórtalo en DroidDeck de tu PC: entra como un perfil nuevo y no se borra nada de tu deck.",
     get: "¿Todavía no tienes DroidDeck?",
     hint: "Los botones que abren programas o envían atajos solo entran cuando importas en el propio PC.",
     bad: "Este enlace de perfil está incompleto o dañado.", badHelp: "Pide el enlace de nuevo o empieza con uno de los decks listos.",
+    empty: "No hay ningún perfil en este enlace.", emptyHelp: "Pide el enlace completo a quien te lo envió o empieza con uno de los decks listos.",
+    broken: "La página no se cargó por completo.", brokenHelp: "Recarga para intentarlo de nuevo o empieza con uno de los decks listos.",
     browse: "Ver la galería", shared: "Perfil compartido" },
 };
 
 const data = location.hash.slice(1);
-const decoded = data ? DDShare.decode(data) : Promise.reject(new Error("empty"));
+// Sem share.js não dá para ler o perfil; sem # não há perfil; o resto é link incompleto ou corrompido.
+const DD = window.DDShare;
+const why = !DD ? "broken" : !data ? "empty" : "bad";
+const decoded = DD && data ? DD.decode(data) : Promise.reject(new Error(why));
 decoded.catch(() => {});
 
 function draw(lang) {
   const t = T[lang];
   DDLang.apply(lang);
   document.querySelectorAll("[data-t]").forEach(el => { if (t[el.dataset.t]) el.textContent = t[el.dataset.t]; });
-  if (!DDShare.supported) document.getElementById("bad-msg").textContent = DDShare.STR[lang].unsupported;
+  document.getElementById("bad-msg").textContent = t[why];
+  document.getElementById("bad-msg").classList.toggle("error", why !== "empty");
+  document.getElementById("bad-help").textContent = t[why + "Help"];
+  if (DD && data && !DD.supported) document.getElementById("bad-msg").textContent = DD.STR[lang].unsupported;
   decoded.then(profile => {
     const name = profile.name || t.shared;
     document.getElementById("name").textContent = name;
     document.title = `${name} — DroidDeck`;
-    DDShare.render(profile, document.getElementById("deck"));
-    DDShare.mountActions(document.getElementById("act"), {
+    DD.render(profile, document.getElementById("deck"));
+    DD.mountActions(document.getElementById("act"), {
       lang, title: document.title, data, shareHref: () => location.href, phoneNote: true,
     });
   }, () => {

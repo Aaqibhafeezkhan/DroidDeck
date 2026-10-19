@@ -52,7 +52,7 @@ body{background:var(--bg);color:var(--fg);font:16px/1.6 Inter,system-ui,sans-ser
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;border:3px solid var(--bg)}
 a{color:inherit;text-decoration:none;text-underline-offset:.22em;text-decoration-thickness:1px}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
-h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
+h1,h2,h3{font-family:"Space Grotesk",Inter,system-ui,sans-serif;line-height:1.1;letter-spacing:-.02em;text-wrap:balance}
 p{text-wrap:pretty}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
 .sprite{position:absolute;width:0;height:0}
@@ -69,15 +69,16 @@ p{text-wrap:pretty}
 header{position:sticky;top:0;z-index:20;background:rgba(13,13,15,.86);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
 header.scrolled{border-color:var(--line)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
-.brand{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk";font-weight:700;font-size:20px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;font-size:20px}
 .brand img{width:30px;height:30px}
 .nav-links{display:flex;align-items:center;gap:26px;font-size:15px;color:var(--muted)}
 .nav-links a:hover{color:var(--fg)}
 .lang{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.lang button{background:none;border:0;color:var(--muted);font:600 13px Inter;padding:6px 10px;cursor:pointer;min-height:32px}
+.lang button{background:none;border:0;color:var(--muted);font:600 13px Inter,system-ui,sans-serif;padding:6px 10px;cursor:pointer;min-height:32px}
 .lang button:hover{color:var(--fg)}
 .lang button[aria-pressed=true]{background:var(--amber);color:#111}
 @media (max-width:860px){.nav-links .hide-sm{display:none}.nav-links{gap:14px}}
+@media (max-width:600px){.lang button{min-height:44px;min-width:40px}}
 @media (max-width:440px){.nav-links [data-docs]{display:none}.lang button{padding:6px 8px}}
 
 /* homônimo: discreto, logo abaixo do menu */
@@ -97,6 +98,11 @@ header.scrolled{border-color:var(--line)}
 .free{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:14px;font-weight:500;color:var(--fg)}
 .free svg{width:16px;height:16px;color:var(--amber);flex:none}
 .meta{margin-top:10px;font-size:14px;color:var(--muted);max-width:520px}
+.meta a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--line2)}
+.cta-status{margin-top:12px;font-size:14px;color:var(--fg);max-width:520px}
+.cta-status:empty{display:none}
+.cta-status a{color:var(--amber);font-weight:600;text-decoration:underline;text-decoration-color:transparent}
+.cta-status a:hover{text-decoration-color:currentColor}
 @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:48px}.hero{padding-top:28px}}
 
 /* celular de exemplo: 3 × 5, enche a tela */
@@ -119,9 +125,10 @@ header.scrolled{border-color:var(--line)}
 .phone-nav{display:flex;justify-content:space-around;font-size:12px;color:var(--muted);padding-top:10px;border-top:1px solid #1f1f23;margin-top:10px}
 .phone-nav b{color:var(--amber);font-weight:600}
 .mock figcaption{text-align:center;font-size:14px;color:var(--muted);margin-top:14px}
-/* o momento: o deck "liga" em diagonal quando a página abre */
+/* o momento: o deck "liga" em diagonal quando aparece na tela (pausado até entrar na vista) */
 @media (prefers-reduced-motion:no-preference){
-  .js .mk{animation:boot .9s var(--ease) both;animation-delay:calc(var(--i)*55ms + 150ms)}
+  .js .mk{animation:boot .9s var(--ease) both;animation-delay:calc(var(--i)*55ms + 150ms);animation-play-state:paused}
+  .js .deck.on .mk{animation-play-state:running}
   @keyframes boot{from{filter:brightness(.35) saturate(.3);transform:scale(.94)}to{filter:none;transform:none}}
 }
 
@@ -164,7 +171,7 @@ section{padding:96px 0}
 /* passos */
 .steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;counter-reset:s}
 .steps li{padding-top:20px;border-top:1px solid var(--line2)}
-.steps li::before{counter-increment:s;content:counter(s);font-family:"Space Grotesk";font-weight:700;font-size:15px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--amber);color:#111;margin-bottom:16px}
+.steps li::before{counter-increment:s;content:counter(s);font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;font-size:15px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--amber);color:#111;margin-bottom:16px}
 .steps h3{font-size:20px;margin-bottom:8px}
 .steps p{color:var(--muted);font-size:15px}
 .steps b{color:var(--fg);font-weight:600}
@@ -197,14 +204,25 @@ section{padding:96px 0}
 .ver{font-size:14px;color:var(--muted);margin-bottom:30px;min-height:1.6em}
 .ver a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--line2)}
 .final .cta{justify-content:center}
-.dl{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,330px));gap:16px;justify-content:center;margin-bottom:22px;text-align:left}
-.dl a{display:flex;gap:14px;align-items:center;padding:18px 20px;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);transition:border-color .2s}
+.dl{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,360px));gap:20px;justify-content:center;margin-bottom:26px;text-align:left}
+.dl a{display:flex;gap:14px;align-items:center;min-height:76px;padding:16px 20px;border-radius:var(--radius);border:1px solid var(--line2);background:var(--card);transition:border-color .2s,background-color .15s}
 .dl a:hover{border-color:var(--amber)}
 .dl svg{width:30px;height:30px;color:var(--amber);flex:none}
-.dl a b{display:block}.dl small{color:var(--muted)}
+.dl a b{display:block;font-size:17px}.dl small{color:var(--muted);font-size:14px}
+.dl .dl-main{background:var(--amber);border-color:var(--amber);color:#111}
+.dl .dl-main:hover{background:var(--amber-hi);border-color:var(--amber-hi)}
+.dl .dl-main svg{color:#111}
+.dl .dl-main small{color:#111;opacity:.78}
+.dl .dl-main:focus-visible{outline-color:var(--fg)}
 .dl-note b{color:var(--fg);font-weight:600}
 .dl-note{font-size:14px;color:var(--muted);padding:10px 4px 0}
+.dl-note strong{color:var(--fg);font-weight:600}
+.dl-next{max-width:620px;margin:0 auto 22px;padding:12px 16px;border:1px solid var(--line2);border-radius:12px;background:var(--card);font-size:15px;color:var(--fg)}
+.dl-next b{color:var(--amber);font-weight:600}
 .ios{font-size:15px;color:var(--muted);max-width:620px;margin:0 auto 30px}
+.gh{margin-top:18px;font-size:14px}
+.gh .link{color:var(--muted)}
+.gh .link:hover{color:var(--fg)}
 @media (max-width:700px){.dl{grid-template-columns:1fr}}
 
 footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:14px}
@@ -265,10 +283,11 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-s
         <h1 data-i18n-html="hero.title">Your phone is now a <em>Stream Deck</em>.</h1>
         <p class="lead" data-i18n="hero.lead">DroidDeck turns the Android phone in your drawer into a control panel for your PC: shortcuts, audio, media, live stats, Discord, OBS, soundboard and smart lights, one tap away.</p>
         <div class="cta">
-          <a class="btn btn-primary" id="cta-main" href="#download"><svg aria-hidden="true"><use id="cta-icon" href="#i-win"/></svg><span id="cta-label" data-i18n="cta.win">Download for Windows</span></a>
+          <a class="btn btn-primary" id="cta-main" href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe"><svg aria-hidden="true"><use id="cta-icon" href="#i-win"/></svg><span id="cta-label" data-i18n="cta.win">Download for Windows</span></a>
           <a class="btn btn-ghost" href="docs/" data-docs><svg aria-hidden="true"><use href="#i-book"/></svg><span data-i18n="cta.docs">Read the docs</span></a>
         </div>
-        <p class="free"><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="hero.free">Free · Apache 2.0 · no account</span></p>
+        <p class="cta-status" id="cta-status" role="status"></p>
+        <p class="free"><svg aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="hero.free">Free and open source · no account</span></p>
         <p class="meta" id="device-note" data-i18n="note.desktop">Needs Windows 10 or 11 on the PC, and an Android 7+ phone or an iPhone/iPad browser.</p>
       </div>
 
@@ -336,7 +355,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-s
             <div><dt data-i18n="w3.t">Profiles &amp; folders</dt><dd data-i18n="w3.d">Swipe between pages, nest folders and edit everything by drag and drop on the PC.</dd></div>
             <div><dt data-i18n="w4.t">Automations</dt><dd data-i18n="w4.d">Buttons that press themselves: at a set time, when an app opens or closes, when the PC wakes up.</dd></div>
             <div><dt data-i18n="w5.t">Stream Deck import</dt><dd data-i18n="w5.d">Bring your Elgato Stream Deck profiles over, images and folders included.</dd></div>
-            <div><dt data-i18n="w6.t">Share by link</dt><dd data-i18n="w6.d">Send a profile as a link or QR code; others import it with one click.</dd></div>
+            <div><dt data-i18n="w6.t">Share by link</dt><dd data-i18n="w6.d">Send a profile as a link or QR code; whoever opens it on their PC can import it as a new profile.</dd></div>
           </dl>
         </div>
       </div>
@@ -347,7 +366,7 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-s
     <div class="wrap">
       <div class="sec-head">
         <h2 data-i18n="gal.title">Start from a ready-made deck.</h2>
-        <p data-i18n="gal.lead">Pick one for streaming, meetings or music, bring it into DroidDeck with one click and make it yours.</p>
+        <p data-i18n="gal.lead">Pick one for streaming, meetings or music, import it into DroidDeck on your PC as a new profile and make it yours.</p>
       </div>
       <div class="decks" id="decks"></div>
       <div class="gal-more"><a class="btn btn-ghost" href="gallery/"><span data-i18n="gal.all">Browse all ready-made decks</span></a></div>
@@ -360,9 +379,9 @@ footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-s
         <h2 data-i18n="how.title">Up and running in three minutes.</h2>
       </div>
       <ol class="steps">
-        <li><h3 data-i18n="s1.t">Run it on the PC</h3><p data-i18n-html="s1.d">Run <code>DroidDeck-Setup.exe</code>. It sits quietly in the system tray and updates itself. Nothing else to install.</p></li>
-        <li><h3 data-i18n="s2.t">Pair the phone</h3><p data-i18n-html="s2.d">Install the app, then right-click the tray icon → <b>Pair device</b> and scan the QR code. It reconnects by itself from then on.</p></li>
-        <li><h3 data-i18n="s3.t">Build your deck</h3><p data-i18n-html="s3.d">Right-click the tray icon → <b>Open in browser</b>, drag buttons around and pick actions. Changes reach the phone instantly.</p></li>
+        <li><h3 data-i18n="s1.t">Run it on the PC</h3><p data-i18n-html="s1.d">Run <code>DroidDeck-Setup.exe</code>. It waits quietly as the DroidDeck icon near the clock and updates itself. Nothing else to install.</p></li>
+        <li><h3 data-i18n="s2.t">Pair the phone</h3><p data-i18n-html="s2.d">Install the app, then right-click the DroidDeck icon near the clock → <b>Pair device</b> and scan the QR code. It reconnects by itself from then on.</p></li>
+        <li><h3 data-i18n="s3.t">Build your deck</h3><p data-i18n-html="s3.d">Right-click the DroidDeck icon near the clock → <b>Open in browser</b>, drag buttons around and pick actions. Changes reach the phone instantly.</p></li>
       </ol>
     </div>
   </section>
@@ -409,21 +428,22 @@ curl -X POST http://pc:4787/api/StreamDeck/execute \
       <h2 data-i18n="dl.title">Give that old phone a new job.</h2>
       <p class="sub" data-i18n="dl.lead">Free and open source. You need both parts: the Windows app runs the actions, the phone app is the buttons.</p>
       <p class="ver" id="ver"></p>
+      <p class="dl-next" id="dl-next" role="status" hidden><span data-i18n-html="dl.next"><b>Your download has started.</b> Next: install the Android app on your phone (step 2), or open the deck in your iPhone's browser.</span></p>
       <ul class="dl">
         <li>
-          <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe"><svg aria-hidden="true"><use href="#i-win"/></svg><span><b data-i18n="dl.win">1. Windows app</b><small>DroidDeck-Setup.exe</small></span></a>
-          <p class="dl-note" data-i18n-html="dl.win.note">Windows may say “Windows protected your PC” because the installer isn't code-signed yet. Click <b>More info → Run anyway</b>.</p>
+          <a class="dl-main" id="dl-win" href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck-Setup.exe" aria-describedby="dl-win-note"><svg aria-hidden="true"><use href="#i-win"/></svg><span><b data-i18n="dl.win">1. Windows app</b><small id="dl-win-file">DroidDeck-Setup.exe</small></span></a>
+          <p class="dl-note" id="dl-win-note" data-i18n-html="dl.win.note"><strong>Safe to run: the installer just isn't signed yet.</strong> If Windows says “Windows protected your PC”, click <b>More info → Run anyway</b>.</p>
         </li>
         <li>
-          <a href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk"><svg aria-hidden="true"><use href="#i-android"/></svg><span><b data-i18n="dl.android">2. Android app</b><small>DroidDeck.apk</small></span></a>
-          <p class="dl-note" data-i18n="dl.android.note">The first time, Android asks you to allow installs from your browser. Allow it, then open the file.</p>
+          <a id="dl-apk" href="https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk" aria-describedby="dl-apk-note"><svg aria-hidden="true"><use href="#i-android"/></svg><span><b data-i18n="dl.android">2. Android app</b><small id="dl-apk-file">DroidDeck.apk</small></span></a>
+          <p class="dl-note" id="dl-apk-note" data-i18n-html="dl.android.note"><strong>Safe to install: it just doesn't come from the Play Store.</strong> The first time, Android asks you to allow installs from your browser (“install unknown apps”). Allow it, then open the file.</p>
         </li>
       </ul>
       <p class="ios"><span data-i18n="dl.ios">iPhone or iPad? There's no app to install: with DroidDeck running on the PC, the deck opens in Safari.</span> <a class="link" href="docs/getting-started/browser-usb/" data-docs data-i18n="dl.ios.link">How it works</a></p>
       <div class="cta">
         <a class="btn btn-ghost" href="docs/getting-started/installation/" data-docs><svg aria-hidden="true"><use href="#i-book"/></svg><span data-i18n="dl.guide">Installation guide</span></a>
-        <a class="btn btn-ghost" href="https://github.com/ggfto/DroidDeck"><svg aria-hidden="true"><use href="#i-gh"/></svg><span data-i18n="dl.gh">Star on GitHub</span></a>
       </div>
+      <p class="gh"><a class="link" href="https://github.com/ggfto/DroidDeck" data-i18n="dl.gh">Like it? Star DroidDeck on GitHub</a></p>
     </div>
   </section>
 </main>
@@ -447,21 +467,25 @@ curl -X POST http://pc:4787/api/StreamDeck/execute \
 <script>
 // Textos que não estão na página no carregamento (variam por aparelho ou chegam depois).
 const EN_EXTRA = {
-  "cta.android":"Get the Android app","cta.ios":"Set it up on your PC",
+  "cta.android":"Get the Android app","cta.ios":"Send to my PC",
   "note.android":"Android will ask to allow installs from your browser. You'll also need the free Windows app on your PC.",
-  "note.ios":"On iPhone and iPad there's nothing to install: once DroidDeck runs on your Windows PC, the deck opens in Safari.",
-  "ver":"Version {v}, released {d}.","ver.link":"What's new","use":"Use this deck"
+  "note.ios":"Nothing to install on the iPhone or iPad. Install DroidDeck on your Windows PC, choose Open in browser in its pairing window and scan the QR code with your camera: the deck opens in Safari.",
+  "ios.copied":"Link copied. Open it on your PC to download DroidDeck.",
+  "ios.copyFail":"Couldn't copy. On your PC, open me.gf2.in/DroidDeck to download.",
+  "ver":"Version {v}, released {d}.","ver.link":"What's new","use":"See this deck","nodd":"Don't have DroidDeck yet?"
 };
 const PT = {
   "nav.features":"Recursos","nav.gallery":"Galeria","nav.docs":"Documentação",
   "namesake":"Não é o DroidDeck que roda jogos da Steam no Android: aquele é <a href=\"https://github.com/Droid-Deck/DroidDeck\">outro projeto, com o mesmo nome</a>. Este aqui controla o seu PC com Windows.",
   "hero.title":"Seu celular agora é um <em>Stream Deck</em>.",
   "hero.lead":"O DroidDeck transforma aquele Android parado na gaveta num painel de controle para o PC: atalhos, áudio, mídia, monitores ao vivo, Discord, OBS, soundboard e lâmpadas inteligentes, a um toque.",
-  "cta.win":"Baixar para Windows","cta.android":"Baixar o app Android","cta.ios":"Instale no seu PC","cta.docs":"Ler a documentação",
-  "hero.free":"Grátis · Apache 2.0 · sem conta",
+  "cta.win":"Baixar para Windows","cta.android":"Baixar o app Android","cta.ios":"Mandar para o meu PC","cta.docs":"Ler a documentação",
+  "hero.free":"Grátis e de código aberto · sem conta",
   "note.desktop":"Precisa de Windows 10 ou 11 no PC, e de um celular Android 7+ ou do navegador de um iPhone/iPad.",
   "note.android":"O Android vai pedir para liberar instalações pelo navegador. Você também precisa do app grátis para Windows no PC.",
-  "note.ios":"No iPhone e no iPad não tem nada para instalar: com o DroidDeck rodando no seu PC com Windows, o deck abre no Safari.",
+  "note.ios":"No iPhone e no iPad não tem nada para instalar. Instale o DroidDeck no seu PC com Windows, escolha Abrir no navegador na janela de pareamento e escaneie o QR code com a câmera: o deck abre no Safari.",
+  "ios.copied":"Link copiado. Abra no seu PC para baixar o DroidDeck.",
+  "ios.copyFail":"Não deu para copiar. No seu PC, abra me.gf2.in/DroidDeck para baixar.",
   "mock.connected":"Conectado","mock.profile":"Live","mock.mute":"Mutar","mock.rec":"Gravar","mock.scene":"Cena jogo","mock.sound":"Buzina","mock.lamp":"Luminária","mock.deaf":"Ensurdecer","mock.lock":"Travar PC","mock.clip":"Salvar clipe","mock.next":"Próxima","mock.audio":"Áudio",
   "mock.cpu":"Uso da CPU","mock.gpu":"Uso da GPU","mock.net":"Tráfego de rede","mock.cap":"Deck de exemplo. Pode apertar os botões.",
   "feat.title":"Tudo o que um deck faz. No aparelho que você já tem.",
@@ -481,12 +505,12 @@ const PT = {
   "w3.t":"Perfis e pastas","w3.d":"Deslize entre páginas, crie pastas e edite tudo arrastando e soltando no PC.",
   "w4.t":"Automações","w4.d":"Botões que se apertam sozinhos: num horário, quando um app abre ou fecha, quando o PC acorda.",
   "w5.t":"Importar do Stream Deck","w5.d":"Traga seus perfis do Elgato Stream Deck, com imagens e pastas.",
-  "w6.t":"Compartilhar por link","w6.d":"Mande um perfil por link ou QR code; quem recebe importa com um clique.",
-  "gal.title":"Comece por um deck pronto.","gal.lead":"Escolha um para live, reuniões ou música, traga para o DroidDeck com um clique e deixe com a sua cara.","gal.all":"Ver todos os decks prontos","use":"Usar este deck",
+  "w6.t":"Compartilhar por link","w6.d":"Mande um perfil por link ou QR code; quem abrir no PC pode importar como um perfil novo.",
+  "gal.title":"Comece por um deck pronto.","gal.lead":"Escolha um para live, reuniões ou música, importe no DroidDeck do seu PC como um perfil novo e deixe com a sua cara.","gal.all":"Ver todos os decks prontos","use":"Ver este deck","nodd":"Ainda não tem o DroidDeck?",
   "how.title":"Funcionando em três minutos.",
-  "s1.t":"Rode no PC","s1.d":"Rode o <code>DroidDeck-Setup.exe</code>. Ele fica quietinho na bandeja do sistema e se atualiza sozinho. Nada mais para instalar.",
-  "s2.t":"Pareie o celular","s2.d":"Instale o app, clique com o botão direito no ícone da bandeja → <b>Parear dispositivo</b> e escaneie o QR code. Daí em diante ele reconecta sozinho.",
-  "s3.t":"Monte seu deck","s3.d":"Clique com o botão direito no ícone da bandeja → <b>Abrir no navegador</b>, arraste os botões e escolha as ações. As mudanças chegam ao celular na hora.",
+  "s1.t":"Rode no PC","s1.d":"Rode o <code>DroidDeck-Setup.exe</code>. Ele fica quietinho como o ícone do DroidDeck perto do relógio e se atualiza sozinho. Nada mais para instalar.",
+  "s2.t":"Pareie o celular","s2.d":"Instale o app, clique com o botão direito no ícone do DroidDeck perto do relógio → <b>Parear dispositivo</b> e escaneie o QR code. Daí em diante ele reconecta sozinho.",
+  "s3.t":"Monte seu deck","s3.d":"Clique com o botão direito no ícone do DroidDeck perto do relógio → <b>Abrir no navegador</b>, arraste os botões e escolha as ações. As mudanças chegam ao celular na hora.",
   "int.title":"Combina com o seu setup.","int.lead":"Integrações nativas, sem caçar plugin.",
   "int.tuya":"Nova Digital, Positivo, RSmart e outras marcas do app Smart Life","int.myi":"Biblioteca de sons","int.win":"Áudio e mídia do Windows",
   "c1":"<b>Local.</b> Celular e PC conversam direto pela sua própria rede. Sem conta para criar.",
@@ -494,12 +518,13 @@ const PT = {
   "c3":"<b>Leve no PC.</b> As estatísticas só são coletadas enquanto há um celular conectado.",
   "c4":"<b>Programável.</b> Uma API local documentada deixa seus scripts apertarem botões, ou você pode criar seu próprio cliente.",
   "api.sum":"Para desenvolvedores: aperte um botão por script","api.d":"Qualquer ação pode ser enviada pela linha de comando com a sua chave de pareamento.","api.ref":"Referência da API",
-  "dl.title":"Dê um novo emprego àquele celular antigo.","dl.lead":"Grátis e open source. Você precisa das duas partes: o app do Windows executa as ações, o do celular são os botões.",
+  "dl.title":"Dê um novo emprego àquele celular antigo.","dl.lead":"Grátis e de código aberto. Você precisa das duas partes: o app do Windows executa as ações, o do celular são os botões.",
   "dl.win":"1. App para Windows","dl.android":"2. App para Android",
-  "dl.win.note":"O Windows pode dizer “O Windows protegeu o computador” porque o instalador ainda não tem assinatura digital. Clique em <b>Mais informações → Executar assim mesmo</b>.",
-  "dl.android.note":"Na primeira vez, o Android pede para liberar instalações pelo navegador. Libere e abra o arquivo.",
+  "dl.next":"<b>Seu download começou.</b> Próximo passo: instale o app Android no celular (passo 2) ou abra o deck no navegador do iPhone.",
+  "dl.win.note":"<strong>Pode rodar sem medo: o instalador só ainda não tem assinatura digital.</strong> Se o Windows disser “O Windows protegeu o computador”, clique em <b>Mais informações → Executar assim mesmo</b>.",
+  "dl.android.note":"<strong>Pode instalar sem medo: ele só não vem da Play Store.</strong> Na primeira vez, o Android pede para liberar instalações pelo navegador (“instalar apps desconhecidos”). Libere e abra o arquivo.",
   "dl.ios":"iPhone ou iPad? Não tem app para instalar: com o DroidDeck rodando no PC, o deck abre no Safari.","dl.ios.link":"Como funciona",
-  "dl.guide":"Guia de instalação","dl.gh":"Estrela no GitHub",
+  "dl.guide":"Guia de instalação","dl.gh":"Curtiu? Dê uma estrela no GitHub",
   "ver":"Versão {v}, lançada em {d}.","ver.link":"Novidades",
   "foot.made":"Feito no Brasil","foot.gallery":"Galeria de perfis","foot.releases":"Versões","foot.changes":"Novidades","foot.issues":"Reportar um problema"
 };
@@ -508,11 +533,13 @@ const ES = {
   "namesake":"No es el DroidDeck que ejecuta juegos de Steam en Android: ese es <a href=\"https://github.com/Droid-Deck/DroidDeck\">otro proyecto con el mismo nombre</a>. Este controla tu PC con Windows.",
   "hero.title":"Tu teléfono ahora es un <em>Stream Deck</em>.",
   "hero.lead":"DroidDeck convierte ese teléfono Android guardado en un panel de control para tu PC: atajos, audio, multimedia, monitores en tiempo real, Discord, OBS, caja de sonidos y luces inteligentes, todo a un toque.",
-  "cta.win":"Descargar para Windows","cta.android":"Descargar la app Android","cta.ios":"Instálalo en tu PC","cta.docs":"Documentación (en inglés)",
-  "hero.free":"Gratis · Apache 2.0 · sin cuenta",
+  "cta.win":"Descargar para Windows","cta.android":"Descargar la app Android","cta.ios":"Enviar a mi PC","cta.docs":"Documentación (en inglés)",
+  "hero.free":"Gratis y de código abierto · sin cuenta",
   "note.desktop":"Necesitas Windows 10 u 11 en el PC, y un teléfono Android 7+ o el navegador de un iPhone/iPad.",
   "note.android":"Android te pedirá permitir instalaciones desde el navegador. También necesitas la app gratuita de Windows en tu PC.",
-  "note.ios":"En iPhone y iPad no hay nada que instalar: cuando DroidDeck está en tu PC con Windows, el deck se abre en Safari.",
+  "note.ios":"En iPhone y iPad no hay nada que instalar. Instala DroidDeck en tu PC con Windows, elige Abrir en el navegador en su ventana de vinculación y escanea el código QR con la cámara: el deck se abre en Safari.",
+  "ios.copied":"Enlace copiado. Ábrelo en tu PC para descargar DroidDeck.",
+  "ios.copyFail":"No se pudo copiar. En tu PC, abre me.gf2.in/DroidDeck para descargarlo.",
   "mock.connected":"Conectado","mock.profile":"Directo","mock.mute":"Silenciar","mock.rec":"Grabar","mock.scene":"Escena de juego","mock.sound":"Bocina","mock.lamp":"Lámpara","mock.deaf":"Ensordecer","mock.lock":"Bloquear PC","mock.clip":"Guardar clip","mock.next":"Siguiente","mock.audio":"Audio",
   "mock.cpu":"Uso de CPU","mock.gpu":"Uso de GPU","mock.net":"Tráfico de red","mock.cap":"Deck de ejemplo. Adelante, toca los botones.",
   "feat.title":"Todo lo que debe hacer un deck. En el hardware que ya tienes.",
@@ -532,12 +559,12 @@ const ES = {
   "w3.t":"Perfiles y carpetas","w3.d":"Desliza entre páginas, anida carpetas y edítalo todo arrastrando y soltando en el PC.",
   "w4.t":"Automatizaciones","w4.d":"Botones que se pulsan solos: a una hora, cuando una app se abre o se cierra, cuando el PC despierta.",
   "w5.t":"Importar desde Stream Deck","w5.d":"Trae tus perfiles de Elgato Stream Deck, con imágenes y carpetas.",
-  "w6.t":"Compartir por enlace","w6.d":"Envía un perfil como enlace o código QR; quien lo recibe lo importa con un clic.",
-  "gal.title":"Empieza con un deck listo.","gal.lead":"Elige uno para directos, reuniones o música, tráelo a DroidDeck con un clic y hazlo tuyo.","gal.all":"Ver todos los decks listos","use":"Usar este deck",
+  "w6.t":"Compartir por enlace","w6.d":"Envía un perfil como enlace o código QR; quien lo abra en su PC puede importarlo como un perfil nuevo.",
+  "gal.title":"Empieza con un deck listo.","gal.lead":"Elige uno para directos, reuniones o música, impórtalo en DroidDeck de tu PC como un perfil nuevo y hazlo tuyo.","gal.all":"Ver todos los decks listos","use":"Ver este deck","nodd":"¿Todavía no tienes DroidDeck?",
   "how.title":"Listo en tres minutos.",
-  "s1.t":"Ejecútalo en el PC","s1.d":"Ejecuta <code>DroidDeck-Setup.exe</code>. Se queda discretamente en la bandeja del sistema y se actualiza solo. Nada más que instalar.",
-  "s2.t":"Vincula el teléfono","s2.d":"Instala la app, haz clic derecho en el icono de la bandeja → <b>Vincular dispositivo</b> y escanea el código QR. A partir de ahí se reconecta solo.",
-  "s3.t":"Crea tu deck","s3.d":"Haz clic derecho en el icono de la bandeja → <b>Abrir en el navegador</b>, arrastra los botones y elige las acciones. Los cambios llegan al teléfono al instante.",
+  "s1.t":"Ejecútalo en el PC","s1.d":"Ejecuta <code>DroidDeck-Setup.exe</code>. Se queda discretamente como el icono de DroidDeck junto al reloj y se actualiza solo. Nada más que instalar.",
+  "s2.t":"Vincula el teléfono","s2.d":"Instala la app, haz clic derecho en el icono de DroidDeck junto al reloj → <b>Vincular dispositivo</b> y escanea el código QR. A partir de ahí se reconecta solo.",
+  "s3.t":"Crea tu deck","s3.d":"Haz clic derecho en el icono de DroidDeck junto al reloj → <b>Abrir en el navegador</b>, arrastra los botones y elige las acciones. Los cambios llegan al teléfono al instante.",
   "int.title":"Encaja con tu configuración.","int.lead":"Integraciones nativas, sin buscar plugins.",
   "int.tuya":"Nova Digital, Positivo, RSmart y otras marcas de la app Smart Life","int.myi":"Biblioteca de sonidos","int.win":"Audio y multimedia de Windows",
   "c1":"<b>Local primero.</b> El teléfono y el PC se comunican directamente por tu propia red. No hace falta crear una cuenta.",
@@ -547,10 +574,11 @@ const ES = {
   "api.sum":"Para desarrolladores: pulsa un botón desde un script","api.d":"Cualquier acción se puede enviar desde la línea de comandos con tu clave de vinculación.","api.ref":"Referencia de la API (en inglés)",
   "dl.title":"Dale un nuevo trabajo a ese teléfono antiguo.","dl.lead":"Gratis y de código abierto. Necesitas las dos partes: la aplicación de Windows ejecuta las acciones y la del teléfono muestra los botones.",
   "dl.win":"1. Aplicación para Windows","dl.android":"2. Aplicación para Android",
-  "dl.win.note":"Windows puede decir “Windows protegió su PC” porque el instalador aún no tiene firma digital. Haz clic en <b>Más información → Ejecutar de todas formas</b>.",
-  "dl.android.note":"La primera vez, Android te pide permitir instalaciones desde el navegador. Permítelo y abre el archivo.",
+  "dl.next":"<b>Tu descarga ha comenzado.</b> Siguiente paso: instala la app Android en tu teléfono (paso 2) o abre el deck en el navegador del iPhone.",
+  "dl.win.note":"<strong>Es seguro ejecutarlo: al instalador solo le falta la firma digital.</strong> Si Windows dice “Windows protegió su PC”, haz clic en <b>Más información → Ejecutar de todas formas</b>.",
+  "dl.android.note":"<strong>Es seguro instalarla: solo que no viene de Play Store.</strong> La primera vez, Android te pide permitir instalaciones desde el navegador (“instalar apps desconocidas”). Permítelo y abre el archivo.",
   "dl.ios":"¿iPhone o iPad? No hay app que instalar: con DroidDeck funcionando en el PC, el deck se abre en Safari.","dl.ios.link":"Cómo funciona (en inglés)",
-  "dl.guide":"Guía de instalación (en inglés)","dl.gh":"Destacar en GitHub",
+  "dl.guide":"Guía de instalación (en inglés)","dl.gh":"¿Te gusta? Dale una estrella en GitHub",
   "ver":"Versión {v}, publicada el {d}.","ver.link":"Novedades",
   "foot.made":"Hecho en Brasil","foot.gallery":"Galería de perfiles","foot.releases":"Versiones","foot.changes":"Novedades","foot.issues":"Informar de un problema"
 };
@@ -570,14 +598,34 @@ const tr = k => (lang === "pt" ? PT : lang === "es" ? ES : EN)[k] ?? EN[k];
 const ua = navigator.userAgent;
 const device = /Android/i.test(ua) ? "android"
   : /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) ? "ios" : "desktop";
+const ctaMain = document.getElementById("cta-main"), ctaStatus = document.getElementById("cta-status");
 if (device !== "desktop") {
-  const main = document.getElementById("cta-main");
   document.getElementById("cta-label").dataset.i18n = device === "android" ? "cta.android" : "cta.ios";
   document.getElementById("device-note").dataset.i18n = device === "android" ? "note.android" : "note.ios";
-  if (device === "android") {
-    main.href = "https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk";
-    document.getElementById("cta-icon").setAttribute("href", "#i-android");
-  }
+}
+if (device === "android") {
+  ctaMain.href = "https://github.com/ggfto/DroidDeck/releases/latest/download/DroidDeck.apk";
+  document.getElementById("cta-icon").setAttribute("href", "#i-android");
+} else if (device === "ios") {
+  // No iPhone/iPad não há nada para baixar: o botão manda o link dos downloads para o PC
+  // (mesmo padrão do "Mandar para o meu PC" da galeria, em share/share.js).
+  ctaMain.href = "#download";
+  document.getElementById("cta-icon").setAttribute("href", "#i-win");
+  ctaMain.addEventListener("click", async e => {
+    e.preventDefault();
+    const url = new URL("#download", location.href.split("#")[0]).href;
+    if (navigator.share) {
+      try { await navigator.share({ title: document.title, url }); return; } catch (err) { if (err && err.name === "AbortError") return; }
+    }
+    try { await navigator.clipboard.writeText(url); ctaStatus.textContent = tr("ios.copied"); }
+    catch (err) { ctaStatus.textContent = tr("ios.copyFail"); }
+  });
+} else {
+  // No PC o botão já baixa o instalador; depois a página desce até os avisos e mostra o próximo passo.
+  ctaMain.addEventListener("click", () => {
+    document.getElementById("dl-next").hidden = false;
+    setTimeout(() => document.getElementById("download").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }), 250);
+  });
 }
 
 // Versão mais recente (GitHub); sem rede, a linha só não aparece.
@@ -591,12 +639,20 @@ function showRelease() {
   a.href = release.url; a.textContent = tr("ver.link");
   ver.append(a);
   document.getElementById("foot-ver").textContent = ` · v${release.v}`;
+  // Tamanho dos arquivos, quando o GitHub informa.
+  const mb = n => new Intl.NumberFormat(document.documentElement.lang, { maximumFractionDigits: 0 }).format(n / 1048576);
+  for (const [id, name] of [["dl-win-file", "DroidDeck-Setup.exe"], ["dl-apk-file", "DroidDeck.apk"]]) {
+    const size = release.sizes[name];
+    document.getElementById(id).textContent = size ? `${name} · ${mb(size)} MB` : name;
+  }
 }
 fetch("https://api.github.com/repos/ggfto/DroidDeck/releases/latest", { headers: { Accept: "application/vnd.github+json" } })
   .then(r => r.ok ? r.json() : Promise.reject(r.status))
   .then(r => {
     if (!r.tag_name || !r.published_at) return;
-    release = { v: r.tag_name.replace(/^v/, ""), date: r.published_at, url: r.html_url || "https://github.com/ggfto/DroidDeck/releases/latest" };
+    const sizes = {};
+    for (const a of r.assets || []) if (a && a.name && a.size) sizes[a.name] = a.size;
+    release = { v: r.tag_name.replace(/^v/, ""), date: r.published_at, url: r.html_url || "https://github.com/ggfto/DroidDeck/releases/latest", sizes };
     showRelease();
   })
   .catch(() => {});
@@ -604,6 +660,7 @@ fetch("https://api.github.com/repos/ggfto/DroidDeck/releases/latest", { headers:
 // Três perfis da galeria, desenhados com o mesmo código da galeria.
 function drawDecks() {
   const box = document.getElementById("decks");
+  if (!window.DDShare || !window.DDProfiles) return; // sem os scripts da galeria, fica só o link "Ver todos"
   box.textContent = "";
   for (const { key, desc, profile } of DDProfiles.build(lang).filter(p => ["streamer", "meetings", "music"].includes(p.key))) {
     const fig = document.createElement("article");
@@ -634,7 +691,14 @@ function setLang(l) {
 setLang(DDLang.pick());
 DDLang.wire(setLang);
 
-// Deck de exemplo
+// Deck de exemplo: a animação de "ligar" só começa quando ele aparece na tela (no celular fica abaixo da dobra).
+const mockDeck = document.querySelector(".phone .deck");
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver(es => {
+    if (es.some(e => e.isIntersecting)) { mockDeck.classList.add("on"); io.disconnect(); }
+  }, { threshold: 0.35 });
+  io.observe(mockDeck);
+} else mockDeck.classList.add("on");
 const icons = { mic:["#i-mic","#i-micoff"], play:["#i-play","#i-pause"] };
 document.querySelectorAll(".mk").forEach(k => k.addEventListener("click", () => {
   k.classList.add("press"); setTimeout(() => k.classList.remove("press"), 120);

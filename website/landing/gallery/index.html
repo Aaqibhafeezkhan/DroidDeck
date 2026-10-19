@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DroidDeck Profile Gallery</title>
-<meta name="description" content="Ready-made DroidDeck profiles for streaming, meetings, music, productivity and gaming. Import into DroidDeck on your PC with one click.">
+<meta name="description" content="Ready-made DroidDeck profiles for streaming, meetings, music, productivity and gaming. Import any of them into DroidDeck on your PC as a new profile.">
 <meta property="og:title" content="DroidDeck Profile Gallery">
-<meta property="og:description" content="Ready-made decks for streaming, meetings, music, productivity and gaming. Import into DroidDeck on your PC with one click.">
+<meta property="og:description" content="Ready-made decks for streaming, meetings, music, productivity and gaming. Import any of them into DroidDeck on your PC as a new profile.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://me.gf2.in/DroidDeck/gallery/">
 <meta property="og:image" content="https://me.gf2.in/DroidDeck/og.png">
@@ -54,19 +54,23 @@ const T = {
   en: { title: "Profile gallery", docs: "Docs",
     lead: "Ready-made decks to start from. Each one comes into DroidDeck on your PC as a new profile, so nothing you built is touched; then adjust names, scenes and shortcuts to your setup.",
     share: "Made a good one? In DroidDeck, open the profile settings → Share, and send the link in Discussions on GitHub.",
-    phone: "On a phone? Importing happens on the Windows PC: “Send to my PC” shares the link so you can open it there." },
+    phone: "On a phone? Importing happens on the Windows PC: “Send to my PC” shares the link so you can open it there.",
+    nodd: "Don't have DroidDeck yet?" },
   pt: { title: "Galeria de perfis", docs: "Documentação",
     lead: "Decks prontos para começar. Cada um entra no DroidDeck do seu PC como um perfil novo, sem mexer no que você já montou; depois ajuste nomes, cenas e atalhos ao seu jeito.",
     share: "Montou um bom? No DroidDeck, abra as opções do perfil → Compartilhar e mande o link nas Discussions do GitHub.",
-    phone: "Está no celular? A importação acontece no PC com Windows: “Mandar para o meu PC” compartilha o link para você abrir lá." },
+    phone: "Está no celular? A importação acontece no PC com Windows: “Mandar para o meu PC” compartilha o link para você abrir lá.",
+    nodd: "Ainda não tem o DroidDeck?" },
   es: { title: "Galería de perfiles", docs: "Documentación (en inglés)",
     lead: "Decks listos para empezar. Cada uno entra en DroidDeck de tu PC como un perfil nuevo, sin tocar lo que ya armaste; luego ajusta nombres, escenas y atajos a tu gusto.",
     share: "¿Armaste uno bueno? En DroidDeck, abre las opciones del perfil → Compartir y envía el enlace en Discussions de GitHub.",
-    phone: "¿Estás en el teléfono? La importación se hace en el PC con Windows: “Enviar a mi PC” comparte el enlace para que lo abras allí." },
+    phone: "¿Estás en el teléfono? La importación se hace en el PC con Windows: “Enviar a mi PC” comparte el enlace para que lo abras allí.",
+    nodd: "¿Todavía no tienes DroidDeck?" },
 };
 
 const cards = document.getElementById("cards");
 function draw(lang) {
+  if (!window.DDShare || !window.DDProfiles) { DDLang.apply(lang); return; }
   const t = T[lang];
   DDLang.apply(lang);
   document.title = `${t.title} — DroidDeck`;
@@ -77,7 +81,8 @@ function draw(lang) {
     const card = document.createElement("article");
     card.className = "card";
     card.id = key;
-    card.innerHTML = `<div class="deck"></div><h2></h2><p></p><div class="act"></div>`;
+    card.innerHTML = `<div class="deck"></div><h2></h2><p></p><div class="act"></div><a class="nodd" href="../#download"></a>`;
+    card.querySelector(".nodd").textContent = t.nodd;
     card.querySelector("h2").textContent = profile.name;
     card.querySelector("p").textContent = desc;
     DDShare.render(profile, card.querySelector(".deck"));
