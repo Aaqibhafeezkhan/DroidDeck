@@ -2,6 +2,7 @@ import 'package:droiddeck/src/stream_deck/widgets/deck_grid_button.dart';
 import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:droiddeck/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:droiddeck/src/stream_deck/actions/action_catalog.dart';
 
 import '../buttons/colors.dart';
 import 'info_deck_button.dart';
@@ -20,28 +21,37 @@ class DynamicDeckButton extends StatelessWidget {
     required this.onLongPress,
   });
 
-
-  /// O que o leitor de tela diz: o rótulo, ou o tipo do botão quando ele não tem rótulo.
-  String _semanticLabel() {
-    final label = button.label?.trim() ?? '';
-    if (label.isNotEmpty) return label;
+  /// O que o leitor de tela diz além do texto que a tecla já mostra (os dois se juntam
+  /// num só anúncio). Tecla com rótulo próprio: nada a mais, senão o nome sai repetido.
+  /// Medidores dizem o que medem; tecla só com ícone diz o tipo de ação.
+  String? _semanticLabel() {
     final type = button.dynamicType;
-    if (type != null && InfoSection.labels[type] != null) return tr(InfoSection.labels[type]!);
-    return switch (type) {
-      'cpu_monitor' => tr('Uso da CPU'),
-      'memory_monitor' => tr('Uso da memória'),
-      'gpu_monitor' => tr('Uso da GPU'),
-      'network_monitor' => tr('Rede'),
-      _ => button.action?.type == 'open_profile' ? tr('Pasta') : tr('Botão'),
-    };
+    if (type != null && type.isNotEmpty && type != 'none') {
+      if (InfoSection.labels[type] != null)
+        return tr(InfoSection.labels[type]!);
+      return switch (type) {
+        'cpu_monitor' => tr('Uso da CPU'),
+        'memory_monitor' => tr('Uso da memória'),
+        'gpu_monitor' => tr('Uso da GPU'),
+        'network_monitor' => tr('Rede'),
+        _ => null,
+      };
+    }
+    if (button.label?.trim().isNotEmpty ?? false) return null;
+    if (button.action?.type == 'open_profile') return tr('Pasta');
+    final schema = ActionCatalog.instance.find(button.action?.type);
+    return schema?.title ?? tr('Botão');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: _semanticLabel(),
-      child: _build(context),
+    // Junta o rótulo daqui com o estado (ligado/desligado) que o visual da tecla informa.
+    return MergeSemantics(
+      child: Semantics(
+        button: true,
+        label: _semanticLabel(),
+        child: _build(context),
+      ),
     );
   }
 
@@ -150,30 +160,30 @@ class DynamicDeckButton extends StatelessWidget {
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.swap_vert, size: 18),
-          Text(
-            '↓ ${_fmtRate(stats.netDown)}',
-            style: const TextStyle(
-              color: Colors.greenAccent,
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.swap_vert, size: 18),
+            Text(
+              '↓ ${_fmtRate(stats.netDown)}',
+              style: const TextStyle(
+                color: Colors.greenAccent,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+              ),
             ),
-          ),
-          Text(
-            '↑ ${_fmtRate(stats.netUp)}',
-            style: const TextStyle(
-              color: Colors.lightBlueAccent,
-              fontWeight: FontWeight.bold,
-              fontSize: 11,
+            Text(
+              '↑ ${_fmtRate(stats.netUp)}',
+              style: const TextStyle(
+                color: Colors.lightBlueAccent,
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+              ),
             ),
-          ),
-          const Opacity(
-            opacity: 0.7,
-            child: Text('NET', style: TextStyle(fontSize: 10)),
-          ),
-        ],
+            const Opacity(
+              opacity: 0.7,
+              child: Text('NET', style: TextStyle(fontSize: 10)),
+            ),
+          ],
         ),
       ),
     );
@@ -210,13 +220,17 @@ class DynamicDeckButton extends StatelessWidget {
             // área não é quadrada (botão grande, celular deitado).
             Center(
               child: SizedBox.square(
-                dimension: ((c.maxWidth < c.maxHeight ? c.maxWidth : c.maxHeight) - 12)
-                    .clamp(0.0, double.infinity),
-                child: CircularProgressIndicator(
-                  value: p,
-                  strokeWidth: small ? 4 : 6,
-                  backgroundColor: fg.withValues(alpha: 0.12),
-                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                dimension:
+                    ((c.maxWidth < c.maxHeight ? c.maxWidth : c.maxHeight) - 12)
+                        .clamp(0.0, double.infinity),
+                // O número já é lido no texto do centro; o anel não repete.
+                child: ExcludeSemantics(
+                  child: CircularProgressIndicator(
+                    value: p,
+                    strokeWidth: small ? 4 : 6,
+                    backgroundColor: fg.withValues(alpha: 0.12),
+                    valueColor: AlwaysStoppedAnimation<Color>(color),
+                  ),
                 ),
               ),
             ),

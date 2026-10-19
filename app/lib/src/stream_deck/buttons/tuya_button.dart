@@ -30,7 +30,10 @@ class TuyaButtonRenderer extends ButtonRenderer {
       return look.tile(active: false, icon: look.icon(), label: look.ownLabel);
     }
     final (deviceId, code) = target;
-    final device = _device(Injector.get<SignalRService>().tuyaState.value, deviceId);
+    final device = _device(
+      Injector.get<SignalRService>().tuyaState.value,
+      deviceId,
+    );
     final status = device?['status'] as Map? ?? const {};
     final functions = device?['functions'] as Map? ?? const {};
 
@@ -41,56 +44,68 @@ class TuyaButtonRenderer extends ButtonRenderer {
 
     // A cor real (RGB) vence a "cor ativa": a sala pintada de roxo aparece roxa. Sobre
     // fundo claro o DeckTile já troca o texto para escuro.
-    return DeckTile(
-      color: look.color,
-      active: on,
-      activeColor: rgb ?? look.activeColor,
-      onTap: look.onTap,
-      onLongPress: look.onLongPress,
-      child: Builder(builder: (context) {
-        final fg = DeckTile.foregroundOf(context);
-        return Stack(
-          children: [
-            // Preenchimento proporcional ao nível, do rodapé para cima. Apagado, some.
-            if (level != null && on)
-              Positioned.fill(
-                child: FractionallySizedBox(
-                  alignment: Alignment.bottomCenter,
-                  heightFactor: level,
-                  child: Container(color: fg.withValues(alpha: 0.18)),
-                ),
-              ),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(tuyaIconFor(device?['category'] as String?, on), size: 24),
-                  if (label != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      label,
-                      textAlign: TextAlign.center,
-                      // Mesmo peso dos rótulos das outras teclas.
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w600, overflow: TextOverflow.ellipsis),
-                      maxLines: 1,
+    // Leitor de tela: luz e tomada dizem se estão ligadas.
+    return Semantics(
+      toggled: on,
+      child: DeckTile(
+        color: look.color,
+        active: on,
+        activeColor: rgb ?? look.activeColor,
+        onTap: look.onTap,
+        onLongPress: look.onLongPress,
+        child: Builder(
+          builder: (context) {
+            final fg = DeckTile.foregroundOf(context);
+            return Stack(
+              children: [
+                // Preenchimento proporcional ao nível, do rodapé para cima. Apagado, some.
+                if (level != null && on)
+                  Positioned.fill(
+                    child: FractionallySizedBox(
+                      alignment: Alignment.bottomCenter,
+                      heightFactor: level,
+                      child: Container(color: fg.withValues(alpha: 0.18)),
                     ),
-                  ],
-                  if (level != null && on)
-                    Text(
-                      '${(level * 100).round()}%',
-                      style: TextStyle(
-                        color: fg.withValues(alpha: 0.85),
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
+                  ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        tuyaIconFor(device?['category'] as String?, on),
+                        size: 24,
                       ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        );
-      }),
+                      if (label != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          // Mesmo peso dos rótulos das outras teclas.
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                      if (level != null && on)
+                        Text(
+                          '${(level * 100).round()}%',
+                          style: TextStyle(
+                            color: fg.withValues(alpha: 0.85),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -102,11 +117,15 @@ class TuyaButtonRenderer extends ButtonRenderer {
     if (target == null || look.op('toggle') != 'toggle') return;
     final (deviceId, code) = target;
     final snapshot = Map<String, dynamic>.from(signalR.tuyaState.value);
-    final devices = List<dynamic>.from(snapshot['devices'] as List? ?? const []);
+    final devices = List<dynamic>.from(
+      snapshot['devices'] as List? ?? const [],
+    );
     final index = devices.indexWhere((d) => (d as Map)['id'] == deviceId);
     if (index < 0) return;
     final device = Map<String, dynamic>.from(devices[index] as Map);
-    final status = Map<String, dynamic>.from(device['status'] as Map? ?? const {});
+    final status = Map<String, dynamic>.from(
+      device['status'] as Map? ?? const {},
+    );
     status[code] = !(status[code] == true);
     device['status'] = status;
     devices[index] = device;

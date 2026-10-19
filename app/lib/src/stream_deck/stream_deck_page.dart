@@ -626,6 +626,9 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                       return _buildButtonGrid(profiles[pageIndex], profiles, g);
                     },
                   ),
+                  // Tela cheia esconde a barra (e o selo). Se a conexão cair, o selo volta
+                  // no canto: o deck não fica mudo apertando botões que não chegam ao PC.
+                  if (widget.isFullscreen) const _FullscreenLinkBadge(),
                   // Acabou de parear e o deck está vazio: diz os dois caminhos para o
                   // primeiro botão em vez de deixar só uma grade de "+".
                   if (error == null &&
@@ -794,6 +797,22 @@ class _EmptyDeckHint extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Selo de conexão na tela cheia, só quando não está conectado.
+class _FullscreenLinkBadge extends StatelessWidget {
+  const _FullscreenLinkBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    final status = Injector.get<SignalRService>().connectionStatus.watch(context);
+    if (status == 'Connected') return const SizedBox.shrink();
+    return const Positioned(
+      top: 8,
+      right: 8,
+      child: ConnectionChip(compact: true),
     );
   }
 }
