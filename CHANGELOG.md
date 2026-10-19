@@ -1,3 +1,38 @@
+# [1.10.0](https://github.com/ggfto/DroidDeck/compare/v1.9.1...v1.10.0) (2026-10-19)
+
+
+### Bug Fixes
+
+* **app:** timer e contador cabem em botao pequeno; atalhos de backup alinhados ([270a5a1](https://github.com/ggfto/DroidDeck/commit/270a5a1e71bf68e55ceeb0396d0587670fb8d402))
+* **deck:** medidores de CPU e GPU sempre circulares; dica de primeiro uso no deck vazio ([0e1e1f2](https://github.com/ggfto/DroidDeck/commit/0e1e1f2d0f460e5dda235ba62f1b564a996a2b7a))
+* **info:** nome da cidade do clima no idioma do Windows em vez de sempre portugues ([9608517](https://github.com/ggfto/DroidDeck/commit/96085178443c7d29acea2dba3f57433fde05292c))
+* **site:** menu e selo do topo cabem em celulares estreitos com os tres idiomas ([152084b](https://github.com/ggfto/DroidDeck/commit/152084b08060b82e57e9a6a18b7a65cb784693ba))
+* **textos:** estados de conexao honestos e mensagens de erro com o que fazer (clarify) ([b4647a6](https://github.com/ggfto/DroidDeck/commit/b4647a6260b427f679c4d782b10241daef56b0c2))
+
+
+### Features
+
+* **acoes:** script do PowerShell, Python ou .bat com argumentos ([470fe1e](https://github.com/ggfto/DroidDeck/commit/470fe1e670e3441dbea4c7ba42db3109bfb152d1))
+* **app:** logo oficial (grade 3x3) no icone do Android, na tela de abertura e nos icones web ([0388f42](https://github.com/ggfto/DroidDeck/commit/0388f42172c9a40c63dd4e48ec409f2d5c729b0a)), closes [#0D0D0F](https://github.com/ggfto/DroidDeck/issues/0D0D0F)
+* **app:** primeiro uso, edicoes seguras, conexao legivel e o amarelo do DroidDeck ([d4d5375](https://github.com/ggfto/DroidDeck/commit/d4d53759572ea6062fa84516befaebfe8210dc1a)), closes [#FDD400](https://github.com/ggfto/DroidDeck/issues/FDD400)
+* **app:** telas do Philips Hue, MQTT, Streamer.bot e VTube Studio e icones das integracoes locais ([8689282](https://github.com/ggfto/DroidDeck/commit/8689282cacc78ad4f91fd0c3d87cfc8296e4bbe5))
+* **automacoes:** gatilhos que apertam um botao sozinhos ([4079f67](https://github.com/ggfto/DroidDeck/commit/4079f67fd4e90ba2fd0bbbcf394dd811cb382e0e))
+* **bandeja:** menu da bandeja e janela de pareamento no idioma do Windows (pt, en, es) ([949e731](https://github.com/ggfto/DroidDeck/commit/949e731b44091de83b5f894a1f4391288b31a7f9))
+* **compartilhar:** perfil por link e QR, e galeria de perfis prontos no site ([b443b20](https://github.com/ggfto/DroidDeck/commit/b443b2046e3f5720da8ffb2887528473c56f560d))
+* **deck:** botoes grandes, controle deslizante de volume e icone em GIF animado ([4c6ec61](https://github.com/ggfto/DroidDeck/commit/4c6ec61c7738a2bc63a00d28e429596d6a74e751))
+* **deck:** cada aparelho com a grade do seu tamanho (adapt) ([88f528c](https://github.com/ggfto/DroidDeck/commit/88f528c622097b8f58195c0793b61d31c1612d40))
+* **i18n:** app e PC em espanhol ([70f09f0](https://github.com/ggfto/DroidDeck/commit/70f09f02faa728caec216463adc976602e14c335))
+* **importar:** perfis do Stream Deck da Elgato (.streamDeckProfile) ([6db2252](https://github.com/ggfto/DroidDeck/commit/6db2252f13566205f4d2fa5cc5c8774f146cc091))
+* **info:** botao com o numero de notificacoes do Windows (todas ou de um app) ([2ee77b1](https://github.com/ggfto/DroidDeck/commit/2ee77b10550c54e075142f0ba0e359ecbc691d84))
+* **integracoes:** Voicemeeter, Elgato Key Light, Philips Hue, Govee, MQTT, Streamer.bot e VTube Studio ([31c099a](https://github.com/ggfto/DroidDeck/commit/31c099ac516f46b7971da9e0c54bd6102d648edd))
+* **multi-acao:** condicoes por passo (so se a live estiver no ar, um app aberto, num horario...) ([f94f5f7](https://github.com/ggfto/DroidDeck/commit/f94f5f7bf8d433499e7b2e12e81d7d09068545e2))
+* **pc:** icone da grade 3x3 na bandeja, nas janelas, no .exe e no instalador ([dd4d758](https://github.com/ggfto/DroidDeck/commit/dd4d758844a3038536bb13b78764162bbb16aa76))
+* **site:** download por aparelho, produto real, galeria na landing e importacao guiada ([7091487](https://github.com/ggfto/DroidDeck/commit/70914878b3f3f9abd3314e09afbb36fcbbb9469c))
+* **site:** onboarding dos downloads (Windows em destaque, iPhone manda o link para o PC, estados do /share/) ([494835c](https://github.com/ggfto/DroidDeck/commit/494835c58afcc4c64af0e59d4ae84bc4c20464ab))
+* **usb:** conexao pelo cabo USB, sem precisar de Wi-Fi ([4cd92f6](https://github.com/ggfto/DroidDeck/commit/4cd92f6a8c2566576adcb0280bed8f8a43de7baf))
+* **web:** deck no navegador para iPhone, iPad e outros aparelhos da rede ([e75169e](https://github.com/ggfto/DroidDeck/commit/e75169e31c73791a552ef32727014c421e221ec8))
+* **website:** add Spanish landing page ([#11](https://github.com/ggfto/DroidDeck/issues/11)) ([cc124e7](https://github.com/ggfto/DroidDeck/commit/cc124e7b1918001199476f3a3a83431904d334b0))
+
 ## [1.9.1](https://github.com/ggfto/DroidDeck/compare/v1.9.0...v1.9.1) (2026-10-16)
 
 
