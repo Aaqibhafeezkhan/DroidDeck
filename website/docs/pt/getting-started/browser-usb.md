@@ -8,7 +8,7 @@ aparelho (iPhone, iPad, outro PC) e pelo **cabo USB** com um celular Android.
 O próprio PC serve o deck, então um iPhone, um iPad, um tablet ou outro computador da mesma rede pode
 usá-lo pelo navegador, sem instalar nada.
 
-1. No PC, clique com o botão direito no ícone da bandeja → **Parear dispositivo (QR)…**.
+1. No PC, clique com o botão direito no ícone da bandeja → **Parear dispositivo (QR)…**: a janela de pareamento abre.
 2. No topo da janela, escolha **Abrir no navegador**. O QR code muda.
 3. Aponte a câmera do aparelho para o código e abra o link.
 

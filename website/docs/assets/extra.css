@@ -285,3 +285,47 @@ html { scrollbar-color: var(--dd-scroll) transparent; }
 /* Callouts nested in a step keep the same measure as top-level ones. */
 .md-typeset li > .admonition,
 .md-typeset li > details { max-width: var(--dd-measure); }
+
+/* ---------- Avisos: uma luz só (DESIGN.md "Luz Única") ----------
+   Antes: azul (note), ciano (info), verde-água (tip), laranja (warning) competindo.
+   Agora: nota, info, dica e exemplo são neutros (borda da linha, ícone apagado; a dica
+   acende só o ícone); atenção leva o amarelo inteiro; perigo/erro ficam no vermelho. */
+:root {
+  --dd-callout-line: #d4d4d8;
+  --dd-callout-tint: rgba(13, 13, 15, 0.04);
+  --dd-callout-icon: #52525b;
+  --dd-callout-amber: #7a6000;              /* ícone e borda da atenção no claro */
+  --dd-callout-amber-tint: rgba(253, 212, 0, 0.16);
+}
+[data-md-color-scheme="slate"] {
+  --dd-callout-line: #3f3f46;
+  --dd-callout-tint: rgba(244, 244, 245, 0.04);
+  --dd-callout-icon: var(--dd-muted);
+  --dd-callout-amber: var(--dd-amber);
+  --dd-callout-amber-tint: rgba(253, 212, 0, 0.10);
+}
+.md-typeset :is(.admonition, details):is(.note, .info, .tip, .example, .abstract, .question) {
+  border-color: var(--dd-callout-line);
+}
+.md-typeset :is(.note, .info, .tip, .example, .abstract, .question) > :is(.admonition-title, summary) {
+  background-color: var(--dd-callout-tint);
+}
+.md-typeset :is(.note, .info, .example, .abstract, .question) > :is(.admonition-title, summary)::before {
+  background-color: var(--dd-callout-icon);
+}
+.md-typeset .tip > :is(.admonition-title, summary)::before {
+  background-color: var(--dd-callout-amber);
+}
+.md-typeset :is(.admonition, details):is(.warning, .attention, .caution) {
+  border-color: var(--dd-callout-amber);
+}
+.md-typeset :is(.warning, .attention, .caution) > :is(.admonition-title, summary) {
+  background-color: var(--dd-callout-amber-tint);
+}
+.md-typeset :is(.warning, .attention, .caution) > :is(.admonition-title, summary)::before {
+  background-color: var(--dd-callout-amber);
+}
+/* A setinha dos recolhíveis segue a cor do ícone, não o azul do Material. */
+.md-typeset :is(.note, .info, .example, .abstract, .question) > summary::after {
+  background-color: var(--dd-callout-icon);
+}
