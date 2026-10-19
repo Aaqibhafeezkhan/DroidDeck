@@ -184,11 +184,12 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-            child: FilledButton.icon(
+            // Criar perfil é secundário aqui (a tarefa é montar botões): contorno, não amarelo.
+            child: OutlinedButton.icon(
               onPressed: _createNewProfile,
               icon: const Icon(Icons.add),
               label: Text(tr('Novo perfil')),
-              style: FilledButton.styleFrom(minimumSize: const Size(double.infinity, 42)),
+              style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, 42)),
             ),
           ),
           Divider(height: 1, color: scheme.outlineVariant),

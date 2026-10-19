@@ -25,7 +25,7 @@
 
   --md-accent-fg-color: #5c4700;                       /* hover: darker ochre, 9:1 on white */
   --md-accent-fg-color--transparent: rgba(253, 212, 0, 0.18);
-  --md-accent-bg-color: var(--dd-ink);
+  --md-accent-bg-color: #ffffff;                      /* texto sobre o ocre no hover/foco: 9:1 */
 
   --md-typeset-a-color: #7a6000;                       /* 6.0:1 on white */
   --dd-focus: #7a6000;
@@ -205,7 +205,8 @@
 .md-typeset .grid.cards > ul > li > p:first-child { font-family: var(--dd-display); font-weight: 700; font-size: 1.05em; }
 .md-typeset .grid.cards .twemoji,
 .md-typeset .grid.cards .twemoji svg { color: var(--dd-amber); }
-[data-md-color-scheme="default"] .md-typeset .grid.cards .twemoji { color: #7a6000; }
+[data-md-color-scheme="default"] .md-typeset .grid.cards .twemoji,
+[data-md-color-scheme="default"] .md-typeset .grid.cards .twemoji svg { color: #7a6000; }
 
 /* ---------- Browser surfaces ---------- */
 ::selection { background-color: var(--dd-selection); color: inherit; }

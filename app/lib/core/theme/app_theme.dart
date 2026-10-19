@@ -190,6 +190,10 @@ ThemeData buildAppTheme(ThemeSettings s, Brightness brightness) {
     deck = DeckTheme.fromScheme(scheme, style: style);
   }
 
+  // Controles com cantos de 12 px (DESIGN.md: "control"), não pílulas.
+  final controlShape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
+  final controlStyle = ButtonStyle(shape: WidgetStatePropertyAll(controlShape));
+
   return ThemeData(
     colorScheme: scheme,
     scaffoldBackgroundColor: scaffold,
@@ -197,6 +201,25 @@ ThemeData buildAppTheme(ThemeSettings s, Brightness brightness) {
       backgroundColor: scaffold,
       surfaceTintColor: Colors.transparent,
     ),
+    filledButtonTheme: FilledButtonThemeData(style: controlStyle),
+    elevatedButtonTheme: ElevatedButtonThemeData(style: controlStyle),
+    outlinedButtonTheme: OutlinedButtonThemeData(style: controlStyle),
+    // Aviso de baixo no escuro do deck: superfície do painel com borda fina, ação no
+    // destaque, flutuando (não cobre a barra nem o botão de tela cheia por inteiro).
+    // O padrão do Material era uma faixa clara, a única luz forte num quarto escuro.
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: dark ? preset.surface : scheme.inverseSurface,
+      contentTextStyle: TextStyle(color: dark ? const Color(0xFFF4F4F5) : scheme.onInverseSurface),
+      actionTextColor: dark ? accent : scheme.inversePrimary,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: dark ? BorderSide(color: preset.outline.withValues(alpha: 0.16)) : BorderSide.none,
+      ),
+      insetPadding: const EdgeInsets.fromLTRB(16, 0, 88, 16),
+    ),
+    // Foco do teclado visível no configurador (o padrão some no quase-preto).
+    focusColor: accent.withValues(alpha: dark ? 0.28 : 0.20),
     extensions: [deck],
   );
 }

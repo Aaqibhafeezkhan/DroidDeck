@@ -647,12 +647,12 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                       left: 16,
                       right: 16,
                       child: Card(
-                        color: Colors.redAccent.withValues(alpha: 0.9),
+                        color: Theme.of(context).colorScheme.errorContainer,
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Row(
                             children: [
-                              const Icon(Icons.wifi_off, color: Colors.white),
+                              Icon(Icons.wifi_off, color: Theme.of(context).colorScheme.onErrorContainer),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
@@ -660,15 +660,15 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
                                       ? tr('PC desconectado. Mostrando o último deck salvo neste aparelho.')
                                       : tr('O PC não respondeu e este aparelho ainda não tem um deck dele salvo. '
                                           'Confira se o DroidDeck está aberto nele e na mesma rede.'),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.refresh,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onErrorContainer,
                                 ),
                                 onPressed: controller.loadProfiles,
                               ),

@@ -70,7 +70,9 @@ class TuyaButtonRenderer extends ButtonRenderer {
                     Text(
                       label,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10, overflow: TextOverflow.ellipsis),
+                      // Mesmo peso dos rótulos das outras teclas.
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w600, overflow: TextOverflow.ellipsis),
                       maxLines: 1,
                     ),
                   ],
