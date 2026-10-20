@@ -38,6 +38,7 @@ class InfoSection extends StatelessWidget {
     'url': 'Valor de uma URL (PC)',
     'volume_slider': 'Controle deslizante (volume, brilho, música)',
     'notifications': 'Notificações do Windows',
+    'ai_usage': 'Uso de IA (Claude, Codex)',
   };
 
   /// Comando e URL rodam no PC: como os atalhos, só mudam no configurador.
@@ -184,6 +185,46 @@ class InfoSection extends StatelessWidget {
           _field('app', tr('Só do app (opcional)'),
               hint: 'Discord',
               help: tr('Parte do nome como aparece nas notificações do Windows. Vazio = todas.')),
+        ];
+      case 'ai_usage':
+        final provider = _p('provider', 'claude');
+        final show = _p('show', 'plan');
+        return [
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: DropdownButtonFormField<String>(
+              key: ValueKey('ai_provider_$provider'),
+              initialValue: provider,
+              decoration: InputDecoration(
+                labelText: tr('Ferramenta'),
+                border: const OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(value: 'claude', child: Text('Claude (Claude Code)')),
+                DropdownMenuItem(value: 'codex', child: Text('Codex (OpenAI)')),
+              ],
+              onChanged: (v) => _set('provider', v ?? 'claude'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: SegmentedButton<String>(
+              segments: [
+                ButtonSegment(value: 'plan', label: Text(tr('Limites do plano'))),
+                ButtonSegment(value: 'tokens', label: Text(tr('Tokens'))),
+              ],
+              selected: {show},
+              onSelectionChanged: (v) => _set('show', v.first),
+            ),
+          ),
+          _note(show == 'plan'
+              ? (provider == 'codex'
+                  ? tr('Quanto já foi usado da janela de 5 horas e da semana, pelo último registro '
+                      'do Codex neste PC. Atualiza quando o Codex roda.')
+                  : tr('Quanto já foi usado da janela de 5 horas e da semana, como no /usage. Usa '
+                      'o login do Claude Code deste PC; nada sai do PC além da consulta à Anthropic.'))
+              : tr('Tokens de hoje e dos últimos 7 dias, somados dos registros que a ferramenta '
+                  'guarda no PC (entrada, saída e cache).')),
         ];
       case 'volume_slider':
         final target = _p('target', 'output');

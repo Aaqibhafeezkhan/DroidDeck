@@ -352,4 +352,30 @@ final Map<String, String> enFeatures = {
       'Empty list. Type the value or reload.',
   'Controle deslizante (volume, brilho, música)':
       'Slider (volume, brightness, music)',
+  'hoje':
+      'today',
+  '7 dias: {n}':
+      '7 days: {n}',
+  '5 horas':
+      '5 hours',
+  'Semana':
+      'Week',
+  'zera {quando}':
+      'resets {quando}',
+  'Sem dados':
+      'No data',
+  'Uso de IA (Claude, Codex)':
+      'AI usage (Claude, Codex)',
+  'Ferramenta':
+      'Tool',
+  'Limites do plano':
+      'Plan limits',
+  'Tokens':
+      'Tokens',
+  'Quanto já foi usado da janela de 5 horas e da semana, pelo último registro do Codex neste PC. Atualiza quando o Codex roda.':
+      'How much of the 5-hour window and the week is used, from Codex\'s latest log on this PC. Updates when Codex runs.',
+  'Quanto já foi usado da janela de 5 horas e da semana, como no /usage. Usa o login do Claude Code deste PC; nada sai do PC além da consulta à Anthropic.':
+      'How much of the 5-hour window and the week is used, like /usage. Uses this PC\'s Claude Code login; nothing leaves the PC except the query to Anthropic.',
+  'Tokens de hoje e dos últimos 7 dias, somados dos registros que a ferramenta guarda no PC (entrada, saída e cache).':
+      'Tokens today and over the last 7 days, added up from the logs the tool keeps on the PC (input, output and cache).',
 };

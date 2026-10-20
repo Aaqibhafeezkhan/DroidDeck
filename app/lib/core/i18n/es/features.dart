@@ -352,4 +352,30 @@ final Map<String, String> esFeatures = {
       'Lista vacía. Escribe el valor o recarga.',
   'Controle deslizante (volume, brilho, música)':
       'Control deslizante (volumen, brillo, música)',
+  'hoje':
+      'hoy',
+  '7 dias: {n}':
+      '7 días: {n}',
+  '5 horas':
+      '5 horas',
+  'Semana':
+      'Semana',
+  'zera {quando}':
+      'se reinicia {quando}',
+  'Sem dados':
+      'Sin datos',
+  'Uso de IA (Claude, Codex)':
+      'Uso de IA (Claude, Codex)',
+  'Ferramenta':
+      'Herramienta',
+  'Limites do plano':
+      'Límites del plan',
+  'Tokens':
+      'Tokens',
+  'Quanto já foi usado da janela de 5 horas e da semana, pelo último registro do Codex neste PC. Atualiza quando o Codex roda.':
+      'Cuánto se usó de la ventana de 5 horas y de la semana, según el último registro de Codex en este PC. Se actualiza cuando Codex se ejecuta.',
+  'Quanto já foi usado da janela de 5 horas e da semana, como no /usage. Usa o login do Claude Code deste PC; nada sai do PC além da consulta à Anthropic.':
+      'Cuánto se usó de la ventana de 5 horas y de la semana, como en /usage. Usa el inicio de sesión de Claude Code de este PC; nada sale del PC salvo la consulta a Anthropic.',
+  'Tokens de hoje e dos últimos 7 dias, somados dos registros que a ferramenta guarda no PC (entrada, saída e cache).':
+      'Tokens de hoy y de los últimos 7 días, sumados de los registros que la herramienta guarda en el PC (entrada, salida y caché).',
 };

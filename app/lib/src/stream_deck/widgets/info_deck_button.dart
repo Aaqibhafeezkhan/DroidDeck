@@ -6,7 +6,15 @@ import 'package:droiddeck/src/services/signalr_service.dart';
 import 'package:flutter/material.dart';
 
 /// Tipos de botão de informação (dynamicType) desenhados por [InfoDeckButton].
-const infoTypes = {'clock', 'weather', 'now_playing', 'command', 'url', 'notifications'};
+const infoTypes = {
+  'clock',
+  'weather',
+  'now_playing',
+  'command',
+  'url',
+  'notifications',
+  'ai_usage',
+};
 
 /// Botão que mostra uma informação ao vivo: relógio, clima, o que está tocando, a saída
 /// de um comando ou um valor de uma URL. O relógio é calculado aqui; o resto vem do PC
@@ -73,11 +81,11 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
   String? get _label =>
       (widget.button.label?.isNotEmpty ?? false) ? widget.button.label : null;
 
-  Widget _small(String text, {double alpha = 0.7}) => Builder(
+  Widget _small(String text, {double alpha = 0.7, int maxLines = 1}) => Builder(
         builder: (context) => Text(
           text,
           textAlign: TextAlign.center,
-          maxLines: 1,
+          maxLines: maxLines,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 10,
@@ -154,6 +162,9 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
         ],
       );
     }
+    if (_type == 'ai_usage' && !error && v['rows'] is List) {
+      return _buildAiUsage((v['rows'] as List).whereType<Map>().toList());
+    }
     if (_type == 'notifications' && !error) {
       final count = int.tryParse(text) ?? 0;
       return Column(
@@ -179,7 +190,7 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
           if (_label != null) _small(_label!),
           if (error) ...[
             const Icon(Icons.error_outline, size: 22, color: Colors.amber),
-            if (sub != null) _small(sub),
+            if (sub != null) Flexible(child: _small(sub, maxLines: 3)),
           ] else
             Flexible(
               child: text.length <= 8
@@ -195,6 +206,95 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
         ],
       ),
     );
+  }
+
+  // ---- Uso de IA ----
+
+  /// Limites do plano (uma barra por janela, com a hora em que zera se couber) ou tokens de
+  /// hoje e da semana. As linhas vêm do PC com chave e número; nome e formato são daqui.
+  Widget _buildAiUsage(List<Map> rows) {
+    final provider = _params['provider'] == 'codex' ? 'Codex' : 'Claude';
+    final title = _label ?? provider;
+    if (_params['show'] == 'tokens') {
+      int count(String key) =>
+          (rows.firstWhere((r) => r['key'] == key, orElse: () => const {})['count'] as num?)
+              ?.toInt() ??
+          0;
+      return Padding(
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _small(title),
+            _big(compactCount(count('today'))),
+            _small(tr('hoje')),
+            const SizedBox(height: 2),
+            _small(tr('7 dias: {n}', {'n': compactCount(count('week_tokens'))}), alpha: 0.85),
+          ],
+        ),
+      );
+    }
+    return LayoutBuilder(builder: (context, c) {
+      final roomy = c.maxHeight >= 120;
+      final fg = DeckTile.foregroundOf(context);
+      Widget row(Map r) {
+        final pct = (r['percent'] as num?)?.toDouble() ?? 0;
+        final resets = DateTime.tryParse('${r['resetsAt'] ?? ''}')?.toLocal();
+        final name = r['key'] == 'session' ? tr('5 horas') : tr('Semana');
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(children: [
+                Expanded(
+                  child: Text(name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 10, color: fg.withValues(alpha: 0.75))),
+                ),
+                Text('${pct.round()}%',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              ]),
+              const SizedBox(height: 2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(3),
+                child: LinearProgressIndicator(
+                  value: (pct / 100).clamp(0.0, 1.0),
+                  minHeight: 5,
+                  backgroundColor: fg.withValues(alpha: 0.12),
+                  valueColor: AlwaysStoppedAnimation(usageColor(pct)),
+                ),
+              ),
+              if (roomy && resets != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 1),
+                  child: _small(tr('zera {quando}', {'quando': resetLabel(resets)}), alpha: 0.6),
+                ),
+            ],
+          ),
+        );
+      }
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(Icons.auto_awesome, size: 12),
+              const SizedBox(width: 4),
+              Flexible(child: _small(title, alpha: 0.85)),
+            ]),
+            const SizedBox(height: 2),
+            if (rows.isEmpty) _small(tr('Sem dados'))
+            else
+              for (final r in rows) row(r),
+          ],
+        ),
+      );
+    });
   }
 
   // ---- Tocando agora ----
@@ -278,4 +378,44 @@ IconData weatherIcon(int? code, bool isDay) {
   if (code == 85 || code == 86) return Icons.ac_unit;
   if (code >= 95) return Icons.thunderstorm;
   return Icons.cloud;
+}
+
+/// Cor da barra de uso: verde, laranja a partir de 60%, vermelho a partir de 85%.
+Color usageColor(double pct) {
+  if (pct > 85) return Colors.redAccent;
+  if (pct > 60) return Colors.orangeAccent;
+  return Colors.greenAccent;
+}
+
+/// 1234 → "1,2 mil"; 3456789 → "3,5 mi" (inglês: "3.5M"; espanhol: "3,5 M").
+String compactCount(int n) {
+  final lang = AppLanguage.current.value;
+  final (k, m, b) = switch (lang) {
+    'en' => ('K', 'M', 'B'),
+    'es' => (' mil', ' M', ' mil M'),
+    _ => (' mil', ' mi', ' bi'),
+  };
+  String f(double v) {
+    var t = v < 10 ? v.toStringAsFixed(1) : v.toStringAsFixed(0);
+    if (t.endsWith('.0')) t = t.substring(0, t.length - 2);
+    return lang == 'en' ? t : t.replaceAll('.', ',');
+  }
+
+  if (n >= 1000000000) return f(n / 1e9) + b;
+  if (n >= 1000000) return f(n / 1e6) + m;
+  if (n >= 1000) return f(n / 1e3) + k;
+  return '$n';
+}
+
+/// Quando um limite zera: só a hora se for hoje; senão o dia da semana e a hora.
+String resetLabel(DateTime at, {DateTime? now}) {
+  now ??= DateTime.now();
+  // A Anthropic manda 20:39:59.9; mostra o minuto cheio.
+  at = at.add(const Duration(seconds: 30));
+  String two(int n) => n.toString().padLeft(2, '0');
+  final time = '${two(at.hour)}:${two(at.minute)}';
+  final sameDay = at.year == now.year && at.month == now.month && at.day == now.day;
+  if (sameDay) return time;
+  const days = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+  return '${tr(days[at.weekday - 1])} $time';
 }

@@ -26,6 +26,7 @@ namespace DroidDeck
             services.AddSingleton<Conditions>();
             services.AddSingleton<Lib.Input.MacroRecorder>();
             services.AddHostedSingleton<TimerService>();
+            services.AddSingleton<AiUsageService>();
             services.AddHostedSingleton<InfoService>();
             services.AddHostedSingleton<ForegroundWatcher>();
             services.AddHostedSingleton<Lib.UsbBridge>();

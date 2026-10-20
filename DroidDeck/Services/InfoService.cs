@@ -34,6 +34,7 @@ namespace DroidDeck.Services
         public const string TypeUrl = "url";
         public const string TypeNowPlaying = "now_playing";
         public const string TypeNotifications = "notifications";
+        public const string TypeAiUsage = "ai_usage";
 
         private static readonly TimeSpan WeatherEvery = TimeSpan.FromMinutes(15);
         private const int MaxText = 200;
@@ -43,6 +44,7 @@ namespace DroidDeck.Services
         private readonly StreamDeckConfigService _config;
         private readonly MediaControlService _media;
         private readonly IHttpClientFactory _http;
+        private readonly AiUsageService _ai;
 
         private readonly ConcurrentDictionary<string, InfoValue> _values = new();
         private readonly ConcurrentDictionary<string, DateTime> _nextRun = new();
@@ -53,13 +55,14 @@ namespace DroidDeck.Services
         private int _thumbRetries;
 
         public InfoService(ILogger<InfoService> logger, IHubContext<DeckHub> hub, StreamDeckConfigService config,
-            MediaControlService media, IHttpClientFactory http)
+            MediaControlService media, IHttpClientFactory http, AiUsageService ai)
         {
             _logger = logger;
             _hub = hub;
             _config = config;
             _media = media;
             _http = http;
+            _ai = ai;
         }
 
         public class InfoValue
@@ -72,8 +75,27 @@ namespace DroidDeck.Services
             public bool? IsDay { get; set; }
             public bool Error { get; set; }
 
+            /// <summary>Uso de IA: uma linha por medida (o app escolhe o nome e formata o número).</summary>
+            public List<InfoRow>? Rows { get; set; }
+
             public bool SameAs(InfoValue? o) =>
-                o != null && o.Text == Text && o.Sub == Sub && o.Code == Code && o.IsDay == IsDay && o.Error == Error;
+                o != null && o.Text == Text && o.Sub == Sub && o.Code == Code && o.IsDay == IsDay && o.Error == Error
+                && RowsKey(o.Rows) == RowsKey(Rows);
+
+            private static string RowsKey(List<InfoRow>? rows) =>
+                rows == null ? "" : string.Join(";", rows.Select(r => $"{r.Key}:{r.Percent}:{r.Count}:{r.ResetsAt}"));
+        }
+
+        /// <summary>
+        /// Key: "session" e "week" (limite do plano, com Percent e ResetsAt) ou "today" e "week_tokens"
+        /// (tokens, em Count).
+        /// </summary>
+        public class InfoRow
+        {
+            public string Key { get; set; } = "";
+            public double? Percent { get; set; }
+            public long? Count { get; set; }
+            public DateTimeOffset? ResetsAt { get; set; }
         }
 
         public class NowPlayingInfo
@@ -102,7 +124,7 @@ namespace DroidDeck.Services
                         .ToList();
 
                     // Botoes apagados ou que mudaram de tipo saem do estado.
-                    var ids = buttons.Where(b => b.DynamicType is TypeWeather or TypeCommand or TypeUrl or TypeNotifications)
+                    var ids = buttons.Where(b => b.DynamicType is TypeWeather or TypeCommand or TypeUrl or TypeNotifications or TypeAiUsage)
                         .Select(b => b.Id).ToHashSet();
                     var removed = false;
                     foreach (var id in _values.Keys.Where(k => !ids.Contains(k)).ToList())
@@ -112,7 +134,7 @@ namespace DroidDeck.Services
                     var now = DateTime.UtcNow;
                     foreach (var b in buttons)
                     {
-                        if (b.DynamicType is not (TypeWeather or TypeCommand or TypeUrl or TypeNotifications)) continue;
+                        if (b.DynamicType is not (TypeWeather or TypeCommand or TypeUrl or TypeNotifications or TypeAiUsage)) continue;
                         var key = b.Id + "|" + Signature(b);
                         if (_nextRun.TryGetValue(key, out var next) && next > now) continue;
                         if (!_running.TryAdd(b.Id, true)) continue;
@@ -144,6 +166,7 @@ namespace DroidDeck.Services
         {
             if (b.DynamicType == TypeWeather) return WeatherEvery;
             if (b.DynamicType == TypeNotifications) return TimeSpan.FromSeconds(3);
+            if (b.DynamicType == TypeAiUsage) return TimeSpan.FromSeconds(60);
             var secs = int.TryParse(Param(b, "interval"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var s) ? s : 60;
             return TimeSpan.FromSeconds(Math.Clamp(secs, 5, 24 * 3600));
         }
@@ -158,6 +181,7 @@ namespace DroidDeck.Services
                     TypeCommand => Format(b, await RunCommandAsync(Param(b, "command"))),
                     TypeUrl => Format(b, await FetchUrlAsync(Param(b, "url"), Param(b, "path"))),
                     TypeNotifications => await NotificationsAsync(Param(b, "app")),
+                    TypeAiUsage => await AiUsageAsync(Param(b, "provider", AiUsageService.Claude), Param(b, "show", "plan")),
                     _ => null,
                 };
                 if (value == null) return;
@@ -190,6 +214,31 @@ namespace DroidDeck.Services
         }
 
         private static string Short(string s, int max) => s.Length <= max ? s : s[..max];
+
+        // ---- Uso de IA ----
+
+        private async Task<InfoValue> AiUsageAsync(string provider, string show)
+        {
+            if (show == "tokens")
+            {
+                var t = await _ai.TokensAsync(provider);
+                return new InfoValue
+                {
+                    Rows = new()
+                    {
+                        new InfoRow { Key = "today", Count = t.Today },
+                        new InfoRow { Key = "week_tokens", Count = t.Week },
+                    },
+                };
+            }
+            var plan = await _ai.PlanAsync(provider);
+            var rows = new List<InfoRow>();
+            if (plan.Session != null)
+                rows.Add(new InfoRow { Key = "session", Percent = Math.Round(plan.Session.Percent), ResetsAt = plan.Session.ResetsAt });
+            if (plan.Week != null)
+                rows.Add(new InfoRow { Key = "week", Percent = Math.Round(plan.Week.Percent), ResetsAt = plan.Week.ResetsAt });
+            return new InfoValue { Rows = rows };
+        }
 
         // ---- Notificacoes do Windows ----
 
