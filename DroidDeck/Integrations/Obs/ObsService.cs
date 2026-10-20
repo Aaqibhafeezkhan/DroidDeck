@@ -359,6 +359,16 @@ namespace DroidDeck.Services
 
         private async Task RequestVoid(string type, object? data = null) { await RequestAsync(type, data); }
 
+        /// <summary>Volume de uma fonte de audio, como multiplicador (0 = mudo, 1 = 100%).</summary>
+        public async Task<double> GetInputVolumeAsync(string inputName)
+        {
+            var r = await RequestAsync("GetInputVolume", new { inputName });
+            return r.TryGetProperty("inputVolumeMul", out var mul) ? mul.GetDouble() : 0;
+        }
+
+        public Task SetInputVolumeAsync(string inputName, double mul) =>
+            RequestVoid("SetInputVolume", new { inputName, inputVolumeMul = Math.Clamp(mul, 0, 1) });
+
         private async Task SendAsync(object payload)
         {
             var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));

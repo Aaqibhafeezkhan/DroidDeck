@@ -302,4 +302,54 @@ final Map<String, String> esFeatures = {
       'Ese QR no es de vinculación de DroidDeck. Usa el de la ventana "Vincular dispositivo (QR)" del PC.',
   'O PC não reconheceu este aparelho (a chave mudou ou é de outro PC).\nPareie de novo pelo QR.':
       'El PC no reconoció este dispositivo (la clave cambió o es de otro PC).\nVuelve a vincularlo con el QR.',
+  'Brilho':
+      'Brillo',
+  'Música':
+      'Música',
+  'Luz':
+      'Luz',
+  'Volume de uma fonte do OBS':
+      'Volumen de una fuente de OBS',
+  'Volume de uma pessoa no Discord':
+      'Volumen de una persona en Discord',
+  'Brilho do monitor':
+      'Brillo del monitor',
+  'Posição da música':
+      'Posición de la canción',
+  'Brilho de lâmpada Smart Life (Tuya)':
+      'Brillo de bombilla Smart Life (Tuya)',
+  'Brilho de luz do Home Assistant':
+      'Brillo de luz de Home Assistant',
+  'Brilho de luz Philips Hue':
+      'Brillo de luz Philips Hue',
+  'Brilho de luz Govee':
+      'Brillo de luz Govee',
+  'Brilho de Elgato Key Light':
+      'Brillo de Elgato Key Light',
+  'Fonte de áudio':
+      'Fuente de audio',
+  'Pessoa':
+      'Persona',
+  'Mostra quem está na call agora. 100% é o volume normal; vai até 200%.':
+      'Muestra quién está en la llamada ahora. 100% es el volumen normal; llega a 200%.',
+  'Lâmpada':
+      'Bombilla',
+  'Uma luz':
+      'Una luz',
+  'Um cômodo':
+      'Una habitación',
+  'Cômodo':
+      'Habitación',
+  'Endereço da Key Light':
+      'Dirección de la Key Light',
+  'Muda todos os monitores juntos. Monitor externo precisa do DDC/CI ligado no menu dele.':
+      'Cambia todos los monitores a la vez. Un monitor externo necesita DDC/CI activado en su menú.',
+  'Arraste para avançar ou voltar na faixa que está tocando no PC.':
+      'Arrastra para avanzar o retroceder en la pista que suena en el PC.',
+  'O PC não trouxe a lista (a integração está conectada?).':
+      'El PC no devolvió la lista (¿la integración está conectada?).',
+  'Lista vazia. Digite o valor ou recarregue.':
+      'Lista vacía. Escribe el valor o recarga.',
+  'Controle deslizante (volume, brilho, música)':
+      'Control deslizante (volumen, brillo, música)',
 };

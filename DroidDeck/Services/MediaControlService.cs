@@ -285,6 +285,25 @@ namespace DroidDeck.Services
                 ?? sessions.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Posicao de agora. O Windows so atualiza a posicao de vez em quando (o Spotify, a cada
+        /// pausa ou pulo): tocando, soma o tempo desde a ultima atualizacao.
+        /// </summary>
+        private static double LivePosition(
+            GlobalSystemMediaTransportControlsSessionTimelineProperties timeline,
+            GlobalSystemMediaTransportControlsSessionPlaybackInfo playback)
+        {
+            var position = timeline.Position.TotalSeconds;
+            if (playback.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing &&
+                timeline.LastUpdatedTime.Year > 2000)
+            {
+                var elapsed = (DateTimeOffset.Now - timeline.LastUpdatedTime).TotalSeconds;
+                if (elapsed > 0) position += elapsed * (playback.PlaybackRate ?? 1.0);
+            }
+            var end = timeline.EndTime.TotalSeconds;
+            return end > 0 ? Math.Min(position, end) : position;
+        }
+
         private const int RPC_E_WRONG_THREAD = unchecked((int)0x8001010E);
 
         private static string SafeId(GlobalSystemMediaTransportControlsSession s)
@@ -348,7 +367,7 @@ namespace DroidDeck.Services
                     CanPlayPause = playbackInfo.Controls.IsPlayPauseToggleEnabled,
                     CanGoNext = playbackInfo.Controls.IsNextEnabled,
                     CanGoPrevious = playbackInfo.Controls.IsPreviousEnabled,
-                    Position = timelineProperties.Position.TotalSeconds,
+                    Position = LivePosition(timelineProperties, playbackInfo),
                     Duration = timelineProperties.EndTime.TotalSeconds
                 };
             }
@@ -382,6 +401,19 @@ namespace DroidDeck.Services
             // A capa so e lida quando a faixa muda: vale esperar a vez no portao.
             includeThumbnail ? Origin.Interactive : Origin.Background,
             includeThumbnail ? TimeSpan.FromSeconds(6) : TimeSpan.FromSeconds(3));
+
+        /// <summary>Pula para um ponto (em segundos) da faixa que está tocando.</summary>
+        public Task<bool> SeekAsync(double seconds) =>
+            RunAsync(async manager =>
+            {
+                var session = ResolveSession(manager, null);
+                if (session == null) return false;
+                var ticks = TimeSpan.FromSeconds(Math.Max(0, seconds)).Ticks;
+                return await session.TryChangePlaybackPositionAsync(ticks);
+            },
+            false,
+            nameof(SeekAsync),
+            Origin.Interactive);
 
         /// <summary>True se há mídia TOCANDO (sessão atual ou qualquer uma). Leve — sem thumbnail/props.</summary>
         public Task<bool> IsAnythingPlayingAsync() =>

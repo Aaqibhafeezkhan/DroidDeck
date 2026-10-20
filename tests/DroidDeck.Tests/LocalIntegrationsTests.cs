@@ -75,6 +75,15 @@ namespace DroidDeck.Tests
             Assert.Throws<InvalidOperationException>(() => VoicemeeterProvider.CheckParameter(p));
 
         [Fact]
+        public void Govee_DevStatus_TrazBrilhoELigado()
+        {
+            var reply = JsonNode.Parse("{\"msg\":{\"cmd\":\"devStatus\",\"data\":{\"onOff\":1,\"brightness\":42}}}");
+            Assert.Equal(42, GoveeLan.ParseBrightness(reply));
+            Assert.True(GoveeLan.ParseOn(reply));
+            Assert.Null(GoveeLan.ParseBrightness(JsonNode.Parse("{\"msg\":{\"cmd\":\"scan\",\"data\":{}}}")));
+        }
+
+        [Fact]
         public async Task Mudo_Alterna()
         {
             var api = new FakeApi();

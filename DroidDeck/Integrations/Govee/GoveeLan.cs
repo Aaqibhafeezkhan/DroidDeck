@@ -80,6 +80,13 @@ namespace DroidDeck.Integrations
             return data?["onOff"] is JsonValue v && v.TryGetValue<int>(out var on) ? on == 1 : null;
         }
 
+        /// <summary>Resposta do devStatus: brilho (1-100), ou null.</summary>
+        public static int? ParseBrightness(JsonNode? node)
+        {
+            var data = node?["msg"]?["cmd"]?.GetValue<string>() == "devStatus" ? node["msg"]?["data"] : null;
+            return data?["brightness"] is JsonValue v && v.TryGetValue<int>(out var level) ? level : null;
+        }
+
         // ---- Rede ----
 
         /// <summary>IP do aparelho como o usuario digitou, conferido.</summary>
@@ -97,8 +104,15 @@ namespace DroidDeck.Integrations
             await listener.SendAsync(bytes, bytes.Length, new IPEndPoint(address, CommandPort));
         }
 
+        /// <summary>Brilho atual (1-100). Null = nao respondeu.</summary>
+        public async Task<int?> BrightnessAsync(string ip, TimeSpan timeout) =>
+            ParseBrightness(await StatusAsync(ip, timeout));
+
         /// <summary>Pergunta se o aparelho esta aceso. Null = nao respondeu.</summary>
-        public async Task<bool?> IsOnAsync(string ip, TimeSpan timeout)
+        public async Task<bool?> IsOnAsync(string ip, TimeSpan timeout) =>
+            ParseOn(await StatusAsync(ip, timeout));
+
+        private async Task<JsonObject?> StatusAsync(string ip, TimeSpan timeout)
         {
             var key = ParseIp(ip).ToString();
             var tcs = new TaskCompletionSource<JsonObject>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -107,7 +121,7 @@ namespace DroidDeck.Integrations
             {
                 await SendAsync(ip, Status());
                 var done = await Task.WhenAny(tcs.Task, Task.Delay(timeout));
-                return done == tcs.Task ? ParseOn(await tcs.Task) : null;
+                return done == tcs.Task ? await tcs.Task : null;
             }
             finally
             {

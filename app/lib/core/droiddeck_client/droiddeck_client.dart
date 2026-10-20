@@ -354,20 +354,30 @@ class DroidDeckClient {
 
   /// Controle deslizante: volume (0-100) do alvo ("output", "input" ou "app" + nome do
   /// processo). Null se o alvo não existe agora (app fechado).
-  Future<Map<String, dynamic>?> getSlider(String target, String app) async {
+  /// Estado de um controle deslizante: {volume, max, mute, label, text}. [params] são os
+  /// do botão (dispositivo, fonte, pessoa...). Lança com a mensagem do PC se o alvo falhou
+  /// (integração desconectada, luz fora da rede); null se o alvo não existe agora.
+  Future<Map<String, dynamic>?> getSlider(String target, Map<String, String> params) async {
     try {
-      final r = await _dio.get('/api/slider',
-          queryParameters: {'target': target, if (app.isNotEmpty) 'app': app});
+      final r = await _dio.get('/api/slider', queryParameters: {...params, 'target': target});
       return Map<String, dynamic>.from(r.data as Map);
-    } catch (_) {
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (e.response?.statusCode == 503 && data is Map && data['error'] != null) {
+        throw Exception(data['error']);
+      }
       return null;
     }
   }
 
-  Future<void> setSlider(String target, String app, int volume) async {
+  Future<void> setSlider(String target, Map<String, String> params, int volume) async {
     try {
-      await _dio.put('/api/slider',
-          data: {'target': target, 'app': app, 'volume': volume});
+      await _dio.put('/api/slider', data: {
+        'target': target,
+        'app': params['app'] ?? '',
+        'params': params,
+        'volume': volume,
+      });
     } catch (_) {}
   }
 

@@ -302,4 +302,54 @@ final Map<String, String> enFeatures = {
       'That QR isn\'t a DroidDeck pairing code. Use the one in the PC\'s "Pair device (QR)" window.',
   'O PC não reconheceu este aparelho (a chave mudou ou é de outro PC).\nPareie de novo pelo QR.':
       'The PC didn\'t recognize this device (the key changed or it\'s from another PC).\nPair again with the QR.',
+  'Brilho':
+      'Brightness',
+  'Música':
+      'Music',
+  'Luz':
+      'Light',
+  'Volume de uma fonte do OBS':
+      'Volume of an OBS source',
+  'Volume de uma pessoa no Discord':
+      'Volume of a person on Discord',
+  'Brilho do monitor':
+      'Monitor brightness',
+  'Posição da música':
+      'Song position',
+  'Brilho de lâmpada Smart Life (Tuya)':
+      'Smart Life (Tuya) bulb brightness',
+  'Brilho de luz do Home Assistant':
+      'Home Assistant light brightness',
+  'Brilho de luz Philips Hue':
+      'Philips Hue light brightness',
+  'Brilho de luz Govee':
+      'Govee light brightness',
+  'Brilho de Elgato Key Light':
+      'Elgato Key Light brightness',
+  'Fonte de áudio':
+      'Audio source',
+  'Pessoa':
+      'Person',
+  'Mostra quem está na call agora. 100% é o volume normal; vai até 200%.':
+      'Shows who is in the call now. 100% is normal volume; it goes up to 200%.',
+  'Lâmpada':
+      'Bulb',
+  'Uma luz':
+      'One light',
+  'Um cômodo':
+      'A room',
+  'Cômodo':
+      'Room',
+  'Endereço da Key Light':
+      'Key Light address',
+  'Muda todos os monitores juntos. Monitor externo precisa do DDC/CI ligado no menu dele.':
+      'Changes all monitors together. An external monitor needs DDC/CI turned on in its menu.',
+  'Arraste para avançar ou voltar na faixa que está tocando no PC.':
+      'Drag to move forward or back in the track playing on the PC.',
+  'O PC não trouxe a lista (a integração está conectada?).':
+      'The PC didn\'t return the list (is the integration connected?).',
+  'Lista vazia. Digite o valor ou recarregue.':
+      'Empty list. Type the value or reload.',
+  'Controle deslizante (volume, brilho, música)':
+      'Slider (volume, brightness, music)',
 };

@@ -8,8 +8,10 @@ import '../buttons/colors.dart';
 /// Tipos de botão controle deslizante (dynamicType).
 const sliderTypes = {'volume_slider'};
 
-/// Controle deslizante de volume: arrasta o dedo para mudar o volume do PC, do microfone
-/// ou de um app. Em pé quando o botão é mais alto que largo; deitado no contrário. Um
+/// Controle deslizante: arrasta o dedo para mudar um valor no PC — volume (do PC, do
+/// microfone, de um app, de uma fonte do OBS, de uma pessoa no Discord), brilho (luzes,
+/// monitor) ou a posição da música. Em pé quando o botão é mais alto que largo; deitado no
+/// contrário. Um
 /// botão grande (1×3, 3×1) dá mais precisão. O toque continua indo para [onTap] (editar,
 /// no modo de edição) e o toque longo abre o editor.
 class SliderDeckButton extends StatefulWidget {
@@ -34,7 +36,17 @@ class SliderDeckButton extends StatefulWidget {
 
 class _SliderDeckButtonState extends State<SliderDeckButton> {
   int? _volume;
+
+  /// Fim da escala: 100, 200 (pessoa no Discord) ou a duração da faixa em segundos.
+  int _max = 100;
   bool _mute = false;
+
+  /// Nome que o PC devolve (lâmpada, faixa) e texto no lugar do número (posição "1:23").
+  String? _serverLabel;
+  String? _text;
+
+  /// Mensagem do PC quando o alvo falhou (integração desconectada, luz fora da rede).
+  String? _error;
   bool _dragging = false;
   Timer? _poll;
   Timer? _sendTimer;
@@ -42,6 +54,10 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
 
   String get _target => widget.button.dynamicParameters?['target'] ?? 'output';
   String get _app => widget.button.dynamicParameters?['app'] ?? '';
+
+  /// Parâmetros do alvo (sem o próprio alvo).
+  Map<String, String> get _params =>
+      Map.of(widget.button.dynamicParameters ?? const {})..remove('target');
   DroidDeckClient get _client => Injector.get<DroidDeckClient>();
 
   @override
@@ -68,11 +84,21 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
   }
 
   Future<void> _refresh() async {
-    final state = await _client.getSlider(_target, _app);
+    Map<String, dynamic>? state;
+    String? error;
+    try {
+      state = await _client.getSlider(_target, _params);
+    } catch (e) {
+      error = '$e'.replaceFirst('Exception: ', '');
+    }
     if (!mounted || _dragging) return;
     setState(() {
-      _volume = (state?['volume'] as num?)?.toInt();
+      _error = error;
+      _volume = (state?['volume'] as num?)?.round();
+      _max = ((state?['max'] as num?)?.round() ?? 100).clamp(1, 1 << 30);
       _mute = state?['mute'] == true;
+      _serverLabel = state?['label'] as String?;
+      _text = state?['text'] as String?;
     });
   }
 
@@ -87,17 +113,41 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
   void _flush() {
     final v = _pending;
     _pending = null;
-    if (v != null) _client.setSlider(_target, _app, v);
+    if (v != null) _client.setSlider(_target, _params, v);
   }
 
   void _update(Offset local, Size size, bool vertical) {
     final fraction = vertical
         ? 1 - local.dy / size.height
         : local.dx / size.width;
-    final v = (fraction.clamp(0.0, 1.0) * 100).round();
+    final v = (fraction.clamp(0.0, 1.0) * _max).round();
     if (v == _volume) return;
-    setState(() => _volume = v);
+    setState(() {
+      _volume = v;
+      // Posição da música: mostra o tempo enquanto arrasta.
+      if (_target == 'media') _text = _clock(v);
+    });
     _send(v);
+  }
+
+  static String _clock(int seconds) {
+    final h = seconds ~/ 3600, m = (seconds % 3600) ~/ 60, s = seconds % 60;
+    final ss = s.toString().padLeft(2, '0');
+    return h > 0 ? '$h:${m.toString().padLeft(2, '0')}:$ss' : '$m:$ss';
+  }
+
+  static const _lights = {'tuya', 'homeassistant', 'hue', 'govee', 'keylight'};
+
+  IconData get _icon {
+    final off = _mute || _volume == 0;
+    if (_lights.contains(_target)) return off ? Icons.lightbulb_outline : Icons.lightbulb;
+    return switch (_target) {
+      'input' => off ? Icons.mic_off : Icons.mic,
+      'monitor' => Icons.brightness_6,
+      'media' => Icons.music_note,
+      'discord_user' => off ? Icons.volume_off : Icons.record_voice_over,
+      _ => off ? Icons.volume_off : Icons.volume_up,
+    };
   }
 
   @override
@@ -108,6 +158,11 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
         : switch (_target) {
             'input' => tr('Microfone'),
             'app' => _app,
+            'monitor' => tr('Brilho'),
+            'obs' => _params['inputName'] ?? 'OBS',
+            _ when _serverLabel?.isNotEmpty == true => _serverLabel!,
+            'media' => tr('Música'),
+            _ when _lights.contains(_target) => tr('Luz'),
             _ => tr('Volume'),
           };
     return DeckTile(
@@ -117,7 +172,7 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
       child: LayoutBuilder(builder: (context, c) {
         final size = Size(c.maxWidth, c.maxHeight);
         final vertical = size.height > size.width;
-        final fraction = (_volume ?? 0) / 100;
+        final fraction = ((_volume ?? 0) / _max).clamp(0.0, 1.0);
         final fg = DeckTile.foregroundOf(context);
         final fill = Theme.of(context).colorScheme.primary.withValues(alpha: _mute ? 0.25 : 0.55);
         final content = Stack(
@@ -143,18 +198,14 @@ class _SliderDeckButtonState extends State<SliderDeckButton> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      _mute || _volume == 0
-                          ? (_target == 'input' ? Icons.mic_off : Icons.volume_off)
-                          : (_target == 'input' ? Icons.mic : Icons.volume_up),
-                      color: fg,
-                    ),
+                    Icon(_error != null ? Icons.link_off : _icon, color: fg),
                     Text(
-                      _volume == null ? '—' : '$_volume%',
+                      _volume == null ? '—' : (_text ?? '$_volume%'),
                       style: TextStyle(color: fg, fontWeight: FontWeight.w700),
                     ),
-                    Text(label,
-                        maxLines: 1,
+                    Text(_error ?? label,
+                        maxLines: _error != null ? 2 : 1,
+                        textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(color: fg, fontSize: 11)),
                   ],

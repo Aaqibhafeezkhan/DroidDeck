@@ -1,6 +1,8 @@
 import 'package:droiddeck/core/core.dart';
 import 'package:flutter/material.dart';
 
+import 'remote_options_field.dart';
+
 /// "Mostrar no botão": monitor do PC ou informação (relógio, clima, comando, URL...),
 /// com os campos de cada tipo. Quem chama guarda o tipo e os parâmetros.
 class InfoSection extends StatelessWidget {
@@ -34,7 +36,7 @@ class InfoSection extends StatelessWidget {
     'now_playing': 'Tocando agora',
     'command': 'Saída de um comando (PC)',
     'url': 'Valor de uma URL (PC)',
-    'volume_slider': 'Controle deslizante de volume',
+    'volume_slider': 'Controle deslizante (volume, brilho, música)',
     'notifications': 'Notificações do Windows',
   };
 
@@ -109,6 +111,11 @@ class InfoSection extends StatelessWidget {
     );
   }
 
+  Widget _note(String text) => Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Text(text, style: const TextStyle(fontSize: 13)),
+      );
+
   Widget _field(String key, String label,
       {String? hint, String? help, bool number = false, int maxLines = 1}) {
     return Padding(
@@ -180,12 +187,17 @@ class InfoSection extends StatelessWidget {
         ];
       case 'volume_slider':
         final target = _p('target', 'output');
+        // Trocar o alvo limpa os campos do alvo anterior (uma lâmpada não serve ao OBS).
+        void setTarget(String? v) => onChanged(type, {'target': v ?? 'output'});
+        Widget remote(String key, String label, String url, {String? help}) => RemoteOptionsField(
+            url: url, label: label, value: params[key], help: help, onChanged: (v) => _set(key, v));
         return [
           Padding(
             padding: const EdgeInsets.only(top: 12),
             child: DropdownButtonFormField<String>(
               key: ValueKey('slider_target_$target'),
               initialValue: target,
+              isExpanded: true,
               decoration: InputDecoration(
                 labelText: tr('Controla'),
                 border: const OutlineInputBorder(),
@@ -194,13 +206,55 @@ class InfoSection extends StatelessWidget {
                 DropdownMenuItem(value: 'output', child: Text(tr('Som do PC (saída padrão)'))),
                 DropdownMenuItem(value: 'input', child: Text(tr('Microfone (entrada padrão)'))),
                 DropdownMenuItem(value: 'app', child: Text(tr('Um aplicativo'))),
+                DropdownMenuItem(value: 'obs', child: Text(tr('Volume de uma fonte do OBS'))),
+                DropdownMenuItem(value: 'discord_user', child: Text(tr('Volume de uma pessoa no Discord'))),
+                DropdownMenuItem(value: 'monitor', child: Text(tr('Brilho do monitor'))),
+                DropdownMenuItem(value: 'media', child: Text(tr('Posição da música'))),
+                DropdownMenuItem(value: 'tuya', child: Text(tr('Brilho de lâmpada Smart Life (Tuya)'))),
+                DropdownMenuItem(value: 'homeassistant', child: Text(tr('Brilho de luz do Home Assistant'))),
+                DropdownMenuItem(value: 'hue', child: Text(tr('Brilho de luz Philips Hue'))),
+                DropdownMenuItem(value: 'govee', child: Text(tr('Brilho de luz Govee'))),
+                DropdownMenuItem(value: 'keylight', child: Text(tr('Brilho de Elgato Key Light'))),
               ],
-              onChanged: (v) => _set('target', v ?? 'output'),
+              onChanged: setTarget,
             ),
           ),
           if (target == 'app')
             _field('app', tr('Processo do aplicativo'),
                 hint: 'Spotify', help: tr('Nome do processo, sem .exe (Spotify, chrome, Discord).')),
+          if (target == 'obs') remote('inputName', tr('Fonte de áudio'), '/api/obs/audio-inputs'),
+          if (target == 'discord_user')
+            remote('userId', tr('Pessoa'), '/api/slider/options?target=discord_user',
+                help: tr('Mostra quem está na call agora. 100% é o volume normal; vai até 200%.')),
+          if (target == 'tuya')
+            remote('deviceId', tr('Lâmpada'), '/api/slider/options?target=tuya'),
+          if (target == 'homeassistant')
+            remote('entityId', tr('Luz'),
+                '/api/integrations/homeassistant/options/entities?operation=brightness'),
+          if (target == 'hue') ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: SegmentedButton<String>(
+                segments: [
+                  ButtonSegment(value: 'light', label: Text(tr('Uma luz'))),
+                  ButtonSegment(value: 'group', label: Text(tr('Um cômodo'))),
+                ],
+                selected: {_p('hueTarget', 'light')},
+                onSelectionChanged: (v) =>
+                    onChanged(type, {'target': 'hue', 'hueTarget': v.first}),
+              ),
+            ),
+            remote('id', _p('hueTarget', 'light') == 'group' ? tr('Cômodo') : tr('Luz'),
+                '/api/integrations/hue/options/items?target=${_p('hueTarget', 'light')}'),
+          ],
+          if (target == 'govee') remote('ip', tr('Luz'), '/api/govee/devices'),
+          if (target == 'keylight')
+            _field('host', tr('Endereço da Key Light'), hint: '192.168.0.50'),
+          if (target == 'monitor')
+            _note(tr('Muda todos os monitores juntos. Monitor externo precisa do DDC/CI '
+                'ligado no menu dele.')),
+          if (target == 'media')
+            _note(tr('Arraste para avançar ou voltar na faixa que está tocando no PC.')),
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(

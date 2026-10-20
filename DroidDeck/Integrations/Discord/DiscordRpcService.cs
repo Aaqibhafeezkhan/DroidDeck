@@ -57,6 +57,9 @@ namespace DroidDeck.Services
         public int OutputVolume { get; private set; }
         public string VoiceMode { get; private set; } = ""; // PUSH_TO_TALK | VOICE_ACTIVITY
         private volatile List<object> _participants = new();
+
+        /// <summary>Quem esta no canal de voz agora ({id, username, nick}).</summary>
+        public IReadOnlyList<object> Participants => _participants;
         private readonly ConcurrentDictionary<string, bool> _userMute = new();
 
         /// <summary>True quando há Client ID + Secret salvos (app Discord configurado).</summary>
@@ -356,6 +359,9 @@ namespace DroidDeck.Services
                         foreach (var v in vss.EnumerateArray())
                         {
                             if (!v.TryGetProperty("user", out var u)) continue;
+                            if (u.TryGetProperty("id", out var vid) && vid.GetString() is string volId &&
+                                v.TryGetProperty("volume", out var vol) && vol.ValueKind == JsonValueKind.Number)
+                                _userVolume[volId] = vol.GetDouble();
                             parts.Add(new
                             {
                                 id = u.TryGetProperty("id", out var uid) ? uid.GetString() : null,
@@ -421,7 +427,14 @@ namespace DroidDeck.Services
             if (volume.HasValue) args["volume"] = Math.Clamp(volume.Value, 0, 200);
             await SendCommandAsync("SET_USER_VOICE_SETTINGS", args);
             if (mute.HasValue) _userMute[userId] = mute.Value;
+            if (volume.HasValue) _userVolume[userId] = Math.Clamp(volume.Value, 0, 200);
         }
+
+        /// <summary>Volume local de uma pessoa na call (0-200; 100 = normal). Null se nao se sabe.</summary>
+        public double? GetUserVolume(string userId) =>
+            _userVolume.TryGetValue(userId, out var v) ? v : null;
+
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<string, double> _userVolume = new();
 
         public Task ToggleUserMuteAsync(string userId) =>
             SetUserVoiceAsync(userId, !(_userMute.TryGetValue(userId, out var m) && m), null);
