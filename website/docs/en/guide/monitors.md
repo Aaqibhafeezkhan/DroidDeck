@@ -64,7 +64,8 @@ what to show:
 | **Plan limits** | One bar for the **5-hour** window and one for the **week**, with the percentage used. A taller button also shows when each one resets ("resets 17:40", "resets Mon 10:00"). | **Claude**: the same query Claude Code's `/usage` makes, with the login it saved on the PC. **Codex**: the latest limits Codex logged on the PC. |
 | **Tokens** | The total for **today** and the **last 7 days** ("187M", "7 days: 1.1B"). | The logs the tool keeps on the PC: `~/.claude/projects` and `~/.codex/sessions`. |
 
-- Updates every minute. The bars change color like the gauges: green, orange above 60 %, red above 85 %.
+- Tokens update every minute; Claude's limits every 5 minutes (Anthropic refuses frequent queries, and
+  when it does the button keeps the last value and waits longer). The bars change color like the gauges: green, orange above 60 %, red above 85 %.
 - Tokens add up input, output and cache (like `ccusage`). Cache reads are usually most of it, so the
   number is much larger than the text actually exchanged.
 - "Today" starts at the PC's midnight; "7 days" counts today and the six days before.

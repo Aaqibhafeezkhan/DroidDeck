@@ -65,7 +65,8 @@ alguns segundos. Limpar as notificações no PC diminui o número.
 | **Limites do plano** | Uma barra para a janela de **5 horas** e outra para a **semana**, com a porcentagem já usada. Em botão mais alto aparece também quando cada uma zera ("zera 17:40", "zera seg 10:00"). | **Claude**: a mesma consulta que o `/usage` do Claude Code faz, com o login que ele salvou no PC. **Codex**: o último registro de limites que o Codex gravou no PC. |
 | **Tokens** | O total de **hoje** e dos **últimos 7 dias** ("187 mi", "7 dias: 1,1 bi"). | Os registros que a ferramenta grava no PC: `~/.claude/projects` e `~/.codex/sessions`. |
 
-- Atualiza a cada minuto. As barras mudam de cor como os medidores: verde, laranja acima de 60 %,
+- Os tokens atualizam a cada minuto; os limites do Claude, a cada 5 minutos (a Anthropic recusa consultas
+  frequentes e, quando recusa, o botão mantém o último valor e espera mais). As barras mudam de cor como os medidores: verde, laranja acima de 60 %,
   vermelho acima de 85 %.
 - Os tokens somam entrada, saída e cache (como o `ccusage`). O cache relido costuma ser a maior parte,
   então o número fica bem maior que o texto trocado de fato.
