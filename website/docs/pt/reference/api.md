@@ -121,15 +121,16 @@ privilegiadas vale para os três.
 Botões de dois estados acrescentam `toggle` (bool), `activeAction` (roda no toque que desliga),
 `activeLabel`, `activeIconName` e `activeIconBase64`. Botões de informação usam `dynamicType`
 (`cpu_monitor`, `memory_monitor`, `gpu_monitor`, `network_monitor`, `clock`, `weather`, `now_playing`,
-`command`, `url`, `notifications`, `volume_slider`) com `dynamicParameters` (`city`, `units`,
-`command`, `url`, `path`, `format`, `interval`, `app`, `target`…); `command` e `url` seguem a regra das
+`command`, `url`, `notifications`, `volume_slider`, `ai_usage`) com `dynamicParameters` (`city`, `units`,
+`command`, `url`, `path`, `format`, `interval`, `app`, `target`, `provider`, `show`…); `command` e `url` seguem a regra das
 ações privilegiadas. Botões grandes acrescentam `columnSpan` e `rowSpan` (padrão 1; `row`/`column` é a
 casa do canto superior esquerdo).
 
 | Método | Caminho | Descrição |
 |---|---|---|
-| GET | `/api/slider?target=output\|input\|app&app=` | Controle deslizante: `{volume, mute, label}` atual da saída padrão, da entrada padrão ou de um app (nome do processo sem `.exe`). `404` quando o alvo não existe no momento (ex.: o app não tem sessão de áudio). |
-| PUT | `/api/slider` | `{target, app, volume}` (0–100). Devolve o estado novo. |
+| GET | `/api/slider?target=…` | Controle deslizante: `{volume, mute, label, max, text}` atual. `target`: `output`, `input`, `app` (`app`), `obs` (`inputName`), `discord_user` (`userId`), `monitor`, `media`, `tuya` (`deviceId`), `homeassistant` (`entityId`), `hue` (`hueTarget`, `id`), `govee` (`ip`), `keylight` (`host`). `max` é 100, exceto Discord (200) e música (duração em segundos). `404` quando o alvo não existe no momento; `503 {error}` quando a integração não responde. |
+| PUT | `/api/slider` | `{target, app, params, volume}` (0 até `max`). Devolve o estado novo. |
+| GET | `/api/slider/options?target=tuya\|discord_user` | Lista `{value, label}` de lâmpadas Smart Life com brilho ou de pessoas na call. |
 
 ## Biblioteca: backup, Steam, apps { #library }
 

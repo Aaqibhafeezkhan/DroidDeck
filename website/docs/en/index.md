@@ -50,8 +50,8 @@ You need both parts:
 
 -   :material-chart-donut: **Live information**
 
-    CPU, GPU, RAM and network gauges, clock, weather, now playing, Windows notifications, timers and
-    pomodoro, two-state toggles, big buttons and animated GIF icons.
+    CPU, GPU, RAM and network gauges, clock, weather, now playing, Windows notifications, AI usage,
+    sliders, timers and pomodoro, two-state toggles, big buttons and animated GIF icons.
     [Monitors & info](guide/monitors.md) · [Appearance](guide/appearance.md)
 
 -   :material-folder-multiple: **Profiles and automation**

@@ -121,14 +121,15 @@ rule applies to all three.
 Two-state buttons add `toggle` (bool), `activeAction` (run on the tap that turns it off),
 `activeLabel`, `activeIconName` and `activeIconBase64`. Info buttons use `dynamicType` (`cpu_monitor`,
 `memory_monitor`, `gpu_monitor`, `network_monitor`, `clock`, `weather`, `now_playing`, `command`,
-`url`, `notifications`, `volume_slider`) with `dynamicParameters` (`city`, `units`, `command`, `url`,
+`url`, `notifications`, `volume_slider`, `ai_usage`) with `dynamicParameters` (`city`, `units`, `command`, `url`,
 `path`, `format`, `interval`, `app`, `target`…); `command` and `url` follow the privileged-action rule.
 Large buttons add `columnSpan` and `rowSpan` (default 1; `row`/`column` is the top-left cell).
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/slider?target=output\|input\|app&app=` | Volume slider: current `{volume, mute, label}` of the default output, the default input, or an app (process name without `.exe`). `404` when the target doesn't exist right now (e.g. the app has no audio session). |
-| PUT | `/api/slider` | `{target, app, volume}` (0–100). Returns the new state. |
+| GET | `/api/slider?target=…` | Slider: current `{volume, mute, label, max, text}`. `target`: `output`, `input`, `app` (`app`), `obs` (`inputName`), `discord_user` (`userId`), `monitor`, `media`, `tuya` (`deviceId`), `homeassistant` (`entityId`), `hue` (`hueTarget`, `id`), `govee` (`ip`), `keylight` (`host`). `max` is 100, except Discord (200) and music (duration in seconds). `404` when the target doesn't exist right now; `503 {error}` when the integration doesn't respond. |
+| PUT | `/api/slider` | `{target, app, params, volume}` (0 to `max`). Returns the new state. |
+| GET | `/api/slider/options?target=tuya\|discord_user` | `{value, label}` list of Smart Life bulbs with brightness or of people in the call. |
 
 ## Library: backup, Steam, apps { #library }
 

@@ -50,8 +50,8 @@ Você precisa das duas partes:
 
 -   :material-chart-donut: **Informação ao vivo**
 
-    Medidores de CPU, GPU, RAM e rede, relógio, clima, tocando agora, notificações do Windows, timers e
-    pomodoro, botões de dois estados, botões grandes e ícones em GIF animado.
+    Medidores de CPU, GPU, RAM e rede, relógio, clima, tocando agora, notificações do Windows, uso de IA,
+    controles deslizantes, timers e pomodoro, botões de dois estados, botões grandes e ícones em GIF animado.
     [Monitores e informação](guide/monitors.md) · [Aparência](guide/appearance.md)
 
 -   :material-folder-multiple: **Perfis e automação**

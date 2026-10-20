@@ -6,7 +6,7 @@ run on the phone.
 
 Besides the normal tap, a button can have a [long-press and a double-tap](#gestures) action, be a
 [two-state button](#two-states), [show information](monitors.md) (clock, weather, what's playing, a
-volume slider...), take [more than one cell](#size) and be pressed by an [automation](automations.md).
+slider, AI usage...), take [more than one cell](#size) and be pressed by an [automation](automations.md).
 
 !!! info "Keyboard shortcut, Open program, Script and HTTP request are created on the PC"
     For security, buttons that send keys, open programs, run scripts or make HTTP requests (including
@@ -188,7 +188,7 @@ game shows no image, open your Steam library once so it downloads the covers.
 ## Size { #size }
 
 Under **Size** in the editor, **Width (cells)** and **Height (cells)** make a button span up to 4 × 4
-cells: a big mute button, a tall [volume slider](monitors.md#volume-slider), a wide clock. The
+cells: a big mute button, a tall [slider](monitors.md#volume-slider), a wide clock. The
 button's position is its top-left cell.
 
 A large button never covers other buttons: it stops where another button is, and it's cut at the edge

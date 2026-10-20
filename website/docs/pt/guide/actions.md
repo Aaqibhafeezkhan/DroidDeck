@@ -6,7 +6,7 @@ celular.
 
 Além do toque normal, um botão pode ter uma ação de [toque longo e de toque duplo](#gestures), ser um
 [botão de dois estados](#two-states), [mostrar uma informação](monitors.md) (relógio, clima, o que
-está tocando, um controle deslizante de volume...), ocupar [mais de uma casa](#size) e ser apertado por
+está tocando, um controle deslizante, o uso de IA...), ocupar [mais de uma casa](#size) e ser apertado por
 uma [automação](automations.md).
 
 !!! info "Atalho de teclado, Abrir programa, Script e Requisição HTTP são criados no PC"
@@ -189,7 +189,7 @@ imagem, abra a biblioteca da Steam uma vez para ela baixar as capas.
 ## Tamanho { #size }
 
 Em **Tamanho**, no editor, **Largura (casas)** e **Altura (casas)** fazem um botão ocupar até 4 × 4
-casas: um botão de mudo grande, um [controle deslizante de volume](monitors.md#volume-slider) alto, um
+casas: um botão de mudo grande, um [controle deslizante](monitors.md#volume-slider) alto, um
 relógio largo. A posição do botão é a casa do canto superior esquerdo.
 
 Um botão grande nunca cobre outros botões: ele para onde houver outro botão e é cortado na borda da

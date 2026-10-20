@@ -54,21 +54,61 @@ Windows asks for permission to read notifications the first time. If the button 
 permission**, allow it under Windows **Settings → Privacy & security → Notifications** and wait a few
 seconds. Clearing notifications on the PC lowers the number.
 
-## Volume slider { #volume-slider }
+## AI usage { #ai-usage }
 
-**Volume slider** turns the button into a fader: drag your finger on it to change the volume.
+**AI usage (Claude, Codex)** shows how much of Claude Code or Codex you've used. Pick the **Tool** and
+what to show:
+
+| Show | What appears | Where it comes from |
+|---|---|---|
+| **Plan limits** | One bar for the **5-hour** window and one for the **week**, with the percentage used. A taller button also shows when each one resets ("resets 17:40", "resets Mon 10:00"). | **Claude**: the same query Claude Code's `/usage` makes, with the login it saved on the PC. **Codex**: the latest limits Codex logged on the PC. |
+| **Tokens** | The total for **today** and the **last 7 days** ("187M", "7 days: 1.1B"). | The logs the tool keeps on the PC: `~/.claude/projects` and `~/.codex/sessions`. |
+
+- Updates every minute. The bars change color like the gauges: green, orange above 60 %, red above 85 %.
+- Tokens add up input, output and cache (like `ccusage`). Cache reads are usually most of it, so the
+  number is much larger than the text actually exchanged.
+- "Today" starts at the PC's midnight; "7 days" counts today and the six days before.
+- Claude Code must be installed and signed in on the PC running DroidDeck. DroidDeck **only reads** the
+  login; it never renews it, so your session isn't kicked out. If it expires, the button asks you to
+  open Claude Code. Only the percentages go from the PC to the phone.
+- Codex only updates its limits while it runs: the button shows the last value it logged.
+- Different folders: DroidDeck honors `CLAUDE_CONFIG_DIR` and `CODEX_HOME`.
+
+!!! warning "Unofficial query"
+    Claude's limits come from an internal query, the same one Claude Code uses, with no public
+    documentation. If Anthropic changes it, the button shows a warning; tokens keep working.
+
+## Slider { #volume-slider }
+
+**Slider (volume, brightness, music)** turns the button into a fader: drag your finger on it to change
+the value.
 
 | Controls | What moves |
 |---|---|
 | **PC sound (default output)** | The volume of Windows' default output device. |
 | **Microphone (default input)** | The level of the default input device. |
 | **An app** | One app's volume (**App process**: the process name without `.exe`, e.g. `Spotify`, `chrome`, `Discord`). Every audio stream of the app changes together. |
+| **Volume of an OBS source** | The volume of an [OBS](../integrations/obs.md) audio source, on the same curve as OBS's fader. |
+| **Volume of a person on Discord** | The volume of someone in the call with you, 0 to 200 % (100 % is normal). The button shows the person's name. Needs [Discord](../integrations/discord.md) connected. |
+| **Monitor brightness** | The brightness of all monitors together. |
+| **Song position** | Where the track playing in Windows is; the button shows the time and dragging seeks. |
+| **Light brightness** (Smart Life/Tuya, Home Assistant, Philips Hue, Govee, Elgato Key Light) | A bulb's brightness (on Hue, also a whole room). Dragging to zero turns the light off. |
 
 - The slider is **vertical** when the button is taller than wide and **horizontal** otherwise. Give it
   more cells under [Size](actions.md#size) (1 × 3 or 3 × 1, for example) for more precision.
-- It always follows the *current* default device, so it keeps working after you switch headphones.
-- The level also changes from outside (the PC's keys, another button); the slider catches up within a
-  few seconds. The fill dims while the target is muted.
+- OBS sources, people in the call and bulbs come in a list from the PC. If the list is empty
+  (integration disconnected, nobody in the call), you can type the value or reload.
+- Sound and microphone always follow the *current* default device, so they keep working after you
+  switch headphones.
+- The level also changes from outside (the PC's keys, another button, the app itself); the slider
+  catches up within a few seconds. The fill dims while the target is muted.
 - An app slider only finds the app while it shows up in Windows' volume mixer, on the default output.
+- **Monitor**: external monitors need **DDC/CI** turned on in the monitor's own menu; a laptop panel
+  uses Windows brightness.
+- **Discord**: Discord doesn't report each person's volume at any time. If you change someone's volume
+  directly in Discord, the button may take a while to catch up.
+- **Smart Life bulbs**: only the ones with brightness control show up; switches and plugs don't.
+- When the target doesn't respond (OBS closed, light off the network), the button shows why instead of
+  its name.
 - A tap still runs the button's action, if it has one; holding opens the editor. In the PC
   configurator the slider only shows the level, so you can drag the button around.
