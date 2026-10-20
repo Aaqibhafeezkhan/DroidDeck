@@ -205,6 +205,8 @@ namespace DroidDeck.Lib
             ["Backup de uma versão mais nova do DroidDeck. Atualize o DroidDeck no PC."] = "Copia de seguridad de una versión más nueva de DroidDeck. Actualiza DroidDeck en la PC.",
             ["Arquivo de backup corrompido."] = "Archivo de copia de seguridad dañado.",
             ["O arquivo não parece um perfil do Stream Deck."] = "El archivo no parece un perfil de Stream Deck.",
+            ["Anthropic pediu uma pausa; tento de novo logo."] = "Anthropic pidió una pausa; reintento pronto.",
+            ["A Anthropic não respondeu."] = "Anthropic no respondió.",
             ["Sem registros do Codex neste PC."] = "No hay registros de Codex en este PC.",
             ["Entre no Claude Code neste PC para ver os limites."] = "Inicia sesión en Claude Code en este PC para ver los límites.",
             ["O login do Claude Code expirou. Abra o Claude Code para renovar."] = "El inicio de sesión de Claude Code expiró. Abre Claude Code para renovarlo.",

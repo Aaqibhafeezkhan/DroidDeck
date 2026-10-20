@@ -30,12 +30,18 @@ namespace DroidDeck.Services
         public const string Codex = "codex";
 
         private const string ClaudeUsageUrl = "https://api.anthropic.com/api/oauth/usage";
-        private static readonly TimeSpan PlanCache = TimeSpan.FromSeconds(60);
+        // A Anthropic devolve 429 com facilidade (o próprio Claude Code também consulta):
+        // pergunta no máximo a cada 5 min e, recusado, espera cada vez mais (até 30 min).
+        private static readonly TimeSpan PlanCache = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan MaxBackoff = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan Keep = TimeSpan.FromDays(8);
 
         private readonly IHttpClientFactory _http;
         private readonly SemaphoreSlim _lock = new(1, 1);
         private (DateTime at, Plan plan)? _claudePlan;
+        private DateTime _claudeRetryAt = DateTime.MinValue;
+        private TimeSpan _claudeBackoff = TimeSpan.Zero;
+        private string? _claudeError;
         private readonly LogScanner _claudeLogs = new(ParseClaudeLine, "\"usage\"");
         private readonly LogScanner _codexLogs = new(ParseCodexLine, "\"token_count\"");
 
@@ -74,10 +80,37 @@ namespace DroidDeck.Services
             await _lock.WaitAsync();
             try
             {
-                if (_claudePlan is { } c && DateTime.UtcNow - c.at < PlanCache) return c.plan;
-                var plan = await FetchClaudePlanAsync();
-                _claudePlan = (DateTime.UtcNow, plan);
-                return plan;
+                var now = DateTime.UtcNow;
+                if (_claudePlan is { } c && now - c.at < PlanCache) return c.plan;
+                if (now < _claudeRetryAt)
+                    return _claudePlan?.plan ?? throw new InvalidOperationException(_claudeError);
+                try
+                {
+                    var plan = await FetchClaudePlanAsync();
+                    _claudePlan = (now, plan);
+                    _claudeBackoff = TimeSpan.Zero;
+                    _claudeError = null;
+                    return plan;
+                }
+                catch (PlanBusyException busy)
+                {
+                    // Recusado: segura o último valor e só tenta de novo depois da espera.
+                    _claudeBackoff = busy.RetryAfter
+                        ?? (_claudeBackoff == TimeSpan.Zero ? PlanCache : TimeSpan.FromTicks(Math.Min(_claudeBackoff.Ticks * 2, MaxBackoff.Ticks)));
+                    _claudeRetryAt = now + _claudeBackoff;
+                    _claudeError = busy.Message;
+                    return _claudePlan?.plan ?? throw new InvalidOperationException(busy.Message);
+                }
+                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidOperationException)
+                {
+                    // Login expirado, sem rede...: mostra o motivo, mas também não insiste a cada minuto.
+                    _claudeBackoff = PlanCache;
+                    _claudeRetryAt = now + PlanCache;
+                    _claudeError = ex is InvalidOperationException ? ex.Message : L.Ui("A Anthropic não respondeu.");
+                    // Queda de rede passageira: o último valor ainda serve.
+                    if (ex is not InvalidOperationException && _claudePlan is { } last) return last.plan;
+                    throw new InvalidOperationException(_claudeError);
+                }
             }
             finally
             {
@@ -114,9 +147,22 @@ namespace DroidDeck.Services
             using var resp = await client.SendAsync(req);
             if (resp.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
                 throw new InvalidOperationException(L.Ui("O login do Claude Code expirou. Abra o Claude Code para renovar."));
+            if ((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500)
+            {
+                var wait = resp.Headers.RetryAfter?.Delta
+                    ?? (resp.Headers.RetryAfter?.Date is { } d ? d - DateTimeOffset.UtcNow : null);
+                throw new PlanBusyException(L.Ui("Anthropic pediu uma pausa; tento de novo logo."),
+                    wait is { } w && w > TimeSpan.Zero ? (w < MaxBackoff ? w : MaxBackoff) : null);
+            }
             if (!resp.IsSuccessStatusCode)
                 throw new InvalidOperationException(L.Ui("A Anthropic não respondeu ({code}).", ("code", (int)resp.StatusCode)));
             return ParseClaudePlan(await resp.Content.ReadAsStringAsync());
+        }
+
+        private sealed class PlanBusyException : Exception
+        {
+            public TimeSpan? RetryAfter { get; }
+            public PlanBusyException(string message, TimeSpan? retryAfter) : base(message) => RetryAfter = retryAfter;
         }
 
         /// <summary>Resposta do /api/oauth/usage: five_hour e seven_day com utilization e resets_at.</summary>

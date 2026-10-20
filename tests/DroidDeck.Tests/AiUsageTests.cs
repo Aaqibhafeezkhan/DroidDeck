@@ -1,6 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using DroidDeck.Services;
 using Xunit;
 
@@ -69,6 +73,58 @@ namespace DroidDeck.Tests
             }
             finally
             {
+                Directory.Delete(dir, true);
+            }
+        }
+
+        private sealed class FakeHandler : HttpMessageHandler
+        {
+            public int Calls;
+            public HttpStatusCode Status = HttpStatusCode.OK;
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+            {
+                Calls++;
+                return Task.FromResult(new HttpResponseMessage(Status)
+                {
+                    Content = new StringContent("""{"five_hour":{"utilization":10},"seven_day":{"utilization":20}}"""),
+                });
+            }
+        }
+
+        private sealed class FakeFactory(HttpMessageHandler h) : IHttpClientFactory
+        {
+            public HttpClient CreateClient(string name) => new(h, false);
+        }
+
+        [Fact]
+        public async Task Claude_429_NaoInsisteAntesDaEspera()
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "dd-ai-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            var old = Environment.GetEnvironmentVariable("CLAUDE_CONFIG_DIR");
+            try
+            {
+                File.WriteAllText(Path.Combine(dir, ".credentials.json"),
+                    """{"claudeAiOauth":{"accessToken":"x","expiresAt":0}}""");
+                Environment.SetEnvironmentVariable("CLAUDE_CONFIG_DIR", dir);
+                var handler = new FakeHandler { Status = (HttpStatusCode)429 };
+                var ai = new AiUsageService(new FakeFactory(handler));
+
+                await Assert.ThrowsAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
+                handler.Status = HttpStatusCode.OK;
+                // Ainda dentro da espera: devolve o erro guardado sem perguntar de novo.
+                await Assert.ThrowsAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
+                Assert.Equal(1, handler.Calls);
+
+                // Com resposta boa guardada, a mesma janela de 5 min não pergunta de novo.
+                var fresh = new AiUsageService(new FakeFactory(handler));
+                Assert.Equal(10, (await fresh.PlanAsync(AiUsageService.Claude)).Session!.Percent);
+                Assert.Equal(20, (await fresh.PlanAsync(AiUsageService.Claude)).Week!.Percent);
+                Assert.Equal(2, handler.Calls);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("CLAUDE_CONFIG_DIR", old);
                 Directory.Delete(dir, true);
             }
         }
