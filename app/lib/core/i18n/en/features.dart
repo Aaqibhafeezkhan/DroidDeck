@@ -378,4 +378,6 @@ final Map<String, String> enFeatures = {
       'How much of the 5-hour window and the week is used, like /usage. Uses this PC\'s Claude Code login; nothing leaves the PC except the query to Anthropic.',
   'Tokens de hoje e dos últimos 7 dias, somados dos registros que a ferramenta guarda no PC (entrada, saída e cache).':
       'Tokens today and over the last 7 days, added up from the logs the tool keeps on the PC (input, output and cache).',
+  'fecha em ~{p}%':
+      'ends at ~{p}%',
 };

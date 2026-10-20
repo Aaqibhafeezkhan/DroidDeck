@@ -70,6 +70,10 @@ alguns segundos. Limpar as notificações no PC diminui o número.
   vermelho acima de 85 %.
 - Os tokens somam entrada, saída e cache (como o `ccusage`). O cache relido costuma ser a maior parte,
   então o número fica bem maior que o texto trocado de fato.
+- **Ritmo da semana**: um traço na barra da semana marca onde o uso estaria agora num ritmo constante
+  que termina a semana em 100 %. Se você está gastando rápido demais (a semana fecharia acima de 110 %),
+  a porcentagem fica **laranja**; se está sobrando (abaixo de 85 %), fica **azul**. Em botão mais alto
+  aparece a projeção, como "fecha em ~141%". Nas primeiras horas da semana o ritmo ainda não aparece.
 - "Hoje" começa à meia-noite do PC; "7 dias" conta hoje e os seis dias anteriores.
 - O Claude Code precisa estar instalado e com login no PC onde o DroidDeck roda. O DroidDeck **só lê**
   o login; nunca o renova, para não derrubar a sua sessão. Se ele expirar, o botão pede para abrir o

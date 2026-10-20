@@ -15,4 +15,18 @@ void main() {
     expect(resetLabel(DateTime(2026, 10, 20, 17, 39, 59, 900), now: now), '17:40');
     expect(resetLabel(DateTime(2026, 10, 26, 10), now: now), 'seg 10:00');
   });
+
+  test('WeekPace compara o uso com o ritmo que fecha a semana em 100%', () {
+    final resets = DateTime(2026, 10, 26, 10);
+    // Metade da semana passada.
+    final mid = resets.subtract(const Duration(days: 3, hours: 12));
+    final ok = WeekPace.of(50, resets, now: mid)!;
+    expect(ok.expected, closeTo(50, 0.01));
+    expect(ok.status, PaceStatus.onTrack);
+    expect(WeekPace.of(70, resets, now: mid)!.status, PaceStatus.high);
+    expect(WeekPace.of(30, resets, now: mid)!.status, PaceStatus.low);
+    expect(WeekPace.of(30, resets, now: mid)!.projected, closeTo(60, 0.01));
+    // Começo da semana: ainda sem projeção.
+    expect(WeekPace.of(2, resets, now: resets.subtract(const Duration(days: 6, hours: 23))), isNull);
+  });
 }

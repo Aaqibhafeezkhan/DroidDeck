@@ -241,6 +241,13 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
         final pct = (r['percent'] as num?)?.toDouble() ?? 0;
         final resets = DateTime.tryParse('${r['resetsAt'] ?? ''}')?.toLocal();
         final name = r['key'] == 'session' ? tr('5 horas') : tr('Semana');
+        // Semana: compara com o ritmo que fecharia a semana em 100%.
+        final pace = r['key'] == 'week' && resets != null ? WeekPace.of(pct, resets) : null;
+        final paceColor = switch (pace?.status) {
+          PaceStatus.high => Colors.orangeAccent,
+          PaceStatus.low => Colors.lightBlueAccent,
+          _ => Colors.greenAccent,
+        };
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 2),
           child: Column(
@@ -254,19 +261,46 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 10, color: fg.withValues(alpha: 0.75))),
                 ),
+                // Fora do ritmo, o número ganha a cor: laranja gastando rápido, azul sobrando.
                 Text('${pct.round()}%',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: pace == null || pace.status == PaceStatus.onTrack ? null : paceColor)),
               ]),
               const SizedBox(height: 2),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(3),
-                child: LinearProgressIndicator(
-                  value: (pct / 100).clamp(0.0, 1.0),
-                  minHeight: 5,
-                  backgroundColor: fg.withValues(alpha: 0.12),
-                  valueColor: AlwaysStoppedAnimation(usageColor(pct)),
+              LayoutBuilder(builder: (context, bar) {
+                return Stack(clipBehavior: Clip.none, children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: LinearProgressIndicator(
+                      value: (pct / 100).clamp(0.0, 1.0),
+                      minHeight: 5,
+                      backgroundColor: fg.withValues(alpha: 0.12),
+                      valueColor: AlwaysStoppedAnimation(usageColor(pct)),
+                    ),
+                  ),
+                  // Marca onde o uso "deveria" estar agora para fechar a semana em 100%.
+                  if (pace != null)
+                    Positioned(
+                      left: (bar.maxWidth * pace.expected / 100 - 1).clamp(0.0, bar.maxWidth - 2),
+                      top: -2,
+                      bottom: -2,
+                      child: Container(width: 2, color: fg.withValues(alpha: 0.85)),
+                    ),
+                ]);
+              }),
+              if (roomy && pace != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Builder(
+                    builder: (context) => FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(pace.label,
+                          maxLines: 1, style: TextStyle(fontSize: 10, color: paceColor)),
+                    ),
+                  ),
                 ),
-              ),
               if (roomy && resets != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 1),
@@ -418,4 +452,38 @@ String resetLabel(DateTime at, {DateTime? now}) {
   if (sameDay) return time;
   const days = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
   return '${tr(days[at.weekday - 1])} $time';
+}
+
+enum PaceStatus { low, onTrack, high }
+
+/// Ritmo do uso semanal: onde o uso estaria agora num ritmo constante que fecha a semana em
+/// 100% ([expected]) e onde ele fecha se continuar como está ([projected]).
+class WeekPace {
+  final double expected;
+  final double projected;
+  final PaceStatus status;
+
+  const WeekPace(this.expected, this.projected, this.status);
+
+  static const week = Duration(days: 7);
+
+  /// Nulo nas primeiras horas da semana, quando a projeção ainda não diz nada.
+  static WeekPace? of(double used, DateTime resetsAt, {DateTime? now}) {
+    now ??= DateTime.now();
+    final left = resetsAt.difference(now);
+    if (left.isNegative || left > week) return null;
+    final elapsed = 1 - left.inSeconds / week.inSeconds;
+    if (elapsed < 0.05) return null;
+    final expected = elapsed * 100;
+    final projected = used / elapsed;
+    final status = projected > 110
+        ? PaceStatus.high
+        : projected < 85
+            ? PaceStatus.low
+            : PaceStatus.onTrack;
+    return WeekPace(expected, projected, status);
+  }
+
+  /// "fecha em ~153%": onde a semana termina mantendo o ritmo de agora.
+  String get label => tr('fecha em ~{p}%', {'p': '${projected.clamp(0, 999).round()}'});
 }

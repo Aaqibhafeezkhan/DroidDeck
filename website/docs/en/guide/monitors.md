@@ -68,6 +68,10 @@ what to show:
   when it does the button keeps the last value and waits longer). The bars change color like the gauges: green, orange above 60 %, red above 85 %.
 - Tokens add up input, output and cache (like `ccusage`). Cache reads are usually most of it, so the
   number is much larger than the text actually exchanged.
+- **Weekly pace**: a tick on the week bar marks where usage would be now at a steady pace that ends
+  the week at 100 %. If you're spending too fast (the week would end above 110 %), the percentage turns
+  **orange**; if you're leaving some unused (below 85 %), it turns **blue**. A taller button also shows the
+  projection, like "ends at ~141%". The pace doesn't show in the first hours of the week.
 - "Today" starts at the PC's midnight; "7 days" counts today and the six days before.
 - Claude Code must be installed and signed in on the PC running DroidDeck. DroidDeck **only reads** the
   login; it never renews it, so your session isn't kicked out. If it expires, the button asks you to

@@ -378,4 +378,6 @@ final Map<String, String> esFeatures = {
       'Cuánto se usó de la ventana de 5 horas y de la semana, como en /usage. Usa el inicio de sesión de Claude Code de este PC; nada sale del PC salvo la consulta a Anthropic.',
   'Tokens de hoje e dos últimos 7 dias, somados dos registros que a ferramenta guarda no PC (entrada, saída e cache).':
       'Tokens de hoy y de los últimos 7 días, sumados de los registros que la herramienta guarda en el PC (entrada, salida y caché).',
+  'fecha em ~{p}%':
+      'cierra en ~{p}%',
 };
