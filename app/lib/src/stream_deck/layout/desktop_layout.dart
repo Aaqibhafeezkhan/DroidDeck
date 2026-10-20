@@ -45,7 +45,20 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
     });
   }
 
-  final _panelKey = GlobalKey<ButtonPropertyPanelState>();
+  /// Chave do painel aberto. Muda junto com o botão selecionado: o painel guarda o
+  /// formulário no próprio estado (lido só ao abrir), então trocar de botão com a mesma
+  /// chave deixava o formulário do botão anterior na tela.
+  var _panelKey = GlobalKey<ButtonPropertyPanelState>();
+  String? _panelFor;
+
+  GlobalKey<ButtonPropertyPanelState> _keyFor(DeckButton b) {
+    final id = b.id.isEmpty ? 'novo:${b.row}:${b.column}' : b.id;
+    if (id != _panelFor) {
+      _panelFor = id;
+      _panelKey = GlobalKey<ButtonPropertyPanelState>();
+    }
+    return _panelKey;
+  }
 
   /// Abaixo disso o painel de propriedades vira uma folha por cima da grade.
   static const _widePanel = 1100.0;
@@ -278,7 +291,7 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
       );
     }
     return ButtonPropertyPanel(
-      key: _panelKey,
+      key: _keyFor(selected),
       button: selected,
       profiles: profiles,
       onSave: (btn) {
