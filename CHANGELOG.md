@@ -1,3 +1,16 @@
+# [1.11.0](https://github.com/ggfto/DroidDeck/compare/v1.10.0...v1.11.0) (2026-10-20)
+
+
+### Bug Fixes
+
+* **configurador:** trocar de botao atualiza o painel de propriedades ([47d15ff](https://github.com/ggfto/DroidDeck/commit/47d15ff2df3f5c4a175ab3c8dc0f91a55eb408ef))
+
+
+### Features
+
+* **info:** botao de uso de IA (limites do plano e tokens do Claude e do Codex) ([80ddefd](https://github.com/ggfto/DroidDeck/commit/80ddefd3db26eeae0bdd6918ae84a0be230dc62b))
+* **slider:** controle deslizante para luzes, OBS, Discord, monitor e musica ([12736f6](https://github.com/ggfto/DroidDeck/commit/12736f68f2179a8d92614ca0a302f6287ea9d40b))
+
 # [1.10.0](https://github.com/ggfto/DroidDeck/compare/v1.9.1...v1.10.0) (2026-10-19)
 
 
