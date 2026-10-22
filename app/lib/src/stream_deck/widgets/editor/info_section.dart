@@ -175,7 +175,10 @@ class InfoSection extends StatelessWidget {
       case 'system_monitor':
         return [
           _switch('gpu', tr('Mostrar a GPU também'), false),
-          _note(tr('Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.')),
+          _switch('net', tr('Mostrar a rede também (download e upload)'), false),
+          _note(tr('Uma barra para cada medida; a rede mostra a velocidade numa linha, sem barra. Em botão '
+              'alto, a memória mostra quanto está em uso. O que não cabe no botão fica de fora: '
+              'aumente a altura em "Tamanho".')),
         ];
       case 'disk_monitor':
         final drive = _p('drive');

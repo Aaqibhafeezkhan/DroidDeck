@@ -11,7 +11,7 @@ Manager, for example).
 | **CPU usage** | Total processor usage, as a ring or a bar. |
 | **Memory usage** | RAM usage, with "used/total GB", as a ring or a bar. |
 | **GPU usage** | 3D engine usage of the GPU, as a ring or a bar. |
-| **CPU and memory** | CPU and RAM on the same button, one bar each (and the GPU, if you turn on **Show the GPU too**). |
+| **CPU and memory** | CPU and RAM on the same button, one bar each (and the GPU, if you turn on **Show the GPU too**). With **Show the network too**, it gets two lines with download ↓ and upload ↑ speed. |
 | **Disk space** | How much of a drive is used and how much is still free, or every drive, one bar each. |
 | **Network** | Download ↓ and upload ↑ speed across all active network adapters (K = KB/s, M = MB/s). |
 

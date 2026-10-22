@@ -396,12 +396,14 @@ final Map<String, String> enFeatures = {
       'Bar',
   'Mostrar a GPU também':
       'Show the GPU too',
-  'Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.':
-      'One bar per measure. On a tall button, memory shows how much is in use.',
   'Unidade':
       'Drive',
   'Todas (uma barra para cada)':
       'All (one bar each)',
   'Mostra quanto da unidade está ocupado e quanto ainda está livre. Atualiza a cada 30 segundos.':
       'Shows how much of the drive is used and how much is still free. Updates every 30 seconds.',
+  'Mostrar a rede também (download e upload)':
+      'Show the network too (download and upload)',
+  'Uma barra para cada medida; a rede mostra a velocidade numa linha, sem barra. Em botão alto, a memória mostra quanto está em uso. O que não cabe no botão fica de fora: aumente a altura em "Tamanho".':
+      'One bar per measure; the network shows its speed on one line, without a bar. On a tall button, memory shows how much is in use. What doesn\'t fit on the button is left out: make it taller in "Size".',
 };

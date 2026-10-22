@@ -11,10 +11,36 @@ class UsageRow {
   /// Texto à direita; sem ele, a porcentagem.
   final String? value;
 
+  /// Cor do valor (a rede usa verde para ↓ e azul para ↑).
+  final Color? valueColor;
+
   /// Linha extra embaixo da barra, só em botão alto (ex.: "120 GB livres").
   final String? detail;
 
-  const UsageRow(this.name, this.percent, {this.value, this.detail});
+  /// Sem barra: medida que não é porcentagem (velocidade da rede).
+  final bool bar;
+
+  /// Valor montado à parte (a rede: ↓ verde e ↑ azul na mesma linha), sem barra.
+  final Widget? valueWidget;
+
+  const UsageRow(this.name, this.percent, {this.value, this.valueColor, this.detail, this.bar = true})
+      : valueWidget = null;
+
+  /// Só texto, sem barra.
+  const UsageRow.text(this.name, String this.value, {this.valueColor})
+      : percent = 0,
+        detail = null,
+        bar = false,
+        valueWidget = null;
+
+  /// Só o [valueWidget], centralizado, sem nome nem barra.
+  const UsageRow.custom(Widget this.valueWidget)
+      : name = '',
+        percent = 0,
+        value = null,
+        valueColor = null,
+        detail = null,
+        bar = false;
 }
 
 /// Medidas em barras, no mesmo molde do botão de uso de IA: título com ícone e uma barra
@@ -27,7 +53,9 @@ class UsageBars extends StatelessWidget {
 
   const UsageBars({super.key, required this.icon, required this.title, required this.rows});
 
-  static const _rowHeight = 25.0;
+  static const _barRowHeight = 25.0;
+  static const _textRowHeight = 18.0;
+  static const _detailHeight = 13.0;
   static const _headerHeight = 16.0;
 
   @override
@@ -35,12 +63,20 @@ class UsageBars extends StatelessWidget {
     return LayoutBuilder(builder: (context, c) {
       final fg = DeckTile.foregroundOf(context);
       final roomy = c.maxHeight >= 120;
-      final rowHeight = _rowHeight + (roomy ? 13 : 0);
+      double height(UsageRow r) => !r.bar
+          ? _textRowHeight
+          : _barRowHeight + (roomy && r.detail != null ? _detailHeight : 0);
       // Título só quando sobra lugar: com muitas medidas, as barras valem mais.
       final room = c.maxHeight - 8;
-      final header = rows.length * rowHeight + _headerHeight <= room || rows.length <= 2;
-      final fit = ((room - (header ? _headerHeight : 0)) / rowHeight).floor().clamp(1, rows.length);
-      final shown = rows.take(fit).toList();
+      final total = rows.fold<double>(0, (sum, r) => sum + height(r));
+      final header = total + _headerHeight <= room || rows.length <= 2;
+      final shown = <UsageRow>[];
+      var used = header ? _headerHeight : 0.0;
+      for (final r in rows) {
+        if (shown.isNotEmpty && used + height(r) > room) break;
+        shown.add(r);
+        used += height(r);
+      }
 
       Widget small(String text, double alpha) => Text(text,
           maxLines: 1,
@@ -53,13 +89,25 @@ class UsageBars extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(children: [
-                  Expanded(child: small(r.name, 0.75)),
-                  Text(r.value ?? '${r.percent.round()}%',
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                ]),
-                const SizedBox(height: 2),
-                ExcludeSemantics(
+                if (r.valueWidget != null)
+                  FittedBox(fit: BoxFit.scaleDown, child: r.valueWidget)
+                else
+                  Row(children: [
+                    small(r.name, 0.75),
+                    const SizedBox(width: 4),
+                    // Botão estreito (~76 dp no celular): o valor encolhe em vez de estourar.
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerRight,
+                        child: Text(r.value ?? '${r.percent.round()}%',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: r.valueColor)),
+                      ),
+                    ),
+                  ]),
+                if (r.bar) const SizedBox(height: 2),
+                if (r.bar)
+                  ExcludeSemantics(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(3),
                     child: LinearProgressIndicator(

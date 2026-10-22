@@ -11,7 +11,7 @@ o Gerenciador de Tarefas, por exemplo).
 | **Uso da CPU** | Uso total do processador, em anel ou barra. |
 | **Uso da memória** | Uso de RAM, com "usado/total GB", em anel ou barra. |
 | **Uso da GPU** | Uso do motor 3D da GPU, em anel ou barra. |
-| **CPU e memória** | CPU e RAM no mesmo botão, uma barra para cada (e a GPU, se ligar **Mostrar a GPU também**). |
+| **CPU e memória** | CPU e RAM no mesmo botão, uma barra para cada (e a GPU, se ligar **Mostrar a GPU também**). Com **Mostrar a rede também**, ganha duas linhas com a velocidade de download ↓ e upload ↑. |
 | **Espaço em disco** | Quanto de uma unidade está ocupado e quanto ainda está livre, ou todas as unidades, uma barra para cada. |
 | **Rede** | Velocidade de download ↓ e upload ↑ somando todos os adaptadores de rede ativos (K = KB/s, M = MB/s). |
 

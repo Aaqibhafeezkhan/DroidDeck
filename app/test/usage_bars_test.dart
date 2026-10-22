@@ -46,4 +46,23 @@ void main() {
     expect(find.text('D0:'), findsOneWidget);
     expect(find.text('D5:'), findsNothing);
   });
+
+  testWidgets('Linha só de texto (rede) não tem barra', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: Center(
+        child: SizedBox(
+          width: 80,
+          height: 160,
+          child: UsageBars(icon: Icons.memory, title: 'PC', rows: const [
+            UsageRow('CPU', 20),
+            UsageRow.text('Rede', '14 KB/s'),
+            UsageRow.custom(Text('↓ 1.2 MB/s  ↑ 300 KB/s')),
+          ]),
+        ),
+      ),
+    ));
+    expect(tester.takeException(), isNull);
+    expect(find.text('14 KB/s'), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
 }

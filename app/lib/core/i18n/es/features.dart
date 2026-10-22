@@ -396,12 +396,14 @@ final Map<String, String> esFeatures = {
       'Barra',
   'Mostrar a GPU também':
       'Mostrar también la GPU',
-  'Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.':
-      'Una barra por medida. En un botón alto, la memoria muestra cuánto está en uso.',
   'Unidade':
       'Unidad',
   'Todas (uma barra para cada)':
       'Todas (una barra para cada una)',
   'Mostra quanto da unidade está ocupado e quanto ainda está livre. Atualiza a cada 30 segundos.':
       'Muestra cuánto de la unidad está ocupado y cuánto queda libre. Se actualiza cada 30 segundos.',
+  'Mostrar a rede também (download e upload)':
+      'Mostrar también la red (descarga y subida)',
+  'Uma barra para cada medida; a rede mostra a velocidade numa linha, sem barra. Em botão alto, a memória mostra quanto está em uso. O que não cabe no botão fica de fora: aumente a altura em "Tamanho".':
+      'Una barra por medida; la red muestra la velocidad en una línea, sin barra. En un botón alto, la memoria muestra cuánto está en uso. Lo que no cabe en el botón queda fuera: aumenta la altura en "Tamaño".',
 };

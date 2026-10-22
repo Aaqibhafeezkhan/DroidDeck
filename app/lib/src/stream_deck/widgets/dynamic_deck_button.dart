@@ -147,6 +147,20 @@ class DynamicDeckButton extends StatelessWidget {
                 ? '${stats.ramUsedGb.toStringAsFixed(1)}/${stats.ramTotalGb.toStringAsFixed(1)} GB'
                 : null),
         if (_params['gpu'] == 'true') UsageRow('GPU', _safe(stats.gpuUsage)),
+        if (_params['net'] == 'true') ...[
+          // Download e upload numa linha só, nas cores do medidor de rede.
+          UsageRow.custom(Text.rich(
+            TextSpan(children: [
+              TextSpan(
+                  text: '↓ ${_fmtRate(stats.netDown)}  ',
+                  style: const TextStyle(color: Colors.greenAccent)),
+              TextSpan(
+                  text: '↑ ${_fmtRate(stats.netUp)}',
+                  style: const TextStyle(color: Colors.lightBlueAccent)),
+            ]),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          )),
+        ],
       ],
     );
   }
