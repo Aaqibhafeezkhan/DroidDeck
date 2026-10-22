@@ -25,7 +25,7 @@ namespace DroidDeck.Controllers
                 var devices = await _lan.ScanAsync(TimeSpan.FromSeconds(2));
                 return Ok(devices.Select(d => new FieldOption(d.Ip, d.Sku != null ? $"{d.Sku} ({d.Ip})" : d.Ip)));
             }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
     }
 }

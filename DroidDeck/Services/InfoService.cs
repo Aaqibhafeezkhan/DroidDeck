@@ -70,6 +70,13 @@ namespace DroidDeck.Services
             public string Text { get; set; } = "";
             public string? Sub { get; set; }
 
+            /// <summary>
+            /// Sub traduzivel (mensagens de erro): vira texto por idioma em Localized(), na hora de
+            /// enviar. Nao vai no JSON.
+            /// </summary>
+            [System.Text.Json.Serialization.JsonIgnore]
+            public L.Text? SubText { get; set; }
+
             /// <summary>Clima: codigo WMO do tempo (o app escolhe o icone).</summary>
             public int? Code { get; set; }
             public bool? IsDay { get; set; }
@@ -79,8 +86,14 @@ namespace DroidDeck.Services
             public List<InfoRow>? Rows { get; set; }
 
             public bool SameAs(InfoValue? o) =>
-                o != null && o.Text == Text && o.Sub == Sub && o.Code == Code && o.IsDay == IsDay && o.Error == Error
+                o != null && o.Text == Text && o.Sub == Sub && o.SubText?.Plain == SubText?.Plain && o.Code == Code && o.IsDay == IsDay && o.Error == Error
                 && RowsKey(o.Rows) == RowsKey(Rows);
+
+            /// <summary>Copia com o SubText ja no idioma atual (L.Language).</summary>
+            public InfoValue Localized() => SubText == null ? this : new InfoValue
+            {
+                Text = Text, Sub = Short(SubText.ToString(), 60), Code = Code, IsDay = IsDay, Error = Error, Rows = Rows,
+            };
 
             private static string RowsKey(List<InfoRow>? rows) =>
                 rows == null ? "" : string.Join(";", rows.Select(r => $"{r.Key}:{r.Percent}:{r.Count}:{r.ResetsAt}"));
@@ -109,7 +122,8 @@ namespace DroidDeck.Services
         public NowPlayingInfo? NowPlaying { get; private set; }
 
         /// <summary>Valor de cada botao de informacao, por id do botao.</summary>
-        public object GetState() => _values.ToDictionary(kv => kv.Key, kv => kv.Value);
+        /// <summary>Valores no idioma atual (da requisicao ou do grupo do SignalR).</summary>
+        public object GetState() => _values.ToDictionary(kv => kv.Key, kv => kv.Value.Localized());
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -192,7 +206,12 @@ namespace DroidDeck.Services
             catch (Exception ex)
             {
                 _logger.LogDebug(ex, "Info: botao {Id} ({Type}) falhou", b.Id, b.DynamicType);
-                var err = new InfoValue { Text = "—", Sub = Short(ex.Message, 60), Error = true };
+                var err = new InfoValue
+                {
+                    Text = "—",
+                    SubText = ex is LocalizedException le ? le.Text : new L.Text(ex.Message),
+                    Error = true,
+                };
                 if (!(_values.TryGetValue(b.Id, out var old) && old.SameAs(err)))
                 {
                     _values[b.Id] = err;
@@ -252,7 +271,7 @@ namespace DroidDeck.Services
             var listener = Windows.UI.Notifications.Management.UserNotificationListener.Current;
             var access = await listener.RequestAccessAsync();
             if (access != Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus.Allowed)
-                return new InfoValue { Text = "—", Sub = L.T("Sem permissão"), Error = true };
+                return new InfoValue { Text = "—", SubText = new L.Text("Sem permissão"), Error = true };
             var list = await listener.GetNotificationsAsync(Windows.UI.Notifications.NotificationKinds.Toast);
             var count = 0;
             foreach (var n in list)
@@ -452,7 +471,7 @@ namespace DroidDeck.Services
 
         private async Task BroadcastAsync()
         {
-            try { await _hub.Clients.All.SendAsync(Event, GetState()); }
+            try { await _hub.SendLocalizedAsync(Event, GetState); }
             catch { }
         }
     }

@@ -133,7 +133,7 @@ namespace DroidDeck.Integrations
             catch (Exception ex)
             {
                 _error = ex.Message;
-                return Html("YouTube", L.T("Não deu certo: {error}", ("error", L.T(ex.Message))));
+                return Html("YouTube", L.T("Não deu certo: {error}", ("error", L.Message(ex))));
             }
         }
 

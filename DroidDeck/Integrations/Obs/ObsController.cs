@@ -38,7 +38,7 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> Connect()
         {
             try { await _obs.ConnectAsync(); return Ok(_obs.GetStatePayload()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("state")]
@@ -48,35 +48,35 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> Scenes()
         {
             try { return Ok(await _obs.GetScenesAsync()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("sources")]
         public async Task<IActionResult> Sources()
         {
             try { return Ok(await _obs.GetSourcesAsync()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("scene-items")]
         public async Task<IActionResult> SceneItems([FromQuery] string scene)
         {
             try { return Ok(await _obs.GetSceneItemsAsync(scene)); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("filters")]
         public async Task<IActionResult> Filters([FromQuery] string source)
         {
             try { return Ok(await _obs.GetFiltersAsync(source)); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("audio-inputs")]
         public async Task<IActionResult> AudioInputs()
         {
             try { return Ok(await _obs.GetAudioInputsAsync()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
     }
 }

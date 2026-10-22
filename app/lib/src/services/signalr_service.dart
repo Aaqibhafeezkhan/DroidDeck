@@ -66,6 +66,13 @@ class SystemStats {
 }
 
 class SignalRService {
+  SignalRService() {
+    effect(() {
+      AppLanguage.current.value;
+      untracked(_sendLanguage);
+    });
+  }
+
   HubConnection? _hubConnection;
   final _logger = Logger('SignalRService');
   // Signals
@@ -178,8 +185,6 @@ class SignalRService {
   /// Parada deliberada (updateUrl/dispose): nao reagendar reconexao.
   bool _stopped = false;
 
-  SignalRService();
-
   void _scheduleRetry() {
     if (_stopped) return;
     final url = _lastBaseUrl;
@@ -247,6 +252,9 @@ class SignalRService {
     } else {
       hubUrl = '$baseUrl/deckHub';
     }
+
+    // Idioma das mensagens que o PC monta (erros dos botões de informação).
+    hubUrl += '${hubUrl.contains('?') ? '&' : '?'}lang=${AppLanguage.current.value}';
 
     // SignalR via WebSocket autentica pela query string (?access_token=).
     if (apiKey != null && apiKey.isNotEmpty) {
@@ -470,6 +478,8 @@ class SignalRService {
     _hubConnection?.onreconnected(({connectionId}) {
       connectionStatus.value = "Connected";
       _retryCount = 0;
+      // A URL da reconexão ainda tem o idioma de quando conectou.
+      _sendLanguage();
     });
 
     try {
@@ -478,10 +488,22 @@ class SignalRService {
       connectionStatus.value = "Connected";
       _retryCount = 0;
       _retryTimer?.cancel();
+      _sendLanguage();
     } catch (e) {
       _logger.severe('SignalR Connection Failed: $e');
       connectionStatus.value = "Conn Error: $e";
       _scheduleRetry();
+    }
+  }
+
+  /// Avisa o PC do idioma do app (mudou nas configurações ou reconectou).
+  Future<void> _sendLanguage() async {
+    final conn = _hubConnection;
+    if (conn == null || conn.state != HubConnectionState.Connected) return;
+    try {
+      await conn.invoke('SetLanguage', args: [AppLanguage.current.value]);
+    } catch (_) {
+      // PC antigo sem SetLanguage: fica no idioma da conexão.
     }
   }
 

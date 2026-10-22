@@ -49,6 +49,38 @@ namespace DroidDeck.Tests
             finally { L.Language = "pt"; }
         }
 
+        [Fact]
+        public void Valores_SaemNoFormatoDoIdioma()
+        {
+            Assert.Equal("1,5", new L.Text("{n}", ("n", 1.5)).In("pt"));
+            Assert.Equal("1.5", new L.Text("{n}", ("n", 1.5)).In("en"));
+            Assert.Equal("1,5", new L.Text("{n}", ("n", 1.5)).In("es"));
+        }
+
+        [Fact]
+        public void Texto_GuardaOPortuguesETraduzNaHora()
+        {
+            var text = new L.Text("A Anthropic não respondeu ({code}).", ("code", 503));
+            Assert.Equal("A Anthropic não respondeu (503).", text.Plain);
+            Assert.Equal("Anthropic didn't respond (503).", text.In("en"));
+            L.Language = "en";
+            try { Assert.Equal(text.In("en"), L.Message(new LocalizedException(text))); }
+            finally { L.Language = "pt"; }
+            // Erro comum: traduz a mensagem inteira, como antes.
+            Assert.Equal("OBS recusou o pedido.", L.Message(new System.Exception("OBS recusou o pedido.")));
+        }
+
+        [Fact]
+        public void BotaoDeInformacao_ErroSaiNoIdiomaDeQuemRecebe()
+        {
+            var v = new DroidDeck.Services.InfoService.InfoValue { Text = "—", SubText = new L.Text("Sem permissão"), Error = true };
+            Assert.Equal("Sem permissão", v.Localized().Sub);
+            Assert.Equal(L.T("Sem permissão"), v.Localized().Sub);
+            L.Language = "en";
+            try { Assert.Equal(L.T("Sem permissão"), v.Localized().Sub); Assert.NotEqual("Sem permissão", v.Localized().Sub); }
+            finally { L.Language = "pt"; }
+        }
+
         private static Dictionary<string, string> Dictionary(string name) =>
             (Dictionary<string, string>)typeof(L)
                 .GetField(name, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
@@ -98,6 +130,15 @@ namespace DroidDeck.Tests
             "Script", "Voicemeeter", "Elgato Key Light", "Philips Hue", "Govee", "MQTT", "Streamer.bot", "VTube Studio",
         };
 
+        // Exemplos, unidades e termos tecnicos: ficam iguais em qualquer idioma.
+        private static readonly HashSet<string> Technical = new()
+        {
+            "{\"brightness_pct\": 40}", "#FF8000", "%", "^C", "1 min", "1 min 30", "2 min", "3 min", "30 s", "192.168.0.50",
+            "Authorization: Bearer …", @"C:\scripts\backup.ps1", @"C:\Windows\System32\notepad.exe", "dB", "DELETE", "GET",
+            "JSON", "K", "light.turn_on", "min", " min", "ON", "PATCH", "Pause", "Play", "Playlist", "POST", "PowerShell", "PUT",
+            "Python", "s", "Strip[0].A1", "URL",
+        };
+
         private readonly WebApplicationFactory<DroidDeck.Program> _factory;
 
         public LocalizedSchemaEndpointTests(WebApplicationFactory<DroidDeck.Program> factory) => _factory = factory;
@@ -126,6 +167,27 @@ namespace DroidDeck.Tests
                 Assert.Equal(s.Fields.Select(f => f.Key), t.Fields.Select(f => f.Key));
                 Assert.Equal(s.Fields.Select(f => f.Default), t.Fields.Select(f => f.Default));
             }
+        }
+
+        [Fact]
+        public async Task TodoTextoDoSchema_TemTraducao()
+        {
+            var texts = new List<string>();
+            foreach (var s in await Schema("pt-BR"))
+            {
+                texts.AddRange(new[] { s.Title, s.Category, s.Description! });
+                foreach (var f in s.Fields)
+                {
+                    texts.AddRange(new[] { f.Label, f.Help!, f.Hint!, f.Unit! });
+                    texts.AddRange((f.Options ?? new()).Select(o => o.Label));
+                }
+            }
+            var missing = texts
+                .Where(t => !string.IsNullOrWhiteSpace(t) && !SameInEnglish.Contains(t!) && !Technical.Contains(t!) && !L.Has(t!, "en"))
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+            Assert.True(missing.Count == 0, "Texto do schema sem tradução:\n" + string.Join("\n", missing));
         }
 
         [Fact]

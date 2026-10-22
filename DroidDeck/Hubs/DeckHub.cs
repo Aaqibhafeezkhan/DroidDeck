@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using DroidDeck.Lib;
 
 namespace DroidDeck.Hubs
 {
@@ -24,6 +25,14 @@ namespace DroidDeck.Hubs
         public override async Task OnConnectedAsync()
         {
             Interlocked.Increment(ref _connectedCount);
+            // Idioma da conexao: ?lang= (o app manda) ou o Accept-Language (navegador).
+            var http = Context.GetHttpContext();
+            var language = http?.Request.Query["lang"].ToString() is { Length: > 0 } q
+                ? L.LanguageOf(q)
+                : L.LanguageOf(http?.Request.Headers.AcceptLanguage.ToString());
+            Context.Items[LanguageKey] = language;
+            L.Language = language;
+            await Groups.AddToGroupAsync(Context.ConnectionId, LanguageGroup(language));
             // Manda a grade física atual (o configurador web a usa no lugar de um seletor manual).
             if (_services.GetService(typeof(Services.StreamDeckConfigService)) is Services.StreamDeckConfigService cfg)
             {
@@ -69,10 +78,59 @@ namespace DroidDeck.Hubs
             await base.OnConnectedAsync();
         }
 
+        /// <summary>O app trocou de idioma: passa a receber no novo e ja recebe os textos traduzidos.</summary>
+        public async Task SetLanguage(string language)
+        {
+            language = L.LanguageOf(language);
+            if (Context.Items.TryGetValue(LanguageKey, out var old) && old is string o)
+            {
+                if (o == language) return;
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, LanguageGroup(o));
+            }
+            Context.Items[LanguageKey] = language;
+            L.Language = language;
+            await Groups.AddToGroupAsync(Context.ConnectionId, LanguageGroup(language));
+            if (_services.GetService(typeof(Services.InfoService)) is Services.InfoService info)
+            {
+                try { await Clients.Caller.SendAsync(Services.InfoService.Event, info.GetState()); }
+                catch { }
+            }
+        }
+
+        private const string LanguageKey = "lang";
+
+        public static readonly string[] Languages = { "pt", "en", "es" };
+
+        public static string LanguageGroup(string language) => "lang:" + language;
+
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             Interlocked.Decrement(ref _connectedCount);
             await base.OnDisconnectedAsync(exception);
+        }
+    }
+
+    public static class LocalizedHubExtensions
+    {
+        /// <summary>
+        /// Envia para cada grupo de idioma a sua versao: payload() roda com L.Language daquele
+        /// idioma, entao L.T e L.Text dentro dele saem traduzidos.
+        /// </summary>
+        public static async Task SendLocalizedAsync(this IHubContext<DeckHub> hub, string method, Func<object?> payload)
+        {
+            var previous = L.Language;
+            try
+            {
+                foreach (var language in DeckHub.Languages)
+                {
+                    L.Language = language;
+                    await hub.Clients.Group(DeckHub.LanguageGroup(language)).SendAsync(method, payload());
+                }
+            }
+            finally
+            {
+                L.Language = previous;
+            }
         }
     }
 }

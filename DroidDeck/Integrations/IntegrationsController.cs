@@ -70,7 +70,7 @@ namespace DroidDeck.Controllers
         {
             if (!_integrations.TryGetValue(name, out var i)) return NotFound();
             try { return Ok(await i.OptionsAsync(list, Request.Query)); }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [AllowAnonymous]

@@ -11,6 +11,11 @@ namespace DroidDeck.Lib
     {
         private static readonly Dictionary<string, string> En = new(StringComparer.Ordinal)
         {
+            // ---- Exemplos nos campos (hint) ----
+            ["Sim\nNão"] = "Yes\nNo",
+            ["\"meu jogo\" 2"] = "\"my game\" 2",
+            ["Write-Output \"Olá, $($args[0])\""] = "Write-Output \"Hello, $($args[0])\"",
+
             // ---- Categorias ----
             ["Sistema"] = "System",
             ["Mídia"] = "Media",
@@ -178,8 +183,6 @@ namespace DroidDeck.Lib
             ["Pergunta"] = "Question",
             ["Qual jogo agora?"] = "Which game next?",
             ["Opções (uma por linha, 2 a 5)"] = "Options (one per line, 2 to 5)",
-            ["Sim"] = "Yes",
-            ["Não"] = "No",
             ["Novo título"] = "New title",
 
             // ---- YouTube ----
@@ -190,8 +193,6 @@ namespace DroidDeck.Lib
             // ==== Mensagens de erro e de status que chegam ao app ====
 
             // Seguranca (acoes privilegiadas so no PC)
-            ["Botões que abrem programas, enviam atalhos, ativam janelas ou fazem requisições HTTP só podem ser criados ou alterados no configurador do PC (http://localhost:4787)."] =
-                "Buttons that open programs, send shortcuts, activate windows or make HTTP requests can only be created or changed in the PC configurator (http://localhost:4787).",
             [" Botão: \"{label}\"."] = " Button: \"{label}\".",
             ["Gravar macro só funciona no configurador do PC (http://localhost:4787)."] =
                 "Macro recording only works in the PC configurator (http://localhost:4787).",

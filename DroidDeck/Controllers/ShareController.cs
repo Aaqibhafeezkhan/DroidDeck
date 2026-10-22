@@ -62,7 +62,7 @@ namespace DroidDeck.Controllers
         {
             Models.DeckProfile profile;
             try { profile = ProfileShare.Decode(request.Data ?? ""); }
-            catch (InvalidDataException ex) { return BadRequest(new { error = L.T(ex.Message) }); }
+            catch (InvalidDataException ex) { return BadRequest(new { error = L.Message(ex) }); }
 
             var stripped = 0;
             if (!ActionPolicy.IsLocal(HttpContext.Connection))

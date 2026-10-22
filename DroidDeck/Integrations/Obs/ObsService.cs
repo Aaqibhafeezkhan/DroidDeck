@@ -432,7 +432,7 @@ namespace DroidDeck.Services
                         {
                             bool ok = d.TryGetProperty("requestStatus", out var st) && st.TryGetProperty("result", out var rs) && rs.ValueKind == JsonValueKind.True;
                             if (ok) tcs.TrySetResult(d.TryGetProperty("responseData", out var rd) ? rd.Clone() : default);
-                            else tcs.TrySetException(new Exception($"OBS recusou o pedido."));
+                            else tcs.TrySetException(new Exception("OBS recusou o pedido."));
                         }
                         break;
                 }

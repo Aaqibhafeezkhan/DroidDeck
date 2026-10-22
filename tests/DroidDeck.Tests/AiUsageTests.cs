@@ -110,10 +110,10 @@ namespace DroidDeck.Tests
                 var handler = new FakeHandler { Status = (HttpStatusCode)429 };
                 var ai = new AiUsageService(new FakeFactory(handler));
 
-                await Assert.ThrowsAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
+                await Assert.ThrowsAnyAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
                 handler.Status = HttpStatusCode.OK;
                 // Ainda dentro da espera: devolve o erro guardado sem perguntar de novo.
-                await Assert.ThrowsAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
+                await Assert.ThrowsAnyAsync<InvalidOperationException>(() => ai.PlanAsync(AiUsageService.Claude));
                 Assert.Equal(1, handler.Calls);
 
                 // Com resposta boa guardada, a mesma janela de 5 min não pergunta de novo.

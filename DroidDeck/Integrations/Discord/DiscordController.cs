@@ -44,7 +44,7 @@ namespace DroidDeck.Controllers
             }
             catch (System.Exception ex)
             {
-                return StatusCode(502, new { error = L.T(ex.Message) });
+                return StatusCode(502, new { error = L.Message(ex) });
             }
         }
 
@@ -55,21 +55,21 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> Guilds()
         {
             try { return Ok(await _discord.GetGuildsAsync()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("channels/{guildId}")]
         public async Task<IActionResult> Channels(string guildId)
         {
             try { return Ok(await _discord.GetChannelsAsync(guildId)); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("voice-channel")]
         public async Task<IActionResult> VoiceChannel()
         {
             try { await _discord.RefreshVoiceChannelAsync(); return Ok(_discord.GetStatePayload()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpPost("mute")]
@@ -80,7 +80,7 @@ namespace DroidDeck.Controllers
                 await _discord.SetMuteAsync(dto?.Mute);
                 return Ok(new { mute = _discord.SelfMute });
             }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpPost("deafen")]
@@ -91,7 +91,7 @@ namespace DroidDeck.Controllers
                 await _discord.SetDeafAsync(dto?.Deaf);
                 return Ok(new { deaf = _discord.SelfDeaf });
             }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         // ---- Soundboard nativa do Discord ----
@@ -99,7 +99,7 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> SoundboardSounds()
         {
             try { return Ok(await _discord.GetSoundboardSoundsAsync()); }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         public class PlaySoundDto
@@ -118,7 +118,7 @@ namespace DroidDeck.Controllers
                 await _discord.PlaySoundboardSoundAsync(dto!.SoundId!, dto.GuildId);
                 return Ok();
             }
-            catch (System.Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (System.Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
     }
 }

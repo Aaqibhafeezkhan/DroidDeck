@@ -77,7 +77,7 @@ namespace DroidDeck.Controllers
 
             System.Collections.Generic.List<Models.DeckProfile> profiles;
             try { profiles = BackupService.Read(ms); }
-            catch (InvalidDataException ex) { return BadRequest(new { error = L.T(ex.Message) }); }
+            catch (InvalidDataException ex) { return BadRequest(new { error = L.Message(ex) }); }
 
             if (!ActionPolicy.IsLocal(HttpContext.Connection))
             {
@@ -117,7 +117,7 @@ namespace DroidDeck.Controllers
             var layout = _config.GetLayout();
             StreamDeckImport.Result result;
             try { result = StreamDeckImport.Read(ms, layout.Rows, layout.Columns); }
-            catch (InvalidDataException ex) { return BadRequest(new { error = L.T(ex.Message) }); }
+            catch (InvalidDataException ex) { return BadRequest(new { error = L.Message(ex) }); }
 
             var stripped = 0;
             if (!ActionPolicy.IsLocal(HttpContext.Connection))

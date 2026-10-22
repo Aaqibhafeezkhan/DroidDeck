@@ -38,7 +38,7 @@ namespace DroidDeck.Controllers
                 return BadRequest(new { error = L.T("userCode obrigatorio") });
 
             try { return Ok(await _tuya.StartPairingAsync(dto.UserCode!.Trim())); }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> PollPairing()
         {
             try { return Ok(new { scanned = await _tuya.PollPairingAsync() }); }
-            catch (InvalidOperationException ex) { return StatusCode(410, new { error = L.T(ex.Message) }); }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (InvalidOperationException ex) { return StatusCode(410, new { error = L.Message(ex) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         [HttpGet("state")]
@@ -60,7 +60,7 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> Connect()
         {
             try { await _tuya.ConnectAsync(); return Ok(_tuya.GetStatePayload()); }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         /// <summary>Reenumera na nuvem. Caro em cota: so a pedido explicito do usuario.</summary>
@@ -68,7 +68,7 @@ namespace DroidDeck.Controllers
         public async Task<IActionResult> RefreshDevices()
         {
             try { await _tuya.RefreshDevicesAsync(); return Ok(_tuya.GetStatePayload()); }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
 
         /// <summary>Usado pelo botao "testar" do editor.</summary>
@@ -83,7 +83,7 @@ namespace DroidDeck.Controllers
                 await _tuya.SendCommandAsync(dto.DeviceId!, dto.Code!, dto.Value);
                 return Ok();
             }
-            catch (Exception ex) { return StatusCode(502, new { error = L.T(ex.Message) }); }
+            catch (Exception ex) { return StatusCode(502, new { error = L.Message(ex) }); }
         }
     }
 }

@@ -41,7 +41,7 @@ namespace DroidDeck.Services
         private (DateTime at, Plan plan)? _claudePlan;
         private DateTime _claudeRetryAt = DateTime.MinValue;
         private TimeSpan _claudeBackoff = TimeSpan.Zero;
-        private string? _claudeError;
+        private L.Text? _claudeError;
         private readonly LogScanner _claudeLogs = new(ParseClaudeLine, "\"usage\"");
         private readonly LogScanner _codexLogs = new(ParseCodexLine, "\"token_count\"");
 
@@ -74,7 +74,7 @@ namespace DroidDeck.Services
             if (provider == Codex)
             {
                 var plan = await Task.Run(() => _codexLogs.LatestPlan(Path.Combine(CodexDir, "sessions")));
-                return plan ?? throw new InvalidOperationException(L.Ui("Sem registros do Codex neste PC."));
+                return plan ?? throw new LocalizedException("Sem registros do Codex neste PC.");
             }
 
             await _lock.WaitAsync();
@@ -83,7 +83,7 @@ namespace DroidDeck.Services
                 var now = DateTime.UtcNow;
                 if (_claudePlan is { } c && now - c.at < PlanCache) return c.plan;
                 if (now < _claudeRetryAt)
-                    return _claudePlan?.plan ?? throw new InvalidOperationException(_claudeError);
+                    return _claudePlan?.plan ?? throw new LocalizedException(_claudeError!);
                 try
                 {
                     var plan = await FetchClaudePlanAsync();
@@ -98,18 +98,23 @@ namespace DroidDeck.Services
                     _claudeBackoff = busy.RetryAfter
                         ?? (_claudeBackoff == TimeSpan.Zero ? PlanCache : TimeSpan.FromTicks(Math.Min(_claudeBackoff.Ticks * 2, MaxBackoff.Ticks)));
                     _claudeRetryAt = now + _claudeBackoff;
-                    _claudeError = busy.Message;
-                    return _claudePlan?.plan ?? throw new InvalidOperationException(busy.Message);
+                    _claudeError = busy.Text;
+                    return _claudePlan?.plan ?? throw new LocalizedException(busy.Text);
                 }
                 catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or InvalidOperationException)
                 {
                     // Login expirado, sem rede...: mostra o motivo, mas também não insiste a cada minuto.
                     _claudeBackoff = PlanCache;
                     _claudeRetryAt = now + PlanCache;
-                    _claudeError = ex is InvalidOperationException ? ex.Message : L.Ui("A Anthropic não respondeu.");
+                    _claudeError = ex switch
+                    {
+                        LocalizedException le => le.Text,
+                        InvalidOperationException => new L.Text(ex.Message),
+                        _ => new L.Text("A Anthropic não respondeu."),
+                    };
                     // Queda de rede passageira: o último valor ainda serve.
                     if (ex is not InvalidOperationException && _claudePlan is { } last) return last.plan;
-                    throw new InvalidOperationException(_claudeError);
+                    throw new LocalizedException(_claudeError);
                 }
             }
             finally
@@ -122,21 +127,21 @@ namespace DroidDeck.Services
         {
             var file = Path.Combine(ClaudeDir, ".credentials.json");
             if (!File.Exists(file))
-                throw new InvalidOperationException(L.Ui("Entre no Claude Code neste PC para ver os limites."));
+                throw new LocalizedException("Entre no Claude Code neste PC para ver os limites.");
 
             string? token;
             long expires;
             using (var creds = JsonDocument.Parse(await File.ReadAllTextAsync(file)))
             {
                 if (!creds.RootElement.TryGetProperty("claudeAiOauth", out var o))
-                    throw new InvalidOperationException(L.Ui("Entre no Claude Code neste PC para ver os limites."));
+                    throw new LocalizedException("Entre no Claude Code neste PC para ver os limites.");
                 token = o.TryGetProperty("accessToken", out var t) ? t.GetString() : null;
                 expires = o.TryGetProperty("expiresAt", out var e) && e.TryGetInt64(out var ms) ? ms : 0;
             }
             if (string.IsNullOrEmpty(token))
-                throw new InvalidOperationException(L.Ui("Entre no Claude Code neste PC para ver os limites."));
+                throw new LocalizedException("Entre no Claude Code neste PC para ver os limites.");
             if (expires > 0 && DateTimeOffset.FromUnixTimeMilliseconds(expires) < DateTimeOffset.UtcNow)
-                throw new InvalidOperationException(L.Ui("O login do Claude Code expirou. Abra o Claude Code para renovar."));
+                throw new LocalizedException("O login do Claude Code expirou. Abra o Claude Code para renovar.");
 
             var client = _http.CreateClient();
             client.Timeout = TimeSpan.FromSeconds(10);
@@ -146,23 +151,23 @@ namespace DroidDeck.Services
             req.Headers.UserAgent.ParseAdd("DroidDeck");
             using var resp = await client.SendAsync(req);
             if (resp.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-                throw new InvalidOperationException(L.Ui("O login do Claude Code expirou. Abra o Claude Code para renovar."));
+                throw new LocalizedException("O login do Claude Code expirou. Abra o Claude Code para renovar.");
             if ((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500)
             {
                 var wait = resp.Headers.RetryAfter?.Delta
                     ?? (resp.Headers.RetryAfter?.Date is { } d ? d - DateTimeOffset.UtcNow : null);
-                throw new PlanBusyException(L.Ui("Anthropic pediu uma pausa; tento de novo logo."),
+                throw new PlanBusyException(new L.Text("Anthropic pediu uma pausa; tento de novo logo."),
                     wait is { } w && w > TimeSpan.Zero ? (w < MaxBackoff ? w : MaxBackoff) : null);
             }
             if (!resp.IsSuccessStatusCode)
-                throw new InvalidOperationException(L.Ui("A Anthropic não respondeu ({code}).", ("code", (int)resp.StatusCode)));
+                throw new LocalizedException("A Anthropic não respondeu ({code}).", ("code", (int)resp.StatusCode));
             return ParseClaudePlan(await resp.Content.ReadAsStringAsync());
         }
 
-        private sealed class PlanBusyException : Exception
+        private sealed class PlanBusyException : LocalizedException
         {
             public TimeSpan? RetryAfter { get; }
-            public PlanBusyException(string message, TimeSpan? retryAfter) : base(message) => RetryAfter = retryAfter;
+            public PlanBusyException(L.Text text, TimeSpan? retryAfter) : base(text) => RetryAfter = retryAfter;
         }
 
         /// <summary>Resposta do /api/oauth/usage: five_hour e seven_day com utilization e resets_at.</summary>
