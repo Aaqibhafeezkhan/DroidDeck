@@ -25,7 +25,8 @@ namespace DroidDeck.Services.Tuya
     ///
     /// As credenciais do broker expiram (expireTime, tipicamente 2h) e sao reemitidas a cada
     /// reconexao; por isso o auto-reconnect do cliente MQTT fica DESLIGADO e a reconexao e
-    /// nossa -- reconectar com credencial velha so gera rejeicao em laco.
+    /// nossa -- reconectar com credencial velha so gera rejeicao em laco. Uma queda (troca de
+    /// rede, roteador reiniciado) acorda o laco na hora, com credencial nova.
     /// </summary>
     public class TuyaMqttClient : IAsyncDisposable
     {
@@ -37,6 +38,9 @@ namespace DroidDeck.Services.Tuya
         private IMqttClient? _client;
         private CancellationTokenSource? _cts;
         private Task? _loop;
+
+        // Liberado quando a conexao atual cai sem a gente pedir: interrompe a espera da renovacao.
+        private readonly SemaphoreSlim _dropped = new(0, 1);
 
         /// <summary>devId -> (dpId -> code), para traduzir relatos de aparelho com suporte local.</summary>
         private Dictionary<string, Dictionary<string, string>> _dpMaps = new();
@@ -96,9 +100,19 @@ namespace DroidDeck.Services.Tuya
                     continue;
                 }
 
-                // Renova ~60s antes de expirar. Credencial nova exige conexao nova.
+                // Renova ~60s antes de expirar. Credencial nova exige conexao nova. Se a conexao
+                // cair antes, reconecta ja -- esperar a renovacao deixava ate 2h sem estado.
                 var wait = TimeSpan.FromSeconds(Math.Max(expireSeconds - 60, 30));
-                try { await Task.Delay(wait, ct); } catch { return; }
+                try
+                {
+                    if (await _dropped.WaitAsync(wait, ct))
+                    {
+                        _logger.LogWarning("Tuya MQTT: conexao caiu; reconectando");
+                        // Evita laco apertado se o broker derrubar logo apos aceitar.
+                        await Task.Delay(TimeSpan.FromSeconds(2), ct);
+                    }
+                }
+                catch { return; }
             }
         }
 
@@ -129,7 +143,14 @@ namespace DroidDeck.Services.Tuya
             client.ApplicationMessageReceivedAsync += OnMessageAsync;
             client.DisconnectedAsync += _ =>
             {
-                ConnectionChanged?.Invoke(false);
+                // A troca de conexao na renovacao derruba o cliente antigo de proposito; so a
+                // queda do cliente em uso conta.
+                if (ReferenceEquals(client, _client))
+                {
+                    ConnectionChanged?.Invoke(false);
+                    if (_dropped.CurrentCount == 0)
+                        try { _dropped.Release(); } catch (SemaphoreFullException) { }
+                }
                 return Task.CompletedTask;
             };
 

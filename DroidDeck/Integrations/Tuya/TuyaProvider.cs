@@ -9,8 +9,9 @@ namespace DroidDeck.Actions.Providers
     ///
     /// "toggle" e o caso comum de um deck e depende do estado que o push MQTT mantem em
     /// memoria -- por isso ele nao faz leitura na nuvem antes (o que gastaria cota a cada
-    /// clique). Se o push estiver fora do ar o estado pode estar velho; nesse caso o usuario
-    /// ve o botao inverter "para o lado errado" uma vez e acerta no clique seguinte.
+    /// clique). Cada comando aceito tambem grava o valor enviado, entao com o push fora do ar
+    /// o estado pode estar velho so no primeiro clique: o botao inverte "para o lado errado"
+    /// uma vez e acerta no seguinte.
     /// Para um comando deterministico use "set" com o valor explicito.
     /// </summary>
     public class TuyaProvider : IStatefulActionProvider

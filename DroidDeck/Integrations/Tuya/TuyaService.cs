@@ -246,18 +246,20 @@ namespace DroidDeck.Services
             _mqtt = mqtt;
         }
 
-        private void OnStatusReported(TuyaStatusReport report)
-        {
-            if (!_devices.TryGetValue(report.DeviceId, out var device)) return;
+        private void OnStatusReported(TuyaStatusReport report) => ApplyStatus(report.DeviceId, report.Changes);
 
-            foreach (var change in report.Changes)
+        private void ApplyStatus(string deviceId, Dictionary<string, object?> changes)
+        {
+            if (!_devices.TryGetValue(deviceId, out var device)) return;
+
+            foreach (var change in changes)
                 device.Status[change.Key] = change.Value;
 
             // Empurra so o que mudou: o app usa isso para repintar o botao (ActiveColor).
             _ = _hub.Clients.All.SendAsync("ReceiveTuyaDeviceState", new
             {
-                deviceId = report.DeviceId,
-                status = report.Changes,
+                deviceId,
+                status = changes,
             });
         }
 
@@ -272,6 +274,12 @@ namespace DroidDeck.Services
         {
             if (_repo == null) throw new InvalidOperationException("Tuya nao conectado.");
             await _repo.SendCommandAsync(deviceId, code, value);
+
+            // A nuvem aceitou: guarda o valor enviado sem esperar o push. Sem isso, com o push
+            // fora do ar (ou o aparelho sem relatar, como apos uma troca de rede), o toggle lia
+            // sempre o mesmo estado velho e mandava o mesmo valor para sempre. Se o aparelho
+            // relatar outra coisa depois, o push corrige.
+            ApplyStatus(deviceId, new Dictionary<string, object?> { [code] = value });
         }
 
         /// <summary>
@@ -283,9 +291,12 @@ namespace DroidDeck.Services
             var device = GetDevice(deviceId)
                 ?? throw new InvalidOperationException($"Dispositivo {deviceId} desconhecido.");
 
-            var current = device.Status.TryGetValue(code, out var v) && v is bool b && b;
-            await SendCommandAsync(deviceId, code, !current);
+            await SendCommandAsync(deviceId, code, ToggleTarget(device, code));
         }
+
+        /// <summary>O valor que o toggle manda: o contrario do ultimo estado conhecido.</summary>
+        public static bool ToggleTarget(TuyaDevice device, string code)
+            => !(device.Status.TryGetValue(code, out var v) && v is bool b && b);
 
         public object GetStatePayload() => new
         {
