@@ -47,6 +47,7 @@ class DroidDeckAppConfig extends StatelessWidget {
                 theme: buildAppTheme(theme, Brightness.light),
                 darkTheme: buildAppTheme(theme, Brightness.dark),
                 themeMode: theme.mode,
+                builder: narrowSnackBars,
               );
             });
           },

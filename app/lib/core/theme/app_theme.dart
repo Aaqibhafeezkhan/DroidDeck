@@ -223,3 +223,14 @@ ThemeData buildAppTheme(ThemeSettings s, Brightness brightness) {
     extensions: [deck],
   );
 }
+
+/// builder do MaterialApp: em tela larga (configurador no navegador), o aviso de baixo
+/// tem largura de aviso, centralizado, em vez de uma faixa de ponta a ponta.
+Widget narrowSnackBars(BuildContext context, Widget? child) {
+  if (MediaQuery.sizeOf(context).width < 640) return child!;
+  final t = Theme.of(context);
+  return Theme(
+    data: t.copyWith(snackBarTheme: t.snackBarTheme.copyWith(width: 480)),
+    child: child!,
+  );
+}

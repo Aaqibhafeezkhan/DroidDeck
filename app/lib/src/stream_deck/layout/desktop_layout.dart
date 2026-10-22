@@ -313,6 +313,8 @@ class _SteamDeckDesktopLayoutState extends State<SteamDeckDesktopLayout> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(tr('Botão removido.')),
       duration: const Duration(seconds: 6),
+      // Com ação, o Flutter deixa o aviso na tela até alguém fechar; este some sozinho.
+      persist: false,
       action: SnackBarAction(
         label: tr('Desfazer'),
         onPressed: () => widget.controller.updateButton(previous),

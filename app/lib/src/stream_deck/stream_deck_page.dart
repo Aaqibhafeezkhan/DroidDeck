@@ -276,6 +276,8 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
             messenger.showSnackBar(SnackBar(
               content: Text(tr('Botão removido.')),
               duration: const Duration(seconds: 6),
+              // Com ação, o Flutter deixa o aviso na tela até alguém fechar; este some sozinho.
+              persist: false,
               action: SnackBarAction(
                 label: tr('Desfazer'),
                 onPressed: () => controller.updateButton(button),
@@ -471,6 +473,8 @@ class _StreamDeckPageState extends State<StreamDeckPage> {
         content: Text(widget.isFullscreen
             ? tr('Para editar, toque em "Editar agora".')
             : tr('Para editar, toque no lápis da barra de cima.')),
+        // Com ação, o Flutter deixa o aviso na tela até alguém fechar; este some sozinho.
+        persist: false,
         action: SnackBarAction(
           label: tr('Editar agora'),
           onPressed: () => setState(() => _editMode = true),
