@@ -380,4 +380,28 @@ final Map<String, String> enFeatures = {
       'Tokens today and over the last 7 days, added up from the logs the tool keeps on the PC (input, output and cache).',
   'fecha em ~{p}%':
       'ends at ~{p}%',
+  'CPU e memória':
+      'CPU and memory',
+  'Espaço em disco':
+      'Disk space',
+  'RAM':
+      'RAM',
+  '{n} livres':
+      '{n} free',
+  'Discos':
+      'Disks',
+  'Anel':
+      'Ring',
+  'Barra':
+      'Bar',
+  'Mostrar a GPU também':
+      'Show the GPU too',
+  'Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.':
+      'One bar per measure. On a tall button, memory shows how much is in use.',
+  'Unidade':
+      'Drive',
+  'Todas (uma barra para cada)':
+      'All (one bar each)',
+  'Mostra quanto da unidade está ocupado e quanto ainda está livre. Atualiza a cada 30 segundos.':
+      'Shows how much of the drive is used and how much is still free. Updates every 30 seconds.',
 };

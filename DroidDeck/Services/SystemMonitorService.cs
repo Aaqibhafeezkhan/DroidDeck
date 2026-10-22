@@ -32,6 +32,10 @@ namespace DroidDeck.Services
         // engine de GPU a cada chamada. Só rescaneia a cada N ticks; entre eles, só lê os
         // counters já cacheados (evita pressão de GC constante no loop de 1s).
         private int _gpuTick = 0;
+
+        // Espaço em disco muda devagar: lê a cada 30 s e repete o último nos outros ticks.
+        private const int DiskEveryTicks = 30;
+        private List<DiskStat>? _disks;
         private const int GpuRescanEveryTicks = 30;
 
         public SystemMonitorService(ILogger<SystemMonitorService> logger, IHubContext<DeckHub> hubContext, MediaControlService media)
@@ -106,6 +110,7 @@ namespace DroidDeck.Services
                         NetUpKBps = netUp,
                         NetDownKBps = netDown,
                         GpuUsage = SampleGpu(),
+                        Disks = tick % DiskEveryTicks == 0 || _disks == null ? (_disks = SampleDisks()) : _disks,
                     };
 
                     // Broadcast to clients listening on "ReceiveSystemStats"
@@ -137,6 +142,32 @@ namespace DroidDeck.Services
             try { _cpuCounter?.Dispose(); } catch { }
             foreach (var c in _gpuCounters.Values) { try { c.Dispose(); } catch { } }
             _gpuCounters.Clear();
+        }
+
+        /// <summary>Unidades fixas prontas (HD/SSD; pendrive e rede ficam de fora), em ordem de letra.</summary>
+        public static List<DiskStat> SampleDisks()
+        {
+            var list = new List<DiskStat>();
+            try
+            {
+                foreach (var d in System.IO.DriveInfo.GetDrives())
+                {
+                    try
+                    {
+                        if (d.DriveType != System.IO.DriveType.Fixed || !d.IsReady || d.TotalSize <= 0) continue;
+                        list.Add(new DiskStat
+                        {
+                            Name = d.Name.TrimEnd('\\'),
+                            Label = d.VolumeLabel ?? "",
+                            TotalBytes = d.TotalSize,
+                            FreeBytes = d.TotalFreeSpace,
+                        });
+                    }
+                    catch { } // unidade que some no meio da leitura
+                }
+            }
+            catch { }
+            return list.OrderBy(d => d.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
         private (float up, float down) SampleNetwork()

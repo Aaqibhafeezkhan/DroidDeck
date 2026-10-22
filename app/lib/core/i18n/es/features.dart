@@ -380,4 +380,28 @@ final Map<String, String> esFeatures = {
       'Tokens de hoy y de los últimos 7 días, sumados de los registros que la herramienta guarda en el PC (entrada, salida y caché).',
   'fecha em ~{p}%':
       'cierra en ~{p}%',
+  'CPU e memória':
+      'CPU y memoria',
+  'Espaço em disco':
+      'Espacio en disco',
+  'RAM':
+      'RAM',
+  '{n} livres':
+      '{n} libres',
+  'Discos':
+      'Discos',
+  'Anel':
+      'Anillo',
+  'Barra':
+      'Barra',
+  'Mostrar a GPU também':
+      'Mostrar también la GPU',
+  'Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.':
+      'Una barra por medida. En un botón alto, la memoria muestra cuánto está en uso.',
+  'Unidade':
+      'Unidad',
+  'Todas (uma barra para cada)':
+      'Todas (una barra para cada una)',
+  'Mostra quanto da unidade está ocupado e quanto ainda está livre. Atualiza a cada 30 segundos.':
+      'Muestra cuánto de la unidad está ocupado y cuánto queda libre. Se actualiza cada 30 segundos.',
 };

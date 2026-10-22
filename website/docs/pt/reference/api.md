@@ -216,11 +216,13 @@ mensagens de erro vêm em inglês.
 
 ## Hub SignalR: `/deckHub` { #signalr-hub }
 
-Conecte com `?access_token=<key>`. O hub só envia eventos; os comandos passam pelo REST.
+Conecte com `?access_token=<key>`. O hub só envia eventos; os comandos passam pelo REST. A exceção é
+`SetLanguage("en")`, que troca o idioma dos textos que o PC monta (erros dos botões de informação).
+O idioma inicial vem de `?lang=pt|en|es` ou, sem ele, do `Accept-Language`.
 
 | Evento | Payload |
 |---|---|
-| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage}`: a cada segundo |
+| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage, disks}`: a cada segundo. `disks` é `[{name: "C:", label, totalBytes, freeBytes}]` e é lido a cada 30 s |
 | `ReceiveMediaStatus` | `{playing}` |
 | `ReceiveMediaState` | `{sessionId, command, playing}` |
 | `ReceiveVolumeChange` | `{deviceId, type, data}` |

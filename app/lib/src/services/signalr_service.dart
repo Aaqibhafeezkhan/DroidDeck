@@ -27,6 +27,7 @@ class SystemStats {
   final double netUp; // KB/s
   final double netDown; // KB/s
   final double gpuUsage; // % (0-100)
+  final List<DiskStat> disks; // unidades fixas, em ordem de letra
 
   SystemStats({
     this.cpuUsage = 0,
@@ -36,6 +37,7 @@ class SystemStats {
     this.netUp = 0,
     this.netDown = 0,
     this.gpuUsage = 0,
+    this.disks = const [],
   });
 
   /// % de RAM em uso (usa o valor do backend; se faltar, calcula de total/disponível).
@@ -61,8 +63,29 @@ class SystemStats {
       netUp: parseDouble(json['netUpKBps'] ?? json['NetUpKBps']),
       netDown: parseDouble(json['netDownKBps'] ?? json['NetDownKBps']),
       gpuUsage: parseDouble(json['gpuUsage'] ?? json['GpuUsage']),
+      disks: ((json['disks'] ?? json['Disks']) as List? ?? const [])
+          .whereType<Map>()
+          .map((d) => DiskStat(
+                name: '${d['name'] ?? d['Name'] ?? ''}',
+                label: '${d['label'] ?? d['Label'] ?? ''}',
+                totalBytes: parseDouble(d['totalBytes'] ?? d['TotalBytes']),
+                freeBytes: parseDouble(d['freeBytes'] ?? d['FreeBytes']),
+              ))
+          .toList(),
     );
   }
+}
+
+/// Uma unidade de disco do PC ("C:").
+class DiskStat {
+  final String name;
+  final String label;
+  final double totalBytes;
+  final double freeBytes;
+
+  const DiskStat({required this.name, this.label = '', this.totalBytes = 0, this.freeBytes = 0});
+
+  double get usedPercent => totalBytes > 0 ? (totalBytes - freeBytes) / totalBytes * 100 : 0;
 }
 
 class SignalRService {

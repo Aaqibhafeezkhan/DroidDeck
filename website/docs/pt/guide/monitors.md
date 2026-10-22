@@ -8,13 +8,24 @@ o Gerenciador de Tarefas, por exemplo).
 
 | Informação | Mostra |
 |---|---|
-| **Uso da CPU** | Uso total do processador, em um medidor. |
-| **Uso da memória** | Uso de RAM, com "usado/total GB". |
-| **Uso da GPU** | Uso do motor 3D da GPU, em um medidor. |
+| **Uso da CPU** | Uso total do processador, em anel ou barra. |
+| **Uso da memória** | Uso de RAM, com "usado/total GB", em anel ou barra. |
+| **Uso da GPU** | Uso do motor 3D da GPU, em anel ou barra. |
+| **CPU e memória** | CPU e RAM no mesmo botão, uma barra para cada (e a GPU, se ligar **Mostrar a GPU também**). |
+| **Espaço em disco** | Quanto de uma unidade está ocupado e quanto ainda está livre, ou todas as unidades, uma barra para cada. |
 | **Rede** | Velocidade de download ↓ e upload ↑ somando todos os adaptadores de rede ativos (K = KB/s, M = MB/s). |
 
 Os medidores mudam de cor conforme a carga: **verde** até 60 %, **laranja** acima de 60 %,
 **vermelho** acima de 85 %.
+
+- **Anel ou barra:** CPU, memória, GPU e uma unidade de disco escolhida mostram um anel por padrão; em
+  **Barra**, mostram o número grande com uma barra embaixo.
+- **Botão alto:** em **CPU e memória** e em **Espaço em disco** com todas as unidades, um botão com
+  2 linhas de altura mostra também "usado/total GB" da memória e o espaço livre de cada unidade.
+  Num botão pequeno com muitas unidades, as que não cabem ficam de fora (em ordem de letra).
+- **Espaço em disco** lista só os discos fixos do PC (HD e SSD); pendrive e unidade de rede ficam de
+  fora. O espaço é lido **a cada 30 segundos**. Se a unidade escolhida sumir (HD desligado), o botão
+  mostra "Sem dados".
 
 - Os valores são atualizados **a cada segundo** enquanto houver um celular conectado. O PC para de
   coletá-los quando nenhum celular está conectado.

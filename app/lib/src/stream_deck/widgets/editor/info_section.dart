@@ -1,6 +1,8 @@
 import 'package:droiddeck/core/core.dart';
 import 'package:flutter/material.dart';
 
+import 'package:droiddeck/src/services/signalr_service.dart';
+
 import 'remote_options_field.dart';
 
 /// "Mostrar no botão": monitor do PC ou informação (relógio, clima, comando, URL...),
@@ -31,6 +33,8 @@ class InfoSection extends StatelessWidget {
     'memory_monitor': 'Uso da memória',
     'gpu_monitor': 'Uso da GPU',
     'network_monitor': 'Rede',
+    'system_monitor': 'CPU e memória',
+    'disk_monitor': 'Espaço em disco',
     'clock': 'Relógio',
     'weather': 'Clima',
     'now_playing': 'Tocando agora',
@@ -149,8 +153,61 @@ class InfoSection extends StatelessWidget {
     );
   }
 
+  /// Anel (padrão) ou barra.
+  Widget _style() => Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: SegmentedButton<String>(
+          segments: [
+            ButtonSegment(value: 'ring', label: Text(tr('Anel')), icon: const Icon(Icons.donut_large)),
+            ButtonSegment(value: 'bars', label: Text(tr('Barra')), icon: const Icon(Icons.align_horizontal_left)),
+          ],
+          selected: {_p('style', 'ring')},
+          onSelectionChanged: (v) => _set('style', v.first == 'ring' ? '' : v.first),
+        ),
+      );
+
   List<Widget> _fields() {
     switch (type) {
+      case 'cpu_monitor':
+      case 'memory_monitor':
+      case 'gpu_monitor':
+        return [_style()];
+      case 'system_monitor':
+        return [
+          _switch('gpu', tr('Mostrar a GPU também'), false),
+          _note(tr('Uma barra para cada medida. Em botão alto, a memória mostra quanto está em uso.')),
+        ];
+      case 'disk_monitor':
+        final drive = _p('drive');
+        final disks = Injector.get<SignalRService>().systemStats.value.disks;
+        return [
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: DropdownButtonFormField<String>(
+              key: ValueKey('disk_drive_$drive'),
+              initialValue: drive,
+              decoration: InputDecoration(
+                labelText: tr('Unidade'),
+                border: const OutlineInputBorder(),
+              ),
+              items: [
+                DropdownMenuItem(value: '', child: Text(tr('Todas (uma barra para cada)'))),
+                for (final d in disks)
+                  DropdownMenuItem(
+                    value: d.name,
+                    child: Text(d.label.isNotEmpty ? '${d.name} ${d.label}' : d.name),
+                  ),
+                // Unidade gravada que não aparece agora (HD desligado): continua na lista.
+                if (drive.isNotEmpty && !disks.any((d) => d.name == drive))
+                  DropdownMenuItem(value: drive, child: Text(drive)),
+              ],
+              onChanged: (v) => _set('drive', v ?? ''),
+            ),
+          ),
+          if (drive.isNotEmpty) _style(),
+          _note(tr('Mostra quanto da unidade está ocupado e quanto ainda está livre. '
+              'Atualiza a cada 30 segundos.')),
+        ];
       case 'clock':
         return [
           _switch('format24', tr('24 horas'), true),

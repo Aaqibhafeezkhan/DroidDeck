@@ -215,11 +215,13 @@ messages come in English.
 
 ## SignalR hub: `/deckHub` { #signalr-hub }
 
-Connect with `?access_token=<key>`. The hub only pushes events; commands go through REST.
+Connect with `?access_token=<key>`. The hub only pushes events; commands go through REST. The
+exception is `SetLanguage("en")`, which switches the language of texts the PC builds (info button
+errors). The starting language comes from `?lang=pt|en|es` or, without it, from `Accept-Language`.
 
 | Event | Payload |
 |---|---|
-| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage}`: every second |
+| `ReceiveSystemStats` | `{cpuUsage, ramUsage, ramTotal, ramAvailable, netUpKBps, netDownKBps, gpuUsage, disks}`: every second. `disks` is `[{name: "C:", label, totalBytes, freeBytes}]`, read every 30 s |
 | `ReceiveMediaStatus` | `{playing}` |
 | `ReceiveMediaState` | `{sessionId, command, playing}` |
 | `ReceiveVolumeChange` | `{deviceId, type, data}` |

@@ -8,12 +8,23 @@ Manager, for example).
 
 | Information | Shows |
 |---|---|
-| **CPU usage** | Total processor usage, as a gauge. |
-| **Memory usage** | RAM usage, with "used/total GB". |
-| **GPU usage** | 3D engine usage of the GPU, as a gauge. |
+| **CPU usage** | Total processor usage, as a ring or a bar. |
+| **Memory usage** | RAM usage, with "used/total GB", as a ring or a bar. |
+| **GPU usage** | 3D engine usage of the GPU, as a ring or a bar. |
+| **CPU and memory** | CPU and RAM on the same button, one bar each (and the GPU, if you turn on **Show the GPU too**). |
+| **Disk space** | How much of a drive is used and how much is still free, or every drive, one bar each. |
 | **Network** | Download ↓ and upload ↑ speed across all active network adapters (K = KB/s, M = MB/s). |
 
 Gauges change colour with load: **green** up to 60 %, **orange** above 60 %, **red** above 85 %.
+
+- **Ring or bar:** CPU, memory, GPU and a single chosen drive show a ring by default; with **Bar**
+  they show the big number with a bar under it.
+- **Tall button:** in **CPU and memory** and in **Disk space** with every drive, a button 2 rows tall
+  also shows memory "used/total GB" and the free space of each drive. On a small button with many
+  drives, the ones that don't fit are left out (in drive-letter order).
+- **Disk space** lists only the PC's fixed disks (HDD and SSD); USB sticks and network drives are left
+  out. Space is read **every 30 seconds**. If the chosen drive goes away (disk turned off), the button
+  shows "No data".
 
 - Values update **every second** while a phone is connected. The PC stops collecting them when no
   phone is connected.

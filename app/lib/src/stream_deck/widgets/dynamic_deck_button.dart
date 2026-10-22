@@ -8,6 +8,7 @@ import '../buttons/colors.dart';
 import 'info_deck_button.dart';
 import 'editor/info_section.dart';
 import 'slider_deck_button.dart';
+import 'usage_bars.dart';
 
 class DynamicDeckButton extends StatelessWidget {
   final DeckButton button;
@@ -34,6 +35,8 @@ class DynamicDeckButton extends StatelessWidget {
         'memory_monitor' => tr('Uso da memória'),
         'gpu_monitor' => tr('Uso da GPU'),
         'network_monitor' => tr('Rede'),
+        'system_monitor' => tr('CPU e memória'),
+        'disk_monitor' => tr('Espaço em disco'),
         _ => null,
       };
     }
@@ -113,14 +116,85 @@ class DynamicDeckButton extends StatelessWidget {
         return _buildGpuMonitor(stats);
       case 'network_monitor':
         return _buildNetworkMonitor(stats);
+      case 'system_monitor':
+        return _buildSystemMonitor(stats);
+      case 'disk_monitor':
+        return _buildDiskMonitor(stats);
       default:
         return Center(child: Text(tr('Desconhecido: {type}', {'type': type})));
     }
   }
 
+  Map<String, String> get _params => button.dynamicParameters ?? const {};
+
+  /// Opção "Barra" dos medidores (o padrão é o anel).
+  bool get _bars => _params['style'] == 'bars';
+
+  static double _safe(double v) => v.isNaN || v.isInfinite ? 0 : v;
+
+  String? get _label => button.label?.trim().isNotEmpty == true ? button.label!.trim() : null;
+
+  /// CPU e memória juntas (e a GPU, se ligada), em barras como o uso de IA.
+  Widget _buildSystemMonitor(SystemStats stats) {
+    final ram = _safe(stats.ramUsedPercent);
+    return UsageBars(
+      icon: Icons.memory,
+      title: _label ?? 'PC',
+      rows: [
+        UsageRow('CPU', _safe(stats.cpuUsage)),
+        UsageRow(tr('RAM'), ram,
+            detail: stats.ramTotal > 0
+                ? '${stats.ramUsedGb.toStringAsFixed(1)}/${stats.ramTotalGb.toStringAsFixed(1)} GB'
+                : null),
+        if (_params['gpu'] == 'true') UsageRow('GPU', _safe(stats.gpuUsage)),
+      ],
+    );
+  }
+
+  /// Uma unidade (anel ou barra) ou todas (uma barra por unidade).
+  Widget _buildDiskMonitor(SystemStats stats) {
+    final drive = _params['drive'] ?? '';
+    String free(DiskStat d) => tr('{n} livres', {'n': formatBytes(d.freeBytes)});
+    if (drive.isEmpty) {
+      return UsageBars(
+        icon: Icons.storage,
+        title: _label ?? tr('Discos'),
+        rows: [
+          for (final d in stats.disks)
+            UsageRow(d.name, d.usedPercent, detail: free(d)),
+        ],
+      );
+    }
+    final d = stats.disks.where((d) => d.name.toUpperCase() == drive.toUpperCase()).firstOrNull;
+    if (d == null) {
+      // Unidade que saiu (HD desligado) ou ainda sem a primeira leitura.
+      return Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.storage, size: 18),
+            Text(drive, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(tr('Sem dados'), style: const TextStyle(fontSize: 10)),
+          ]),
+        ),
+      );
+    }
+    final name = _label ?? (d.label.isNotEmpty ? '${d.name} ${d.label}' : d.name);
+    if (_bars) {
+      return UsageBar(icon: Icons.storage, name: name, percent: d.usedPercent, detail: free(d));
+    }
+    return _gauge(
+      percent: d.usedPercent,
+      icon: Icons.storage,
+      value: '${d.usedPercent.toStringAsFixed(0)}%',
+      label: '${d.name} ${formatBytes(d.freeBytes)}',
+    );
+  }
+
   Widget _buildCpuMonitor(SystemStats stats) {
     double pct = stats.cpuUsage;
     if (pct.isNaN || pct.isInfinite) pct = 0;
+    if (_bars) return UsageBar(icon: Icons.memory, name: 'CPU', percent: pct);
     return _gauge(
       percent: pct,
       icon: Icons.memory,
@@ -135,6 +209,14 @@ class DynamicDeckButton extends StatelessWidget {
     final detail = stats.ramTotal > 0
         ? '${stats.ramUsedGb.toStringAsFixed(1)}/${stats.ramTotalGb.toStringAsFixed(1)}G'
         : 'RAM';
+    if (_bars) {
+      return UsageBar(
+        icon: Icons.memory_outlined,
+        name: tr('RAM'),
+        percent: pct,
+        detail: stats.ramTotal > 0 ? detail : null,
+      );
+    }
     return _gauge(
       percent: pct,
       icon: Icons.memory_outlined,
@@ -146,6 +228,7 @@ class DynamicDeckButton extends StatelessWidget {
   Widget _buildGpuMonitor(SystemStats stats) {
     double pct = stats.gpuUsage;
     if (pct.isNaN || pct.isInfinite) pct = 0;
+    if (_bars) return UsageBar(icon: Icons.videogame_asset, name: 'GPU', percent: pct);
     return _gauge(
       percent: pct,
       icon: Icons.videogame_asset,
