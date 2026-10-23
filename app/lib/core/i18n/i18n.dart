@@ -5,27 +5,28 @@ import 'package:signals_flutter/signals_flutter.dart';
 
 import 'en/en.dart';
 import 'es/es.dart';
+import 'hi/hi.dart';
 
-/// Idioma da interface: o texto-fonte é português e [tr] devolve a tradução quando o
-/// idioma é inglês ou espanhol. Texto sem tradução em espanhol cai no inglês; sem
-/// tradução nenhuma aparece em português (nunca some).
-///
-/// Placeholders entre chaves: `tr('Conectado — {account}', {'account': nome})`.
+/// Idioma da interface: o texto-fonte é português. Traduções ausentes em
+/// espanhol ou hindi recorrem ao inglês; texto sem tradução aparece em português.
 class AppLanguage {
   AppLanguage._();
 
   static const _prefKey = 'app_language';
 
-  /// Escolha do usuário: 'auto' (idioma do aparelho), 'pt', 'en' ou 'es'.
+  /// Escolha do usuário: 'auto' (idioma do aparelho), 'pt', 'en', 'es' ou 'hi'.
   static final choice = signal('auto');
 
-  /// Idioma em uso: 'pt', 'en' ou 'es'.
+  /// Idioma em uso.
   static final current = computed(() => resolve(choice.value));
 
   static String resolve(String choice) {
-    if (choice == 'pt' || choice == 'en' || choice == 'es') return choice;
+    if (choice == 'pt' || choice == 'en' || choice == 'es' || choice == 'hi') {
+      return choice;
+    }
     final device = PlatformDispatcher.instance.locale.languageCode;
-    return device == 'pt' || device == 'es' ? device : 'en';
+    if (device == 'pt' || device == 'es' || device == 'hi') return device;
+    return 'en';
   }
 
   static Future<void> load() async {
@@ -42,10 +43,11 @@ class AppLanguage {
     } catch (_) {}
   }
 
-  /// Valor do cabeçalho Accept-Language para o PC traduzir o que manda (schema, erros).
+  /// Valor do cabeçalho Accept-Language enviado ao PC.
   static String get header => switch (current.value) {
         'en' => 'en',
         'es' => 'es',
+        'hi' => 'hi-IN',
         _ => 'pt-BR',
       };
 }
@@ -54,6 +56,7 @@ String tr(String pt, [Map<String, Object?> args = const {}]) {
   var s = switch (AppLanguage.current.value) {
     'en' => enStrings[pt] ?? pt,
     'es' => esStrings[pt] ?? enStrings[pt] ?? pt,
+    'hi' => hiStrings[pt] ?? enStrings[pt] ?? pt,
     _ => pt,
   };
   args.forEach((k, v) => s = s.replaceAll('{$k}', '${v ?? ''}'));

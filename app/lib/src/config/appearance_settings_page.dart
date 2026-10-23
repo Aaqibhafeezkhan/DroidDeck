@@ -42,6 +42,7 @@ class AppearanceSettingsPage extends StatelessWidget {
                   const ButtonSegment(value: 'pt', label: Text('Português')),
                   const ButtonSegment(value: 'en', label: Text('English')),
                   const ButtonSegment(value: 'es', label: Text('Español')),
+                  const ButtonSegment(value: 'hi', label: Text('हिन्दी')),
                 ],
                 // Quatro opções: sem o ícone de marcado para caber em celular estreito.
                 showSelectedIcon: false,

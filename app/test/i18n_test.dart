@@ -22,6 +22,15 @@ void main() {
     expect(AppLanguage.header, 'en');
     AppLanguage.choice.value = 'es';
     expect(AppLanguage.header, 'es');
+    AppLanguage.choice.value = 'hi';
+    expect(AppLanguage.header, 'hi-IN');
+  });
+
+  test('Hindi is selectable and uses translated strings with English fallback', () {
+    AppLanguage.choice.value = 'hi';
+    expect(AppLanguage.resolve('hi'), 'hi');
+    expect(tr('Salvar'), 'सहेजें');
+    expect(tr('Texto que não existe'), 'Texto que não existe');
   });
 
   test('toda chave traduzida para inglês também tem espanhol', () {
@@ -34,6 +43,8 @@ void main() {
   test('placeholders e texto sem tradução', () {
     AppLanguage.choice.value = 'en';
     expect(tr('Texto que não existe {x}', {'x': 1}), 'Texto que não existe 1');
+    AppLanguage.choice.value = 'hi';
+    expect(tr('Conectado — {account}', {'account': 'Aaqib'}), 'कनेक्ट किया गया — Aaqib');
   });
 
   test('toda tradução mantém os mesmos placeholders da chave', () {
