@@ -1,3 +1,22 @@
+# [1.12.0](https://github.com/ggfto/DroidDeck/compare/v1.11.0...v1.12.0) (2026-10-23)
+
+
+### Bug Fixes
+
+* **app:** aviso de botao removido some sozinho e nao ocupa a largura toda no navegador ([e1a20d2](https://github.com/ggfto/DroidDeck/commit/e1a20d255cac27bddd6f897703d7c9561ea9834a))
+* **ia:** consulta os limites do Claude a cada 5 min e espera mais quando a Anthropic devolve 429 ([9c3567b](https://github.com/ggfto/DroidDeck/commit/9c3567bf68c830adf253dbce7751ac46db295dee))
+* **tuya:** toggle grava o valor enviado e o push reconecta logo apos uma queda ([8fad7e8](https://github.com/ggfto/DroidDeck/commit/8fad7e8d0de2996e98327bd449175d395b1fde92))
+
+
+### Features
+
+* **i18n:** add Hindi language option ([#12](https://github.com/ggfto/DroidDeck/issues/12)) ([41ad6c7](https://github.com/ggfto/DroidDeck/commit/41ad6c7551891a46e1c2af49e41fe6bbec0f58ec))
+* **i18n:** mensagens do SignalR no idioma de cada conexao, erros com valores traduziveis e teste que acha texto sem traducao ([3304295](https://github.com/ggfto/DroidDeck/commit/33042955f41eee4c13785a840a219a0fa0226ff4))
+* **i18n:** um arquivo JSON por idioma, achado sozinho pelo app e pelo PC, e ingles como idioma padrao ([9a0bea9](https://github.com/ggfto/DroidDeck/commit/9a0bea90a099fa05b5f44aced1063e70a17e32af)), closes [#12](https://github.com/ggfto/DroidDeck/issues/12)
+* **ia:** ritmo da semana no botao de uso de IA (marca na barra e projecao de fechamento) ([a9330e6](https://github.com/ggfto/DroidDeck/commit/a9330e6502823d2bdbb71571be0190aa36406de3))
+* **monitores:** CPU e memoria no mesmo botao, espaco em disco e opcao de barra nos medidores ([478d353](https://github.com/ggfto/DroidDeck/commit/478d3530a399205409806dff22baca058d1cb4ac))
+* **monitores:** rede (download e upload) no monitor de CPU e memoria ([9d1dbcd](https://github.com/ggfto/DroidDeck/commit/9d1dbcd1098d37104e4cd6a030be72387786fee6))
+
 # [1.11.0](https://github.com/ggfto/DroidDeck/compare/v1.10.0...v1.11.0) (2026-10-20)
 
 
