@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
@@ -99,7 +100,8 @@ namespace DroidDeck.Hubs
 
         private const string LanguageKey = "lang";
 
-        public static readonly string[] Languages = { "pt", "en", "es" };
+        /// <summary>Um grupo por arquivo de idioma.</summary>
+        public static IReadOnlyList<string> Languages => L.Languages;
 
         public static string LanguageGroup(string language) => "lang:" + language;
 

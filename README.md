@@ -98,7 +98,7 @@ phone app alone does nothing. On an iPhone or iPad, use the
 4. **Configure** — open `http://localhost:4787/` on the PC to edit your buttons. Changes show up on the phone instantly.
 
 > [!NOTE]
-> The app follows the phone's language (English, Portuguese or Spanish). The
+> The app follows the phone's language (English, Portuguese, Spanish or Hindi; anything else gets English). The
 > [documentation](https://me.gf2.in/DroidDeck/docs/) is available in both.
 
 Having trouble (SmartScreen, firewall, phone not finding the PC)? See

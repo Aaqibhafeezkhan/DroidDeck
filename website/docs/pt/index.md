@@ -89,6 +89,6 @@ flowchart LR
 - Celular e PC na mesma rede local, ou um celular Android num [cabo USB](getting-started/browser-usb.md#usb).
 
 !!! note "Idioma"
-    O app segue o idioma do celular (português, inglês ou espanhol); dá para trocar em **Configuração →
+    O app segue o idioma do celular (português, inglês, espanhol ou hindi; outros idiomas ficam em inglês); dá para trocar em **Configuração →
     Aparência → Idioma**. Esta documentação está em português e em inglês (use o seletor de idioma no
     topo); ainda não há versão em espanhol.

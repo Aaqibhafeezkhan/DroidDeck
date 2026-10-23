@@ -5,9 +5,14 @@ Thanks for wanting to help! DroidDeck has two halves that live in this repositor
 
 ## Good ways to start
 
-- **Translate.** The app speaks Portuguese, English and Spanish. Adding a language is a dictionary of
-  strings: copy `app/lib/core/i18n/en/` and translate the values (the keys are the Portuguese source
-  text). The Windows side has `DroidDeck/Lib/Localization.en.cs`. No Flutter experience needed.
+- **Translate.** Each language is one file in [`app/assets/i18n/`](app/assets/i18n/), shared by the
+  phone app, the web configurator and the Windows app. To add one, copy `en.json` to `<code>.json`
+  (`fr.json`, `de.json`...), set `@language` to the language's own name, `@locale` and `@decimal`, and
+  translate the values. Keep the keys and the `{placeholders}` as they are; the keys are the
+  Portuguese text used in the code, the English values show what each one means. Nothing else needs
+  to change: the new language shows up in Appearance → Language and is picked automatically on
+  phones set to it. A partial file is fine: anything you haven't translated yet appears in English.
+  No Flutter or C# experience needed.
 - **Issues labelled [`good first issue`](https://github.com/ggfto/DroidDeck/labels/good%20first%20issue)**
   are small and self-contained.
 - **A new action type** usually needs only C#: implement `IActionProvider` and the phone builds the

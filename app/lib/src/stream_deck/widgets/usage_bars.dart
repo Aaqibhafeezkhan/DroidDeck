@@ -209,11 +209,10 @@ class UsageBar extends StatelessWidget {
 /// Tamanho em disco: "931 GB", "1,8 TB" (inglês: "1.8 TB").
 String formatBytes(num bytes) {
   const gb = 1024 * 1024 * 1024;
-  final lang = AppLanguage.current.value;
   String f(double v) {
     var t = v < 10 ? v.toStringAsFixed(1) : v.toStringAsFixed(0);
     if (t.endsWith('.0')) t = t.substring(0, t.length - 2);
-    return lang == 'en' ? t : t.replaceAll('.', ',');
+    return decimalText(t);
   }
 
   final g = bytes / gb;

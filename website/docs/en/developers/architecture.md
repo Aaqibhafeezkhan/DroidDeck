@@ -31,7 +31,7 @@ DroidDeck/
   `ActionPolicy` (privileged actions), `StreamDeckConfigService` (profiles), `ButtonToggleService`
   (two-state buttons), `InfoService` (info buttons), `TimerService`, `ForegroundWatcher`,
   `BackupService`, `SystemMonitorService`, and the audio/media services.
-- **Localization**: `Lib/Localization*.cs` — `L.T("…")` answers in English when the request asks for it.
+- **Localization**: `Lib/Localization.cs` — `L.T("…")` answers in the request's language, read from the same `app/assets/i18n/*.json` files as the app (embedded in the executable); missing strings fall back to English.
 - **Discovery**: `Lib/DiscoveryServer.cs` — UDP 7573 responder.
 - **Static web**: the Flutter web build is served from `wwwroot/`.
 
@@ -49,7 +49,7 @@ Key places:
 Key places:
 
 - `lib/core/droiddeck_client/` — API models (`DeckButton`, profiles…).
-- `lib/core/i18n/` — `tr("…")` and the English dictionaries (`en/*.dart`).
+- `lib/core/i18n/` — `tr("…")`; the strings live in `assets/i18n/<code>.json`, one file per language, found at startup.
 - `lib/src/stream_deck/buttons/` — how each action type draws its button (`renderers.dart` maps type
   → renderer; `button_look.dart` has the shared tile, two-state look and icons).
 - `lib/src/stream_deck/widgets/` — grid, info buttons and the button editor (`editor/` holds its

@@ -35,19 +35,22 @@ class AppearanceSettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const _SectionTitle('Idioma'),
+            // Um item por arquivo de idioma: idioma novo aparece aqui sozinho.
             Watch((context) {
-              return SegmentedButton<String>(
-                segments: [
-                  ButtonSegment(value: 'auto', label: Text(tr('Automático'))),
-                  const ButtonSegment(value: 'pt', label: Text('Português')),
-                  const ButtonSegment(value: 'en', label: Text('English')),
-                  const ButtonSegment(value: 'es', label: Text('Español')),
-                  const ButtonSegment(value: 'hi', label: Text('हिन्दी')),
+              final choice = AppLanguage.choice.value;
+              return DropdownMenu<String>(
+                initialSelection:
+                    AppLanguage.available.any((l) => l.code == choice) ? choice : 'auto',
+                expandedInsets: EdgeInsets.zero,
+                leadingIcon: const Icon(Icons.translate),
+                onSelected: (v) {
+                  if (v != null) AppLanguage.set(v);
+                },
+                dropdownMenuEntries: [
+                  DropdownMenuEntry(value: 'auto', label: tr('Automático')),
+                  for (final l in AppLanguage.available)
+                    DropdownMenuEntry(value: l.code, label: l.name),
                 ],
-                // Quatro opções: sem o ícone de marcado para caber em celular estreito.
-                showSelectedIcon: false,
-                selected: {AppLanguage.choice.value},
-                onSelectionChanged: (v) => AppLanguage.set(v.first),
               );
             }),
             const SizedBox(height: 8),

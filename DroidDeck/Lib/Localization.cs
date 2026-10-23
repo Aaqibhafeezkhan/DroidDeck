@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -9,9 +12,9 @@ namespace DroidDeck.Lib
 {
     /// <summary>
     /// Traducao dos textos que o servidor manda para o app. O texto-fonte continua em portugues
-    /// no codigo; L.T("...") devolve a versao em ingles (Localization.en.cs) ou em espanhol
-    /// (Localization.es.cs) conforme o Accept-Language da requisicao. Espanhol sem traducao cai
-    /// no ingles; sem traducao nenhuma fica o portugues -- nunca quebra.
+    /// no codigo e serve de chave; as traducoes vem de app/assets/i18n/<idioma>.json (os mesmos
+    /// arquivos do app, embutidos no executavel). Arquivo novo na pasta = idioma novo, sem mexer
+    /// em codigo. Texto sem traducao no idioma pedido sai em ingles, o idioma padrao.
     ///
     /// O idioma e por requisicao (AsyncLocal), marcado pelo middleware UseLanguage. No SignalR,
     /// cada conexao entra no grupo do idioma dela e SendLocalizedAsync monta a mensagem uma vez
@@ -23,36 +26,84 @@ namespace DroidDeck.Lib
     /// </summary>
     public static partial class L
     {
+        /// <summary>Idioma em que o codigo esta escrito: as chaves ja sao o texto dele.</summary>
+        public const string Source = "pt";
+
+        /// <summary>Idioma padrao: pedido sem idioma conhecido e texto sem traducao ficam nele.</summary>
+        public const string Fallback = "en";
+
+        private sealed record Catalog(Dictionary<string, string> Strings, CultureInfo Culture);
+
+        private static readonly Dictionary<string, Catalog> Catalogs = LoadCatalogs();
+
+        /// <summary>Codigos dos idiomas com arquivo, em ordem alfabetica.</summary>
+        public static IReadOnlyList<string> Languages { get; } =
+            Catalogs.Keys.OrderBy(k => k, StringComparer.Ordinal).ToList();
+
+        private static Dictionary<string, Catalog> LoadCatalogs()
+        {
+            var catalogs = new Dictionary<string, Catalog>(StringComparer.OrdinalIgnoreCase);
+            var assembly = typeof(L).Assembly;
+            foreach (var name in assembly.GetManifestResourceNames())
+            {
+                if (!name.StartsWith("i18n.", StringComparison.Ordinal) || !name.EndsWith(".json", StringComparison.Ordinal)) continue;
+                var code = name["i18n.".Length..^".json".Length];
+                using var stream = assembly.GetManifestResourceStream(name)!;
+                var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(stream) ?? new();
+                var strings = new Dictionary<string, string>(StringComparer.Ordinal);
+                foreach (var (key, value) in json)
+                    if (!key.StartsWith('@') && value.ValueKind == JsonValueKind.String) strings[key] = value.GetString()!;
+                catalogs[code] = new Catalog(strings, CultureFor(json, code));
+            }
+            // Sem arquivo nenhum (nao deveria acontecer): ao menos o portugues do codigo.
+            if (!catalogs.ContainsKey(Source)) catalogs[Source] = new Catalog(new(), CultureInfo.GetCultureInfo("pt-BR"));
+            if (!catalogs.ContainsKey(Fallback)) catalogs[Fallback] = new Catalog(new(), CultureInfo.GetCultureInfo("en-US"));
+            return catalogs;
+        }
+
+        private static CultureInfo CultureFor(Dictionary<string, JsonElement> json, string code)
+        {
+            try
+            {
+                return CultureInfo.GetCultureInfo(
+                    json.TryGetValue("@locale", out var l) && l.ValueKind == JsonValueKind.String ? l.GetString()! : code);
+            }
+            catch (CultureNotFoundException)
+            {
+                return CultureInfo.InvariantCulture;
+            }
+        }
+
         private static readonly AsyncLocal<string?> _language = new();
 
-        /// <summary>Idioma da requisicao: "pt", "en" ou "es".</summary>
+        /// <summary>Idioma da requisicao: o codigo de um dos arquivos ("en", "es"...).</summary>
         public static string Language
         {
-            get => _language.Value ?? "pt";
+            get => _language.Value ?? Fallback;
             set => _language.Value = value;
         }
 
         public static bool English
         {
             get => Language == "en";
-            set => Language = value ? "en" : "pt";
+            set => Language = value ? "en" : Source;
         }
 
-        /// <summary>A requisicao pediu outro idioma que nao o portugues (o schema e traduzido).</summary>
-        public static bool Translating => Language != "pt";
+        /// <summary>A requisicao pediu outro idioma que nao o do codigo (o schema e traduzido).</summary>
+        public static bool Translating => Language != Source;
 
         public static string T(string pt) => TFor(Language, pt);
 
-        private static string TFor(string language, string pt) => language switch
+        private static string TFor(string language, string pt)
         {
-            "en" => En.TryGetValue(pt, out var en) ? en : pt,
-            "es" => Es.TryGetValue(pt, out var es) ? es : En.TryGetValue(pt, out var en) ? en : pt,
-            _ => pt,
-        };
+            if (language == Source) return pt;
+            if (Catalogs.TryGetValue(language, out var c) && c.Strings.TryGetValue(pt, out var text)) return text;
+            return Catalogs[Fallback].Strings.TryGetValue(pt, out var en) ? en : pt;
+        }
 
         /// <summary>
         /// Texto da bandeja e das janelas do PC: segue o idioma do Windows (nao ha requisicao).
-        /// Portugues e o padrao; Windows em ingles ou espanhol ve a traducao.
+        /// Windows num idioma sem arquivo ve o ingles.
         /// </summary>
         public static string Ui(string pt) =>
             TFor(LanguageOf(System.Globalization.CultureInfo.CurrentUICulture.Name), pt);
@@ -84,13 +135,8 @@ namespace DroidDeck.Lib
             return text;
         }
 
-        private static System.Globalization.CultureInfo CultureOf(string language) =>
-            System.Globalization.CultureInfo.GetCultureInfo(language switch
-            {
-                "en" => "en-US",
-                "es" => "es-ES",
-                _ => "pt-BR",
-            });
+        private static CultureInfo CultureOf(string language) =>
+            Catalogs.TryGetValue(language, out var c) ? c.Culture : Catalogs[Fallback].Culture;
 
         /// <summary>
         /// Mensagem que so vira texto na hora de ir para alguem: guarda o portugues e os valores,
@@ -114,7 +160,7 @@ namespace DroidDeck.Lib
             public string In(string language) => Fill(TFor(language, Pt), language, _args);
 
             /// <summary>Portugues com os valores: serve para comparar e para o log.</summary>
-            public string Plain => Fill(Pt, "pt", _args);
+            public string Plain => Fill(Pt, Source, _args);
         }
 
         /// <summary>Texto de um erro para o cliente: traduz a mensagem, com os valores se houver.</summary>
@@ -140,25 +186,28 @@ namespace DroidDeck.Lib
 
         /// <summary>Ha traducao para este texto em portugues? (Os testes de cobertura usam.)</summary>
         public static bool Has(string pt, string language) =>
-            language switch { "en" => En.ContainsKey(pt), "es" => Es.ContainsKey(pt), _ => true };
+            language == Source || (Catalogs.TryGetValue(language, out var c) && c.Strings.ContainsKey(pt));
 
-        /// <summary>Todos os textos com traducao para o ingles.</summary>
-        public static IReadOnlyCollection<string> TranslatedKeys => En.Keys;
+        /// <summary>Textos traduzidos num idioma (chave em portugues -> texto). Os testes usam.</summary>
+        public static IReadOnlyDictionary<string, string> StringsOf(string language) =>
+            Catalogs.TryGetValue(language, out var c) ? c.Strings : new Dictionary<string, string>();
 
         /// <summary>Versao que aceita null (campos opcionais do schema).</summary>
         public static string? TOrNull(string? pt) => pt == null ? null : T(pt);
 
         /// <summary>
-        /// Idioma pela primeira preferencia do Accept-Language: "en..." vira ingles, "es..."
-        /// espanhol, o resto portugues.
+        /// Idioma pelo Accept-Language: a primeira preferencia que tem arquivo ("pt-BR" vale
+        /// "pt"; "fr,es;q=0.8" vale "es" se nao houver frances). Nenhuma: ingles.
         /// </summary>
         public static string LanguageOf(string? acceptLanguage)
         {
-            if (string.IsNullOrWhiteSpace(acceptLanguage)) return "pt";
-            var first = acceptLanguage.Split(',')[0].Split(';')[0].Trim();
-            if (first.StartsWith("en", StringComparison.OrdinalIgnoreCase)) return "en";
-            if (first.StartsWith("es", StringComparison.OrdinalIgnoreCase)) return "es";
-            return "pt";
+            if (string.IsNullOrWhiteSpace(acceptLanguage)) return Fallback;
+            foreach (var part in acceptLanguage.Split(','))
+            {
+                var code = part.Split(';')[0].Trim().Split('-', '_')[0].ToLowerInvariant();
+                if (code.Length > 0 && Catalogs.ContainsKey(code)) return code;
+            }
+            return Fallback;
         }
 
         /// <summary>Primeira preferencia do Accept-Language comeca com "en"?</summary>

@@ -397,6 +397,8 @@ namespace DroidDeck.Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Add("X-API-KEY", ApiKeyProvider.GetKey());
+            // Os textos de origem (portugues): sem cabecalho o PC responde em ingles.
+            client.DefaultRequestHeaders.Add("Accept-Language", "pt-BR");
             var all = (await client.GetFromJsonAsync<List<ActionSchema>>("/api/actions/schema"))!;
             return all.Where(s => Types.Contains(s.Type)).ToList();
         }
@@ -411,14 +413,11 @@ namespace DroidDeck.Tests
             Assert.All(schemas.Where(s => s.Settings != null), s => Assert.NotNull(s.StateEvent));
         }
 
-        private static Dictionary<string, string> Dictionary(string name) =>
-            (Dictionary<string, string>)typeof(L).GetField(name, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
-
         [Fact]
         public async Task TodoTextoTemInglesEEspanhol()
         {
-            var en = Dictionary("En");
-            var es = Dictionary("Es");
+            var en = L.StringsOf("en");
+            var es = L.StringsOf("es");
             var texts = new List<string>();
             foreach (var s in await Schemas())
             {

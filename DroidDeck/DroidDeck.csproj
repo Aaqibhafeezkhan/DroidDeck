@@ -30,6 +30,8 @@
   <ItemGroup>
     <!-- Bandeja e janelas carregam o tamanho exato daqui (ver AppIcon.cs). -->
     <EmbeddedResource Include="droiddeck.ico" LogicalName="DroidDeck.droiddeck.ico" />
+    <!-- Um arquivo por idioma, os mesmos do app: o PC acha os idiomas por eles. -->
+    <EmbeddedResource Include="..\app\assets\i18n\*.json" LogicalName="i18n.%(Filename).json" />
   </ItemGroup>
 
   <ItemGroup>

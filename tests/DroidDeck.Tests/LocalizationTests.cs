@@ -23,8 +23,15 @@ namespace DroidDeck.Tests
         }
 
         [Fact]
-        public void SemIngles_DevolveOPortugues() =>
+        public void EmPortugues_DevolveAChave()
+        {
+            L.Language = "pt";
             Assert.Equal("Abrir programa", L.T("Abrir programa"));
+        }
+
+        [Fact]
+        public void SemIdioma_SaiEmIngles() =>
+            Assert.Equal("Open program", L.T("Abrir programa"));
 
         [Fact]
         public void ComIngles_DevolveATraducao() =>
@@ -74,6 +81,7 @@ namespace DroidDeck.Tests
         public void BotaoDeInformacao_ErroSaiNoIdiomaDeQuemRecebe()
         {
             var v = new DroidDeck.Services.InfoService.InfoValue { Text = "—", SubText = new L.Text("Sem permissão"), Error = true };
+            L.Language = "pt";
             Assert.Equal("Sem permissão", v.Localized().Sub);
             Assert.Equal(L.T("Sem permissão"), v.Localized().Sub);
             L.Language = "en";
@@ -81,23 +89,40 @@ namespace DroidDeck.Tests
             finally { L.Language = "pt"; }
         }
 
-        private static Dictionary<string, string> Dictionary(string name) =>
-            (Dictionary<string, string>)typeof(L)
-                .GetField(name, BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null)!;
+        [Fact]
+        public void Idiomas_VemDosArquivos()
+        {
+            Assert.Contains("pt", L.Languages);
+            Assert.Contains("en", L.Languages);
+            Assert.Contains("es", L.Languages);
+            Assert.Contains("hi", L.Languages);
+            Assert.Equal(L.Languages, DroidDeck.Hubs.DeckHub.Languages);
+        }
+
+        [Fact]
+        public void IdiomaIncompleto_CaiNoIngles()
+        {
+            var en = L.StringsOf("en");
+            var hi = L.StringsOf("hi");
+            var untranslated = en.Keys.First(k => !hi.ContainsKey(k));
+            Assert.Equal(en[untranslated], new L.Text(untranslated).In("hi"));
+            Assert.Equal(hi["Salvar"], new L.Text("Salvar").In("hi"));
+        }
 
         [Fact]
         public void Espanhol_TemTodaChaveDoIngles_ComOsMesmosPlaceholders()
         {
-            var en = Dictionary("En");
-            var es = Dictionary("Es");
+            var en = L.StringsOf("en");
+            var es = L.StringsOf("es");
             Assert.Empty(en.Keys.Except(es.Keys));
             Assert.Empty(es.Keys.Except(en.Keys));
             var placeholder = new Regex(@"\{(\w+)\}");
-            foreach (var (pt, text) in es)
-            {
-                var expected = placeholder.Matches(pt).Select(m => m.Value).OrderBy(x => x);
-                Assert.Equal(expected, placeholder.Matches(text).Select(m => m.Value).OrderBy(x => x));
-            }
+            foreach (var language in L.Languages)
+                foreach (var (pt, text) in L.StringsOf(language))
+                {
+                    var expected = placeholder.Matches(pt).Select(m => m.Value).OrderBy(x => x);
+                    Assert.Equal(expected, placeholder.Matches(text).Select(m => m.Value).OrderBy(x => x));
+                }
         }
 
         [Theory]
@@ -105,7 +130,10 @@ namespace DroidDeck.Tests
         [InlineData("es-MX,en;q=0.8", "es")]
         [InlineData("en-US,es;q=0.8", "en")]
         [InlineData("pt-BR,es;q=0.9", "pt")]
-        [InlineData(null, "pt")]
+        [InlineData("hi-IN", "hi")]
+        [InlineData("fr-FR,es;q=0.8", "es")]
+        [InlineData("fr-FR", "en")]
+        [InlineData(null, "en")]
         public void AcceptLanguage_EscolheOIdioma(string? header, string language) =>
             Assert.Equal(language, L.LanguageOf(header));
 
@@ -115,8 +143,8 @@ namespace DroidDeck.Tests
         [InlineData("EN-gb", true)]
         [InlineData("pt-BR", false)]
         [InlineData("pt-BR,en;q=0.9", false)]
-        [InlineData("", false)]
-        [InlineData(null, false)]
+        [InlineData("", true)]
+        [InlineData(null, true)]
         public void AcceptLanguage_UsaAPrimeiraPreferencia(string? header, bool english) =>
             Assert.Equal(english, L.IsEnglish(header));
     }

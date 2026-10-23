@@ -126,11 +126,9 @@ class _InfoDeckButtonState extends State<InfoDeckButton> {
           if (_label != null) _small(_label!),
           _big(time),
           if (date)
-            // Dia/mês em português e espanhol, mês/dia em inglês.
+            // A ordem de dia e mês vem do arquivo do idioma (inglês: mês/dia).
             _small('${tr(_weekdays[now.weekday - 1])}, ' +
-                (AppLanguage.current.value == 'en'
-                    ? '${two(now.month)}/${two(now.day)}'
-                    : '${two(now.day)}/${two(now.month)}')),
+                tr('{day}/{month}', {'day': two(now.day), 'month': two(now.month)})),
         ],
       ),
     );
@@ -423,21 +421,16 @@ Color usageColor(double pct) {
 
 /// 1234 → "1,2 mil"; 3456789 → "3,5 mi" (inglês: "3.5M"; espanhol: "3,5 M").
 String compactCount(int n) {
-  final lang = AppLanguage.current.value;
-  final (k, m, b) = switch (lang) {
-    'en' => ('K', 'M', 'B'),
-    'es' => (' mil', ' M', ' mil M'),
-    _ => (' mil', ' mi', ' bi'),
-  };
+  // As abreviações vêm do arquivo do idioma.
   String f(double v) {
     var t = v < 10 ? v.toStringAsFixed(1) : v.toStringAsFixed(0);
     if (t.endsWith('.0')) t = t.substring(0, t.length - 2);
-    return lang == 'en' ? t : t.replaceAll('.', ',');
+    return decimalText(t);
   }
 
-  if (n >= 1000000000) return f(n / 1e9) + b;
-  if (n >= 1000000) return f(n / 1e6) + m;
-  if (n >= 1000) return f(n / 1e3) + k;
+  if (n >= 1000000000) return tr('{n} bi', {'n': f(n / 1e9)});
+  if (n >= 1000000) return tr('{n} mi', {'n': f(n / 1e6)});
+  if (n >= 1000) return tr('{n} mil', {'n': f(n / 1e3)});
   return '$n';
 }
 

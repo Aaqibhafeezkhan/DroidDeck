@@ -89,6 +89,6 @@ flowchart LR
 - Phone and PC on the same local network, or an Android phone on a [USB cable](getting-started/browser-usb.md#usb).
 
 !!! note "Language"
-    The app follows the phone's language (English, Portuguese or Spanish); you can change it under
+    The app follows the phone's language (English, Portuguese, Spanish or Hindi; any other language gets English); you can change it under
     **Settings → Appearance → Language**. This documentation is in English and Portuguese (use the
     language selector at the top); there is no Spanish version yet.

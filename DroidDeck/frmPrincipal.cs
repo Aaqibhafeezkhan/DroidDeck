@@ -215,7 +215,7 @@ namespace DroidDeck
             _updateItem = new ToolStripMenuItem(Program.Updater.IsInstalled ? L.Ui("Procurar atualização") : L.Ui("Baixar versão mais recente…"));
             _updateItem.Click += (_, _) => OnUpdateClick();
 
-            var exitItem = new ToolStripMenuItem(L.Ui("Sair"));
+            var exitItem = new ToolStripMenuItem(L.Ui("Encerrar"));
             exitItem.Click += (_, _) => Application.Exit();
 
             menu.Items.Add(openItem);

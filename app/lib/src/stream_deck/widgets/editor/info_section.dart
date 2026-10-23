@@ -228,7 +228,7 @@ class InfoSection extends StatelessWidget {
               hint: 'powershell -c "(Get-Date).DayOfYear"',
               help: tr('Roda no cmd do PC; o botão mostra a saída (até 10 s).'),
               maxLines: 2),
-          _field('format', tr('Modelo'),
+          _field('format', tr('Formato'),
               hint: '{value}', help: tr('{value} é a saída. Ex.: "Dia {value}"')),
           _field('interval', tr('Atualizar a cada (segundos)'), hint: '60', number: true),
         ];
@@ -237,7 +237,7 @@ class InfoSection extends StatelessWidget {
           _field('url', tr('URL'), hint: 'https://api.exemplo.com/status'),
           _field('path', tr('Campo do JSON'),
               hint: 'data.items[0].name', help: tr('Vazio = a resposta inteira.')),
-          _field('format', tr('Modelo'), hint: '{value}', help: tr('{value} é o valor lido.')),
+          _field('format', tr('Formato'), hint: '{value}', help: tr('{value} é o valor lido.')),
           _field('interval', tr('Atualizar a cada (segundos)'), hint: '60', number: true),
         ];
       case 'notifications':

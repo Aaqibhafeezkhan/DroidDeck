@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DroidDeck.Lib;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -42,7 +43,7 @@ namespace DroidDeck.Tests
                 foreach (var file in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
                 {
                     var rel = Path.GetRelativePath(root, file).Replace('\\', '/');
-                    if (rel.StartsWith("obj/") || rel.StartsWith("bin/") || rel.StartsWith("Lib/Localization")) continue;
+                    if (rel.StartsWith("obj/") || rel.StartsWith("bin/")) continue;
                     var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file));
                     var nodes = tree.GetRoot().DescendantNodes().ToList();
                     foreach (var lit in nodes.OfType<LiteralExpressionSyntax>().Where(l => l.IsKind(SyntaxKind.StringLiteralExpression)))
@@ -66,7 +67,40 @@ namespace DroidDeck.Tests
                         }
                     }
                 }
+                source.AddDartLiterals(Path.Combine(dir.FullName, "app", "lib"));
                 return source;
+            }
+
+            private const string DartLiteral = @"(?:r?'(?:[^'\\\n]|\\.)*'|r?""(?:[^""\\\n]|\\.)*"")";
+            private static readonly Regex DartSequence = new("(?:" + DartLiteral + @"\s*)+");
+            private static readonly Regex DartSingle = new(DartLiteral);
+            private static readonly Regex DartEscape = new(@"\\(.)");
+            private static readonly Regex DartTr = new(@"\btr\(\s*(" + DartLiteral + ")");
+
+            /// <summary>
+            /// O mesmo arquivo de idioma traduz o app: string do Dart (sozinha ou varias juntas,
+            /// 'a' 'b') tambem conta como uso.
+            /// </summary>
+            private void AddDartLiterals(string root)
+            {
+                static string Value(string token)
+                {
+                    var raw = token.StartsWith('r');
+                    var body = (raw ? token[1..] : token)[1..^1];
+                    return raw ? body : DartEscape.Replace(body, m => m.Groups[1].Value switch { "n" => "\n", "t" => "\t", var c => c });
+                }
+                foreach (var file in Directory.EnumerateFiles(root, "*.dart", SearchOption.AllDirectories))
+                {
+                    var code = File.ReadAllText(file);
+                    foreach (Match seq in DartSequence.Matches(code))
+                    {
+                        var parts = DartSingle.Matches(seq.Value).Select(m => Value(m.Value)).ToList();
+                        foreach (var part in parts) Literals.Add(part);
+                        if (parts.Count > 1) Literals.Add(string.Concat(parts));
+                    }
+                    // tr('...') dentro de ${...} de outra string: a passada acima pega a de fora.
+                    foreach (Match call in DartTr.Matches(code)) Literals.Add(Value(call.Groups[1].Value));
+                }
             }
 
             /// <summary>Texto fixo: uma string literal ou literais somados com +.</summary>
@@ -90,14 +124,14 @@ namespace DroidDeck.Tests
                 .OrderBy(x => x)
                 .ToList();
             Assert.True(missing.Count == 0,
-                "Sem tradução em Localization.en.cs/.es.cs (rode add_l10n ou acrescente à mão):\n" + string.Join("\n", missing));
+                "Sem tradução em app/assets/i18n/en.json ou es.json:\n" + string.Join("\n", missing));
         }
 
         [Fact]
         public void NenhumaTraducao_SobrouDeTextoQueNaoExisteMais()
         {
             // Texto mudou no codigo e a chave antiga ficou para tras.
-            var orphans = L.TranslatedKeys.Where(k => !Code.Value.Literals.Contains(k)).OrderBy(x => x).ToList();
+            var orphans = L.StringsOf("en").Keys.Where(k => !Code.Value.Literals.Contains(k)).OrderBy(x => x).ToList();
             Assert.True(orphans.Count == 0,
                 "Tradução de um texto que não aparece mais no código (o texto em português mudou?):\n" + string.Join("\n", orphans));
         }
